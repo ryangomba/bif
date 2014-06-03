@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Photos.xcscheme</key>
+		<key>BIF.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,12 +12,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>9467A002193D6A6500909169</key>
+		<key>94A107741957D5F8009E7A5F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9467A018193D6A6500909169</key>
+		<key>94A107841957D5F8009E7A5F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

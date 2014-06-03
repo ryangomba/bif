@@ -1,0 +1,352 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		94A107B81957D61E009E7A5F /* BGAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107971957D61E009E7A5F /* BGAppDelegate.m */; };
+		94A107B91957D61E009E7A5F /* BGBurstGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107991957D61E009E7A5F /* BGBurstGroup.m */; };
+		94A107BA1957D61E009E7A5F /* BGBurstGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A1079B1957D61E009E7A5F /* BGBurstGroupCell.m */; };
+		94A107BB1957D61E009E7A5F /* BGBurstGroupFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A1079D1957D61E009E7A5F /* BGBurstGroupFetcher.m */; };
+		94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */; };
+		94A107BD1957D61E009E7A5F /* BGBurstGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A11957D61E009E7A5F /* BGBurstGroupView.m */; };
+		94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A31957D61E009E7A5F /* BGBurstInfo.m */; };
+		94A107BF1957D61E009E7A5F /* BGBurstListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A51957D61E009E7A5F /* BGBurstListViewController.m */; };
+		94A107C01957D61E009E7A5F /* BGBurstPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A71957D61E009E7A5F /* BGBurstPreviewView.m */; };
+		94A107C11957D61E009E7A5F /* BGBurstPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */; };
+		94A107C21957D61E009E7A5F /* BGDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107AB1957D61E009E7A5F /* BGDatabase.m */; };
+		94A107C31957D61E009E7A5F /* BGFileUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107AD1957D61E009E7A5F /* BGFileUploader.m */; };
+		94A107C41957D61E009E7A5F /* BGGIFMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107AF1957D61E009E7A5F /* BGGIFMaker.m */; };
+		94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B11957D61E009E7A5F /* BGProgressHUD.m */; };
+		94A107C61957D61E009E7A5F /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B31957D61E009E7A5F /* UIImage+Resize.m */; };
+		94A107C71957D61E009E7A5F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94A107B51957D61E009E7A5F /* Images.xcassets */; };
+		94A107C91957D61E009E7A5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B71957D61E009E7A5F /* main.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		94A107751957D5F8009E7A5F /* BIF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BIF.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		94A107961957D61E009E7A5F /* BGAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGAppDelegate.h; sourceTree = "<group>"; };
+		94A107971957D61E009E7A5F /* BGAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGAppDelegate.m; sourceTree = "<group>"; };
+		94A107981957D61E009E7A5F /* BGBurstGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroup.h; sourceTree = "<group>"; };
+		94A107991957D61E009E7A5F /* BGBurstGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroup.m; sourceTree = "<group>"; };
+		94A1079A1957D61E009E7A5F /* BGBurstGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroupCell.h; sourceTree = "<group>"; };
+		94A1079B1957D61E009E7A5F /* BGBurstGroupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroupCell.m; sourceTree = "<group>"; };
+		94A1079C1957D61E009E7A5F /* BGBurstGroupFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroupFetcher.h; sourceTree = "<group>"; };
+		94A1079D1957D61E009E7A5F /* BGBurstGroupFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroupFetcher.m; sourceTree = "<group>"; };
+		94A1079E1957D61E009E7A5F /* BGBurstGroupRangePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroupRangePicker.h; sourceTree = "<group>"; };
+		94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroupRangePicker.m; sourceTree = "<group>"; };
+		94A107A01957D61E009E7A5F /* BGBurstGroupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroupView.h; sourceTree = "<group>"; };
+		94A107A11957D61E009E7A5F /* BGBurstGroupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroupView.m; sourceTree = "<group>"; };
+		94A107A21957D61E009E7A5F /* BGBurstInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstInfo.h; sourceTree = "<group>"; };
+		94A107A31957D61E009E7A5F /* BGBurstInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstInfo.m; sourceTree = "<group>"; };
+		94A107A41957D61E009E7A5F /* BGBurstListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstListViewController.h; sourceTree = "<group>"; };
+		94A107A51957D61E009E7A5F /* BGBurstListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstListViewController.m; sourceTree = "<group>"; };
+		94A107A61957D61E009E7A5F /* BGBurstPreviewView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstPreviewView.h; sourceTree = "<group>"; };
+		94A107A71957D61E009E7A5F /* BGBurstPreviewView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstPreviewView.m; sourceTree = "<group>"; };
+		94A107A81957D61E009E7A5F /* BGBurstPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstPreviewViewController.h; sourceTree = "<group>"; };
+		94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstPreviewViewController.m; sourceTree = "<group>"; };
+		94A107AA1957D61E009E7A5F /* BGDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGDatabase.h; sourceTree = "<group>"; };
+		94A107AB1957D61E009E7A5F /* BGDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGDatabase.m; sourceTree = "<group>"; };
+		94A107AC1957D61E009E7A5F /* BGFileUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGFileUploader.h; sourceTree = "<group>"; };
+		94A107AD1957D61E009E7A5F /* BGFileUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGFileUploader.m; sourceTree = "<group>"; };
+		94A107AE1957D61E009E7A5F /* BGGIFMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGGIFMaker.h; sourceTree = "<group>"; };
+		94A107AF1957D61E009E7A5F /* BGGIFMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGGIFMaker.m; sourceTree = "<group>"; };
+		94A107B01957D61E009E7A5F /* BGProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGProgressHUD.h; sourceTree = "<group>"; };
+		94A107B11957D61E009E7A5F /* BGProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGProgressHUD.m; sourceTree = "<group>"; };
+		94A107B21957D61E009E7A5F /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		94A107B31957D61E009E7A5F /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		94A107B51957D61E009E7A5F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		94A107B71957D61E009E7A5F /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		94A107CE1957D66F009E7A5F /* BIF-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BIF-Info.plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		94A107721957D5F8009E7A5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		94A1076C1957D5F8009E7A5F = {
+			isa = PBXGroup;
+			children = (
+				94A107951957D61E009E7A5F /* Classes */,
+				94A107B41957D61E009E7A5F /* Support */,
+				94A107761957D5F8009E7A5F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		94A107761957D5F8009E7A5F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				94A107751957D5F8009E7A5F /* BIF.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		94A107951957D61E009E7A5F /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				94A107961957D61E009E7A5F /* BGAppDelegate.h */,
+				94A107971957D61E009E7A5F /* BGAppDelegate.m */,
+				94A107981957D61E009E7A5F /* BGBurstGroup.h */,
+				94A107991957D61E009E7A5F /* BGBurstGroup.m */,
+				94A1079A1957D61E009E7A5F /* BGBurstGroupCell.h */,
+				94A1079B1957D61E009E7A5F /* BGBurstGroupCell.m */,
+				94A1079C1957D61E009E7A5F /* BGBurstGroupFetcher.h */,
+				94A1079D1957D61E009E7A5F /* BGBurstGroupFetcher.m */,
+				94A1079E1957D61E009E7A5F /* BGBurstGroupRangePicker.h */,
+				94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */,
+				94A107A01957D61E009E7A5F /* BGBurstGroupView.h */,
+				94A107A11957D61E009E7A5F /* BGBurstGroupView.m */,
+				94A107A21957D61E009E7A5F /* BGBurstInfo.h */,
+				94A107A31957D61E009E7A5F /* BGBurstInfo.m */,
+				94A107A41957D61E009E7A5F /* BGBurstListViewController.h */,
+				94A107A51957D61E009E7A5F /* BGBurstListViewController.m */,
+				94A107A61957D61E009E7A5F /* BGBurstPreviewView.h */,
+				94A107A71957D61E009E7A5F /* BGBurstPreviewView.m */,
+				94A107A81957D61E009E7A5F /* BGBurstPreviewViewController.h */,
+				94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */,
+				94A107AA1957D61E009E7A5F /* BGDatabase.h */,
+				94A107AB1957D61E009E7A5F /* BGDatabase.m */,
+				94A107AC1957D61E009E7A5F /* BGFileUploader.h */,
+				94A107AD1957D61E009E7A5F /* BGFileUploader.m */,
+				94A107AE1957D61E009E7A5F /* BGGIFMaker.h */,
+				94A107AF1957D61E009E7A5F /* BGGIFMaker.m */,
+				94A107B01957D61E009E7A5F /* BGProgressHUD.h */,
+				94A107B11957D61E009E7A5F /* BGProgressHUD.m */,
+				94A107B21957D61E009E7A5F /* UIImage+Resize.h */,
+				94A107B31957D61E009E7A5F /* UIImage+Resize.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		94A107B41957D61E009E7A5F /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				94A107B51957D61E009E7A5F /* Images.xcassets */,
+				94A107CE1957D66F009E7A5F /* BIF-Info.plist */,
+				94A107B71957D61E009E7A5F /* main.m */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		94A107741957D5F8009E7A5F /* BIF */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 94A1078F1957D5F8009E7A5F /* Build configuration list for PBXNativeTarget "BIF" */;
+			buildPhases = (
+				94A107711957D5F8009E7A5F /* Sources */,
+				94A107721957D5F8009E7A5F /* Frameworks */,
+				94A107731957D5F8009E7A5F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BIF;
+			productName = BIF;
+			productReference = 94A107751957D5F8009E7A5F /* BIF.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		94A1076D1957D5F8009E7A5F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Ryan Gomba";
+				TargetAttributes = {
+					94A107741957D5F8009E7A5F = {
+						CreatedOnToolsVersion = 6.0;
+					};
+				};
+			};
+			buildConfigurationList = 94A107701957D5F8009E7A5F /* Build configuration list for PBXProject "BIF" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 94A1076C1957D5F8009E7A5F;
+			productRefGroup = 94A107761957D5F8009E7A5F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				94A107741957D5F8009E7A5F /* BIF */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		94A107731957D5F8009E7A5F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				94A107C71957D61E009E7A5F /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		94A107711957D5F8009E7A5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				94A107C11957D61E009E7A5F /* BGBurstPreviewViewController.m in Sources */,
+				94A107B81957D61E009E7A5F /* BGAppDelegate.m in Sources */,
+				94A107BD1957D61E009E7A5F /* BGBurstGroupView.m in Sources */,
+				94A107B91957D61E009E7A5F /* BGBurstGroup.m in Sources */,
+				94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */,
+				94A107BF1957D61E009E7A5F /* BGBurstListViewController.m in Sources */,
+				94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */,
+				94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */,
+				94A107C61957D61E009E7A5F /* UIImage+Resize.m in Sources */,
+				94A107BB1957D61E009E7A5F /* BGBurstGroupFetcher.m in Sources */,
+				94A107C21957D61E009E7A5F /* BGDatabase.m in Sources */,
+				94A107C91957D61E009E7A5F /* main.m in Sources */,
+				94A107C41957D61E009E7A5F /* BGGIFMaker.m in Sources */,
+				94A107BA1957D61E009E7A5F /* BGBurstGroupCell.m in Sources */,
+				94A107C01957D61E009E7A5F /* BGBurstPreviewView.m in Sources */,
+				94A107C31957D61E009E7A5F /* BGFileUploader.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		94A1078D1957D5F8009E7A5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		94A1078E1957D5F8009E7A5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		94A107901957D5F8009E7A5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = "Support/BIF-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		94A107911957D5F8009E7A5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = "Support/BIF-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		94A107701957D5F8009E7A5F /* Build configuration list for PBXProject "BIF" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				94A1078D1957D5F8009E7A5F /* Debug */,
+				94A1078E1957D5F8009E7A5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		94A1078F1957D5F8009E7A5F /* Build configuration list for PBXNativeTarget "BIF" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				94A107901957D5F8009E7A5F /* Debug */,
+				94A107911957D5F8009E7A5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 94A1076D1957D5F8009E7A5F /* Project object */;
+}

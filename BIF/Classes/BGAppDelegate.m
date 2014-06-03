@@ -6,18 +6,27 @@
 //  Copyright (c) 2014 Ryan Gomba. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "BGAppDelegate.h"
 
-@interface AppDelegate ()
-            
+#import "BGBurstListViewController.h"
+
+@interface BGAppDelegate ()
 
 @end
 
-@implementation AppDelegate
+
+@implementation BGAppDelegate
             
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    BGBurstListViewController *vc = [[BGBurstListViewController alloc] initWithNibName:nil bundle:nil];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
+    
+    self.window.rootViewController = nc;
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

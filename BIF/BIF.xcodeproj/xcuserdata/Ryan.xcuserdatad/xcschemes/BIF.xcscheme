@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9467A002193D6A6500909169"
-               BuildableName = "Photos.app"
-               BlueprintName = "Photos"
-               ReferencedContainer = "container:Photos.xcodeproj">
+               BlueprintIdentifier = "94A107741957D5F8009E7A5F"
+               BuildableName = "BIF.app"
+               BlueprintName = "BIF"
+               ReferencedContainer = "container:BIF.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,20 +32,20 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9467A018193D6A6500909169"
-               BuildableName = "PhotosTests.xctest"
-               BlueprintName = "PhotosTests"
-               ReferencedContainer = "container:Photos.xcodeproj">
+               BlueprintIdentifier = "94A107841957D5F8009E7A5F"
+               BuildableName = "BIFTests.xctest"
+               BlueprintName = "BIFTests"
+               ReferencedContainer = "container:BIF.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9467A002193D6A6500909169"
-            BuildableName = "Photos.app"
-            BlueprintName = "Photos"
-            ReferencedContainer = "container:Photos.xcodeproj">
+            BlueprintIdentifier = "94A107741957D5F8009E7A5F"
+            BuildableName = "BIF.app"
+            BlueprintName = "BIF"
+            ReferencedContainer = "container:BIF.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -61,10 +61,10 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9467A002193D6A6500909169"
-            BuildableName = "Photos.app"
-            BlueprintName = "Photos"
-            ReferencedContainer = "container:Photos.xcodeproj">
+            BlueprintIdentifier = "94A107741957D5F8009E7A5F"
+            BuildableName = "BIF.app"
+            BlueprintName = "BIF"
+            ReferencedContainer = "container:BIF.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -79,10 +79,10 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9467A002193D6A6500909169"
-            BuildableName = "Photos.app"
-            BlueprintName = "Photos"
-            ReferencedContainer = "container:Photos.xcodeproj">
+            BlueprintIdentifier = "94A107741957D5F8009E7A5F"
+            BuildableName = "BIF.app"
+            BlueprintName = "BIF"
+            ReferencedContainer = "container:BIF.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
