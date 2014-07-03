@@ -26,6 +26,7 @@
 		94A107C91957D61E009E7A5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B71957D61E009E7A5F /* main.m */; };
 		94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB421964A8C100FBCA07 /* BGNavigationController.m */; };
 		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
+		94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,8 @@
 		94F2DB421964A8C100FBCA07 /* BGNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGNavigationController.m; sourceTree = "<group>"; };
 		94F2DB441964CA0000FBCA07 /* BGTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGTextView.h; sourceTree = "<group>"; };
 		94F2DB451964CA0000FBCA07 /* BGTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGTextView.m; sourceTree = "<group>"; };
+		94F2DB471965BB8B00FBCA07 /* BGShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGShareViewController.h; sourceTree = "<group>"; };
+		94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGShareViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +138,8 @@
 				94A107B31957D61E009E7A5F /* UIImage+Resize.m */,
 				94F2DB441964CA0000FBCA07 /* BGTextView.h */,
 				94F2DB451964CA0000FBCA07 /* BGTextView.m */,
+				94F2DB471965BB8B00FBCA07 /* BGShareViewController.h */,
+				94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -228,6 +233,7 @@
 				94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */,
 				94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */,
 				94A107C61957D61E009E7A5F /* UIImage+Resize.m in Sources */,
+				94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */,
 				94A107BB1957D61E009E7A5F /* BGBurstGroupFetcher.m in Sources */,
 				94A107C21957D61E009E7A5F /* BGDatabase.m in Sources */,
 				94A107C91957D61E009E7A5F /* main.m in Sources */,

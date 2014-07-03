@@ -20,10 +20,18 @@
     [request setHTTPBodyStream:[NSInputStream inputStreamWithFileAtPath:filePath]];
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:
      ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-         NSError *parsingError = nil;
-         NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parsingError];
-         NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
-         completion(url, connectionError ?: parsingError);
+         if (connectionError) {
+             completion(nil, connectionError);
+         } else {
+             NSError *parsingError = nil;
+             NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parsingError];
+             if (parsingError) {
+                 completion(nil, parsingError);
+             } else {
+                 NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
+                 completion(url, nil);
+             }
+         }
      }];
 }
 

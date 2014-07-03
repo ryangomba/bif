@@ -11,12 +11,12 @@
 #import "BGBurstGroupRangePicker.h"
 #import "BGBurstPreviewView.h"
 #import "BGGIFMaker.h"
-#import "BGFileUploader.h"
 #import "BGProgressHUD.h"
 #import "BGBurstInfo.h"
 #import "BGDatabase.h"
 #import "BIFHelpers.h"
 #import "BGTextView.h"
+#import "BGShareViewController.h"
 
 @interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate>
 
@@ -321,31 +321,12 @@
                    textAttributes:self.textAttributes
                        completion:^(NSString *filePath)
     {
-        self.progressHUD.text = @"Uploading GIF";
-        [BGFileUploader uploadFileAtPath:filePath completion:^(NSURL *url, NSError *error) {
-            [self.progressHUD removeFromSuperview];
-            self.view.userInteractionEnabled = YES;
-            
-            if (url) {
-                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-                pasteboard.URL = url;
-                
-                [[[UIAlertView alloc] initWithTitle:@"GIF Created!"
-                                            message:@"A URL has been copied to your clipboard."
-                                           delegate:nil
-                                  cancelButtonTitle:@"Sweet"
-                                  otherButtonTitles:nil] show];
-                
-                [[UIApplication sharedApplication] openURL:url];
-                
-            } else {
-                [[[UIAlertView alloc] initWithTitle:@"Error"
-                                            message:error.localizedDescription
-                                           delegate:nil
-                                  cancelButtonTitle:@"Dismiss"
-                                  otherButtonTitles:nil] show];
-            }
-        }];
+        [self.progressHUD removeFromSuperview];
+        self.view.userInteractionEnabled = YES;
+        
+        BGShareViewController *shareVC =
+        [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup filePath:filePath];
+        [self.navigationController pushViewController:shareVC animated:YES];
     }];
 }
 
