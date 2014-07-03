@@ -18,12 +18,18 @@
 + (void)makeGIFWithImages:(NSArray *)images
                outputSize:(CGFloat)outputSize
             frameDuration:(CGFloat)frameDuration
+                     text:(NSString *)text
+                 textRect:(CGRect)textRect
+           textAttributes:(NSDictionary *)textAttributes
                completion:(void (^)(NSString *))completion {
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         NSString *filePath = [self doMakeGIFWithImages:images
                                             outputSize:outputSize
-                                         frameDuration:frameDuration];
+                                         frameDuration:frameDuration
+                                                  text:text
+                                              textRect:textRect
+                                        textAttributes:textAttributes];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             completion(filePath);
@@ -33,7 +39,10 @@
 
 + (NSString *)doMakeGIFWithImages:(NSArray *)images
                        outputSize:(CGFloat)outputSize
-                    frameDuration:(CGFloat)frameDuration {
+                    frameDuration:(CGFloat)frameDuration
+                             text:(NSString *)text
+                         textRect:(CGRect)textRect
+                   textAttributes:(NSDictionary *)textAttributes {
 
     NSDictionary *fileProperties = @{
         (__bridge id)kCGImagePropertyGIFDictionary: @{
@@ -62,7 +71,16 @@
     for (UIImage *image in images) {
         @autoreleasepool {
             UIImage *resizedImage = [image squareThumbnailImageOfSize:outputSize];
-            CGImageDestinationAddImage(destination, resizedImage.CGImage, (__bridge CFDictionaryRef)frameProperties);
+
+            // draw text
+            CGSize contextSize = CGSizeMake(outputSize, outputSize);
+            UIGraphicsBeginImageContextWithOptions(contextSize, NO, 0);
+            [resizedImage drawAtPoint:CGPointZero];
+            [text drawInRect:textRect withAttributes:textAttributes];
+            UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            
+            CGImageDestinationAddImage(destination, finalImage.CGImage, (__bridge CFDictionaryRef)frameProperties);
         }
     }
     

@@ -76,8 +76,10 @@
         case LoopModeReverse: {
             [images addObjectsFromArray:self.allImagesInRange];
             NSArray *imagesReversed = [self.allImagesInRange reverseObjectEnumerator].allObjects;
-            for (NSInteger i = 1; i < imagesReversed.count - 1; i++) {
-                [images addObject:imagesReversed[i]];
+            if (imagesReversed.count > 2) {
+                for (NSInteger i = 1; i < imagesReversed.count - 1; i++) {
+                    [images addObject:imagesReversed[i]];
+                }
             }
         } break;
     }

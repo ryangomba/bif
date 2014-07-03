@@ -14,6 +14,9 @@
 + (void)makeGIFWithImages:(NSArray *)images
                outputSize:(CGFloat)outputSize
             frameDuration:(CGFloat)frameDuration
+                     text:(NSString *)text
+                 textRect:(CGRect)textRect
+           textAttributes:(NSDictionary *)textAttributes
                completion:(void(^)(NSString *filePath))completion;
 
 @end
