@@ -11,19 +11,22 @@
 #import "BGProgressHUD.h"
 #import "BGFileUploader.h"
 
+// TODO move
+#import <MessageUI/MessageUI.h>
+
 typedef NS_ENUM(NSInteger, ShareService) {
     ShareServiceCopyLink,
     ShareServiceMessage,
+    ShareServiceCount,
     ShareServiceTwitter,
     ShareServiceFacebook,
     ShareServiceVine,
     ShareServiceTumblr,
-    ShareServiceCount,
 };
 
 static NSString * kCellReuseID = @"cell";
 
-@interface BGShareViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface BGShareViewController ()<UITableViewDataSource, UITableViewDelegate, MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
 @property (nonatomic, copy) NSString *filePath;
@@ -129,11 +132,11 @@ static NSString * kCellReuseID = @"cell";
     
     switch (indexPath.row) {
         case ShareServiceCopyLink: {
-            [self uploadGIF];
+            [self uploadGIFAtPath:self.filePath];
         } break;
             
         case ShareServiceMessage: {
-            // TODO
+            [self messageGIFAtPath:self.filePath];
         } break;
             
         case ShareServiceTwitter: {
@@ -161,14 +164,14 @@ static NSString * kCellReuseID = @"cell";
 #pragma mark -
 #pragma mark Private
 
-- (void)uploadGIF {
+- (void)uploadGIFAtPath:(NSString *)filePath {
     self.progressHUD = [[BGProgressHUD alloc] init];
     self.progressHUD.center = self.view.center;
     self.progressHUD.text = @"Uploading GIF";
     [self.view addSubview:self.progressHUD];
     self.view.userInteractionEnabled = NO;
     
-    [BGFileUploader uploadFileAtPath:self.filePath completion:^(NSURL *url, NSError *error) {
+    [BGFileUploader uploadFileAtPath:filePath completion:^(NSURL *url, NSError *error) {
         [self.progressHUD removeFromSuperview];
         self.view.userInteractionEnabled = YES;
         
@@ -192,6 +195,50 @@ static NSString * kCellReuseID = @"cell";
                               otherButtonTitles:nil] show];
         }
     }];
+}
+
+- (void)messageGIFAtPath:(NSString *)filePath {
+    if ([MFMessageComposeViewController canSendAttachments] && [MFMessageComposeViewController isSupportedAttachmentUTI:@"image/gif"]) {
+        MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+        controller.messageComposeDelegate = self;
+        NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:filePath];
+        BOOL addedGIF = [controller addAttachmentURL:fileURL withAlternateFilename:nil];
+        if (addedGIF) {
+            [self presentViewController:controller animated:YES completion:nil];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"Error"
+                                        message:@"Couldn't attach GIF"
+                                       delegate:nil
+                              cancelButtonTitle:@"Dismiss"
+                              otherButtonTitles:nil] show];
+        }
+        
+    } else {
+        // TODO handle error? don't show in list? use link?
+        [[[UIAlertView alloc] initWithTitle:@"Error"
+                                    message:@"Message attachments not supported"
+                                   delegate:nil
+                          cancelButtonTitle:@"Dismiss"
+                          otherButtonTitles:nil] show];
+    }
+}
+
+
+#pragma mark -
+#pragma mark MFMailComposeViewControllerDelegate
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
+                 didFinishWithResult:(MessageComposeResult)result {
+
+    [controller dismissViewControllerAnimated:YES completion:nil];
+    
+    if (result == MessageComposeResultFailed) {
+        [[[UIAlertView alloc] initWithTitle:@"Error"
+                                    message:@"Couldn't send message"
+                                   delegate:nil
+                          cancelButtonTitle:@"Dismiss"
+                          otherButtonTitles:nil] show];
+    }
 }
 
 @end
