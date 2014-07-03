@@ -60,6 +60,10 @@ static NSString * kCellReuseID = @"cell";
     
     self.tableView.frame = self.view.bounds;
     [self.view addSubview:self.tableView];
+    
+    // warm it up
+    MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+    NSLog(@"Warmed %@", controller.class);
 }
 
 
@@ -230,6 +234,8 @@ static NSString * kCellReuseID = @"cell";
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller
                  didFinishWithResult:(MessageComposeResult)result {
 
+    // TODO do something with controller.recipients for easy re-sending?
+    
     [controller dismissViewControllerAnimated:YES completion:nil];
     
     if (result == MessageComposeResultFailed) {
