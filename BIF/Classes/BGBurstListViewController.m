@@ -11,6 +11,7 @@
 #import "BGBurstGroupFetcher.h"
 #import "BGBurstGroupCell.h"
 #import "BGBurstPreviewViewController.h"
+#import "BIFHelpers.h"
 
 static NSString * const kCellReuseID = @"cell";
 
@@ -29,7 +30,7 @@ static NSString * const kCellReuseID = @"cell";
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        self.navigationItem.title = @"Bursts";
+        self.navigationItem.title = @"Choose a Video";
     }
     return self;
 }
@@ -101,7 +102,7 @@ static NSString * const kCellReuseID = @"cell";
                         layout:(UICollectionViewLayout *)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
+    return UIEdgeInsetsMake(kBGDefaultPadding, kBGDefaultPadding, kBGDefaultPadding, kBGDefaultPadding);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
@@ -115,14 +116,15 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                    layout:(UICollectionViewLayout *)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
-    return 20.0;
+    return kBGDefaultPadding;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout *)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    return CGSizeMake(280.0, 60.0);
+    CGFloat elementWidth = collectionView.bounds.size.width - 2 * kBGDefaultPadding;
+    return CGSizeMake(elementWidth, 60.0);
 }
 
 

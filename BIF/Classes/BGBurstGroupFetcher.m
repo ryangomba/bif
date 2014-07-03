@@ -53,7 +53,7 @@
         }];
         
         NSArray *burstGroups = [burstGroupsMap.allValues sortedArrayUsingComparator:^NSComparisonResult(BGBurstGroup *group1, BGBurstGroup *group2) {
-            return [group1.creationDate compare:group2.creationDate];
+            return [group2.creationDate compare:group1.creationDate];
         }];
         dispatch_async(dispatch_get_main_queue(), ^{
             completion(burstGroups);

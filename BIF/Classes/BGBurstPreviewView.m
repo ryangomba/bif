@@ -65,6 +65,26 @@
     return [self.assetImages subarrayWithRange:self.range];
 }
 
+- (NSArray *)allImagesInRangeWithLoopModeApplied {
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    
+    switch (self.loopMode) {
+        case LoopModeLoop: {
+            [images addObjectsFromArray:self.allImagesInRange];
+        } break;
+            
+        case LoopModeReverse: {
+            [images addObjectsFromArray:self.allImagesInRange];
+            NSArray *imagesReversed = [self.allImagesInRange reverseObjectEnumerator].allObjects;
+            for (NSInteger i = 1; i < imagesReversed.count - 1; i++) {
+                [images addObject:imagesReversed[i]];
+            }
+        } break;
+    }
+    
+    return images;
+}
+
 - (void)cancelImageFetchRequests {
     for (NSNumber *requestIDValue in self.ongoingImageRequestIDs) {
         PHImageRequestID requestID = [requestIDValue unsignedIntegerValue];
@@ -116,6 +136,12 @@
     [self updateImages];
 }
 
+- (void)setLoopMode:(LoopMode)loopMode {
+    _loopMode = loopMode;
+    
+    [self updateImages];
+}
+
 - (void)setRange:(NSRange)range {
     _range = range;
     
@@ -138,8 +164,11 @@
 - (void)updateImages {
     if (self.isLoaded) {
         self.staticImageView.image = self.assetImages[self.staticIndex];
-        self.animatedImageView.animationImages = self.allImagesInRange;
-        self.animatedImageView.animationDuration = self.allImagesInRange.count * (1.0 / self.framesPerSecond);
+        
+        NSArray *animationImages = [self allImagesInRangeWithLoopModeApplied];
+        self.animatedImageView.animationImages = animationImages;
+        
+        self.animatedImageView.animationDuration = animationImages.count * (1.0 / self.framesPerSecond);
         if (self.animated) {
             [self startAnimating];
         }

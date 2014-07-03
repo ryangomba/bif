@@ -24,6 +24,8 @@
 		94A107C61957D61E009E7A5F /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B31957D61E009E7A5F /* UIImage+Resize.m */; };
 		94A107C71957D61E009E7A5F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94A107B51957D61E009E7A5F /* Images.xcassets */; };
 		94A107C91957D61E009E7A5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B71957D61E009E7A5F /* main.m */; };
+		94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB421964A8C100FBCA07 /* BGNavigationController.m */; };
+		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,11 @@
 		94A107B51957D61E009E7A5F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		94A107B71957D61E009E7A5F /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		94A107CE1957D66F009E7A5F /* BIF-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BIF-Info.plist"; sourceTree = "<group>"; };
+		94F2DB401964A74400FBCA07 /* BIFHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIFHelpers.h; sourceTree = "<group>"; };
+		94F2DB411964A8C100FBCA07 /* BGNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGNavigationController.h; sourceTree = "<group>"; };
+		94F2DB421964A8C100FBCA07 /* BGNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGNavigationController.m; sourceTree = "<group>"; };
+		94F2DB441964CA0000FBCA07 /* BGTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGTextView.h; sourceTree = "<group>"; };
+		94F2DB451964CA0000FBCA07 /* BGTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGTextView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +101,8 @@
 		94A107951957D61E009E7A5F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				94F2DB411964A8C100FBCA07 /* BGNavigationController.h */,
+				94F2DB421964A8C100FBCA07 /* BGNavigationController.m */,
 				94A107961957D61E009E7A5F /* BGAppDelegate.h */,
 				94A107971957D61E009E7A5F /* BGAppDelegate.m */,
 				94A107981957D61E009E7A5F /* BGBurstGroup.h */,
@@ -124,6 +133,8 @@
 				94A107B11957D61E009E7A5F /* BGProgressHUD.m */,
 				94A107B21957D61E009E7A5F /* UIImage+Resize.h */,
 				94A107B31957D61E009E7A5F /* UIImage+Resize.m */,
+				94F2DB441964CA0000FBCA07 /* BGTextView.h */,
+				94F2DB451964CA0000FBCA07 /* BGTextView.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -131,6 +142,7 @@
 		94A107B41957D61E009E7A5F /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				94F2DB401964A74400FBCA07 /* BIFHelpers.h */,
 				94A107B51957D61E009E7A5F /* Images.xcassets */,
 				94A107CE1957D66F009E7A5F /* BIF-Info.plist */,
 				94A107B71957D61E009E7A5F /* main.m */,
@@ -210,8 +222,10 @@
 				94A107BD1957D61E009E7A5F /* BGBurstGroupView.m in Sources */,
 				94A107B91957D61E009E7A5F /* BGBurstGroup.m in Sources */,
 				94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */,
+				94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */,
 				94A107BF1957D61E009E7A5F /* BGBurstListViewController.m in Sources */,
 				94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */,
+				94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */,
 				94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */,
 				94A107C61957D61E009E7A5F /* UIImage+Resize.m in Sources */,
 				94A107BB1957D61E009E7A5F /* BGBurstGroupFetcher.m in Sources */,

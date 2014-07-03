@@ -15,15 +15,29 @@
 #import "BGProgressHUD.h"
 #import "BGBurstInfo.h"
 #import "BGDatabase.h"
+#import "BIFHelpers.h"
+#import "BGTextView.h"
 
-@interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate>
+@interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate>
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
 
+@property (nonatomic, strong) UIScrollView *containerView;
+
 @property (nonatomic, strong) BGBurstPreviewView *previewView;
+
+@property (nonatomic, strong) BGTextView *textView;
+@property (nonatomic, strong) UIButton *dismissKeyboardButton;
+@property (nonatomic, strong) UIPanGestureRecognizer *textPanRecognizer;
+
 @property (nonatomic, strong) UISlider *speedSlider;
 @property (nonatomic, strong) BGBurstGroupRangePicker *rangePicker;
+@property (nonatomic, strong) UISegmentedControl *loopModeControl;
+@property (nonatomic, strong) UIButton *textButton;
+
 @property (nonatomic, strong) BGProgressHUD *progressHUD;
+
+@property (nonatomic, assign) BOOL showingText;
 
 @end
 
@@ -37,8 +51,8 @@
         self.speedSlider.value = [self sliderValueForFramesPerSecond:self.burstGroup.burstInfo.framesPerSecond];
         self.previewView.framesPerSecond = self.burstGroup.burstInfo.framesPerSecond;
         
-        self.navigationItem.title = @"Burst";
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(onDoneButtonTapped)];
+        self.navigationItem.title = @"Edit";
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStylePlain target:self action:@selector(onDoneButtonTapped)];
     }
     return self;
 }
@@ -48,18 +62,49 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
 
-    self.previewView.frame = CGRectMake(20.0, 80.0, 280.0, 280.0);
+    self.containerView.frame = self.view.bounds;
+    [self.view addSubview:self.containerView];
+    
+    CGFloat elementX = kBGDefaultPadding;
+    CGFloat elementWidth = self.view.bounds.size.width - 2 * kBGDefaultPadding;
+    
+    CGFloat previewSize = self.view.bounds.size.width;
+    self.previewView.frame = CGRectMake(0.0, 0.0, previewSize, previewSize);
     self.previewView.assets = self.burstGroup.photos;
-    [self.view addSubview:self.previewView];
+    [self.containerView addSubview:self.previewView];
     
-    self.speedSlider.frame = CGRectMake(20.0, 370.0, 280.0, 20.0);
-    [self.view addSubview:self.speedSlider];
+    self.textView.frame = self.previewView.frame;
+    [self.containerView addSubview:self.textView];
     
-    self.rangePicker.frame = CGRectMake(20.0, 400.0, 280.0, 60.0);
+    self.dismissKeyboardButton.frame = UIEdgeInsetsInsetRect(self.previewView.frame, UIEdgeInsetsMake(267.0, 267.0, 0.0, 0.0));
+    [self.containerView addSubview:self.dismissKeyboardButton];
+    self.dismissKeyboardButton.hidden = YES;
+
+    CGFloat rangePickerY = CGRectGetMaxY(self.previewView.frame) + kBGDefaultPadding;
+    self.rangePicker.frame = CGRectMake(elementX, rangePickerY, elementWidth, 60.0);
     self.rangePicker.burstGroup = self.burstGroup;
-    [self.view addSubview:self.rangePicker];
+    [self.containerView addSubview:self.rangePicker];
+
+    CGFloat speedSliderY = CGRectGetMaxY(self.rangePicker.frame) + kBGDefaultPadding;
+    self.speedSlider.frame = CGRectMake(elementX, speedSliderY, elementWidth, 20.0);
+    [self.containerView addSubview:self.speedSlider];
+    
+    CGFloat loopModeControlY = CGRectGetMaxY(self.speedSlider.frame) + kBGDefaultPadding;
+    self.loopModeControl.frame = CGRectMake(elementX, loopModeControlY, 200.0, 44.0);
+    [self.containerView addSubview:self.loopModeControl];
+    
+    CGFloat textButtonX = CGRectGetMaxX(self.loopModeControl.frame) + kBGDefaultPadding;
+    CGFloat textButtonWidth = elementWidth - self.loopModeControl.bounds.size.width - kBGDefaultPadding;
+    self.textButton.frame = CGRectMake(textButtonX, loopModeControlY, textButtonWidth, 44.0);
+    [self.containerView addSubview:self.textButton];
     
     [self updatePhotoRange];
+    
+    self.textView.internalTextView.text = self.burstGroup.burstInfo.text;
+    self.showingText = self.burstGroup.burstInfo.text.length > 0;
+    [self updateTextPositionWithDesiredPosition:self.burstGroup.burstInfo.textPosition ?: 0.5];
+    [self updateTextVisibility];
+    
     self.previewView.animated = YES;
 }
 
@@ -69,12 +114,65 @@
     [BGDatabase saveBurstInfo:self.burstGroup.burstInfo];
 }
 
+- (UIScrollView *)containerView {
+    if (!_containerView) {
+        _containerView = [[UIScrollView alloc] initWithFrame:CGRectZero];
+    }
+    return _containerView;
+}
+
 - (BGBurstPreviewView *)previewView {
     if (!_previewView) {
         _previewView = [[BGBurstPreviewView alloc] initWithFrame:CGRectZero];
         _previewView.backgroundColor = [UIColor whiteColor];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] init];
+        [tap addTarget:self action:@selector(onPreviewViewTapped)];
+        [_previewView addGestureRecognizer:tap];
     }
     return _previewView;
+}
+
+- (BGTextView *)textView {
+    if (!_textView) {
+        _textView = [[BGTextView alloc] initWithFrame:CGRectZero];
+        _textView.internalTextView.textColor = [UIColor whiteColor];
+        
+        _textView.internalTextView.font = [UIFont boldSystemFontOfSize:48.0];
+        _textView.internalTextView.textAlignment = NSTextAlignmentCenter;
+        _textView.internalTextView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+        
+        _textView.internalTextView.layer.shadowColor = [UIColor blackColor].CGColor;
+        _textView.internalTextView.layer.shadowOffset = CGSizeZero;
+        _textView.internalTextView.layer.shadowOpacity = 1.0;
+        _textView.internalTextView.layer.shadowRadius = 1.0;
+        
+        [_textView addGestureRecognizer:self.textPanRecognizer];
+        
+        _textView.internalTextView.delegate = self;
+        _textView.delegate = self;
+    }
+    return _textView;
+}
+
+- (UIPanGestureRecognizer *)textPanRecognizer {
+    if (!_textPanRecognizer) {
+        _textPanRecognizer = [[UIPanGestureRecognizer alloc] init];
+        [_textPanRecognizer addTarget:self action:@selector(onTextPan:)];
+    }
+    return _textPanRecognizer;
+}
+
+- (UIButton *)dismissKeyboardButton {
+    if (!_dismissKeyboardButton) {
+        _dismissKeyboardButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        _dismissKeyboardButton.backgroundColor = [UIColor grayColor];
+        [_dismissKeyboardButton setTitle:@"Dismiss" forState:UIControlStateNormal];
+        [_dismissKeyboardButton addTarget:self
+                                   action:@selector(onDismissKeyboardButtonTapped)
+                         forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _dismissKeyboardButton;
 }
 
 - (UISlider *)speedSlider {
@@ -86,6 +184,30 @@
     }
     return _speedSlider;
 }
+
+- (UISegmentedControl *)loopModeControl {
+    if (!_loopModeControl) {
+        _loopModeControl = [[UISegmentedControl alloc] initWithItems:@[@"Loop", @"Reverse"]];
+        _loopModeControl.selectedSegmentIndex = 0;
+        [_loopModeControl addTarget:self
+                             action:@selector(onLoopModeChanged)
+                   forControlEvents:UIControlEventValueChanged];
+    }
+    return _loopModeControl;
+}
+
+- (UIButton *)textButton {
+    if (!_textButton) {
+        _textButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        _textButton.backgroundColor = [UIColor grayColor];
+        [_textButton setTitle:@"T" forState:UIControlStateNormal];
+        [_textButton addTarget:self
+                        action:@selector(onTextButtonTapped)
+              forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _textButton;
+}
+
 
 #define kMinimumFPS 4.0
 #define kMaximumFPS 20.0
@@ -112,6 +234,72 @@
     self.previewView.framesPerSecond = framesPerSecond;
 }
 
+- (void)onLoopModeChanged {
+    LoopMode loopMode = self.loopModeControl.selectedSegmentIndex;
+    self.burstGroup.burstInfo.loopMode = loopMode;
+    self.previewView.loopMode = loopMode;
+}
+
+- (void)onPreviewViewTapped {
+    self.showingText = YES;
+    [self updateTextVisibility];
+    [self.textView becomeFirstResponder];
+}
+
+- (void)onTextButtonTapped {
+    self.showingText = !self.showingText;
+    
+    [self updateTextVisibility];
+    
+    if (self.showingText && !self.textView.internalTextView.hasText) {
+        [self.textView becomeFirstResponder];
+    }
+}
+
+- (void)updateTextVisibility {
+    self.textView.hidden = !self.showingText;
+}
+
+- (void)onTextPan:(UIPanGestureRecognizer *)recognizer {
+    static CGFloat relativeY;
+    
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan: {
+            CGFloat locationInTextView = [recognizer locationInView:self.textView].y;
+            relativeY = locationInTextView - self.textView.bounds.size.height / 2.0;
+        } break;
+            
+        case UIGestureRecognizerStateChanged: {
+            CGFloat absoluteY = [recognizer locationInView:self.previewView].y;
+            CGFloat adjustedY = absoluteY - relativeY;
+            CGFloat normalizedY = adjustedY / self.previewView.bounds.size.height;
+            [self updateTextPositionWithDesiredPosition:normalizedY];
+        } break;
+            
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateEnded: {
+            //
+        } break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)updateTextPositionWithDesiredPosition:(CGFloat)textPosition {
+    textPosition = MAX(MIN(textPosition, self.textView.maxPosition), self.textView.minPosition);
+    
+    CGPoint center = self.textView.center;
+    center.y = self.previewView.bounds.size.height * textPosition;
+    self.textView.center = center;
+    
+    self.burstGroup.burstInfo.textPosition = textPosition;
+}
+
+- (void)onDismissKeyboardButtonTapped {
+    [self.textView resignFirstResponder];
+}
+
 - (void)onDoneButtonTapped {
     self.progressHUD = [[BGProgressHUD alloc] init];
     self.progressHUD.center = self.view.center;
@@ -119,7 +307,7 @@
     [self.view addSubview:self.progressHUD];
     self.view.userInteractionEnabled = NO;
     
-    [BGGIFMaker makeGIFWithImages:self.previewView.allImagesInRange
+    [BGGIFMaker makeGIFWithImages:self.previewView.allImagesInRangeWithLoopModeApplied
                        outputSize:320.0
                     frameDuration:(1.0 / self.burstGroup.burstInfo.framesPerSecond)
                        completion:^(NSString *filePath)
@@ -148,6 +336,35 @@
             }
         }];
     }];
+}
+
+
+#pragma mark -
+#pragma mark BGTextViewDelegate
+
+- (void)textViewDidChangeSize:(BGTextView *)textView {
+    [self updateTextPositionWithDesiredPosition:self.burstGroup.burstInfo.textPosition];
+}
+
+
+#pragma mark -
+#pragma mark UITextViewDelegate
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    self.dismissKeyboardButton.hidden = NO;
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+    self.burstGroup.burstInfo.text = textView.text;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    self.dismissKeyboardButton.hidden = YES;
+    
+    if (!textView.hasText) {
+        self.showingText = NO;
+        [self updateTextVisibility];
+    }
 }
 
 

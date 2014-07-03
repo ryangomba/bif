@@ -10,6 +10,5 @@
 
 @interface BGBurstListViewController : UIViewController
 
-
 @end
 
