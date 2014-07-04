@@ -28,6 +28,8 @@
 		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
 		94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */; };
 		94F2DB4B1965C19D00FBCA07 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */; };
+		94F2DB4D1966F9DF00FBCA07 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB4C1966F9DF00FBCA07 /* Accounts.framework */; };
+		94F2DB511966FAED00FBCA07 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB501966FAED00FBCA07 /* Social.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -73,6 +75,8 @@
 		94F2DB471965BB8B00FBCA07 /* BGShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGShareViewController.h; sourceTree = "<group>"; };
 		94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGShareViewController.m; sourceTree = "<group>"; };
 		94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		94F2DB4C1966F9DF00FBCA07 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		94F2DB501966FAED00FBCA07 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +84,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94F2DB511966FAED00FBCA07 /* Social.framework in Frameworks */,
+				94F2DB4D1966F9DF00FBCA07 /* Accounts.framework in Frameworks */,
 				94F2DB4B1965C19D00FBCA07 /* MessageUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +96,8 @@
 		94A1076C1957D5F8009E7A5F = {
 			isa = PBXGroup;
 			children = (
+				94F2DB501966FAED00FBCA07 /* Social.framework */,
+				94F2DB4C1966F9DF00FBCA07 /* Accounts.framework */,
 				94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */,
 				94A107951957D61E009E7A5F /* Classes */,
 				94A107B41957D61E009E7A5F /* Support */,

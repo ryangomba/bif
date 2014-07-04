@@ -13,12 +13,14 @@
 
 // TODO move
 #import <MessageUI/MessageUI.h>
+#import <Accounts/Accounts.h>
+#import <Social/Social.h>
 
 typedef NS_ENUM(NSInteger, ShareService) {
     ShareServiceCopyLink,
     ShareServiceMessage,
-    ShareServiceCount,
     ShareServiceTwitter,
+    ShareServiceCount,
     ShareServiceFacebook,
     ShareServiceVine,
     ShareServiceTumblr,
@@ -26,7 +28,10 @@ typedef NS_ENUM(NSInteger, ShareService) {
 
 static NSString * kCellReuseID = @"cell";
 
-@interface BGShareViewController ()<UITableViewDataSource, UITableViewDelegate, MFMessageComposeViewControllerDelegate>
+@interface BGShareViewController ()<UITableViewDataSource, UITableViewDelegate, MFMessageComposeViewControllerDelegate, UIActionSheetDelegate> {
+    // TEMP
+    NSMutableArray *_shownAccounts;
+}
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
 @property (nonatomic, copy) NSString *filePath;
@@ -144,7 +149,7 @@ static NSString * kCellReuseID = @"cell";
         } break;
             
         case ShareServiceTwitter: {
-            // TODO
+            [self tweetGIFAtPath:self.filePath];
         } break;
             
         case ShareServiceFacebook: {
@@ -225,6 +230,104 @@ static NSString * kCellReuseID = @"cell";
                           cancelButtonTitle:@"Dismiss"
                           otherButtonTitles:nil] show];
     }
+}
+
+- (void)tweetGIFAtPath:(NSString *)filePath {
+    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+    ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    
+    if ([accountType accessGranted]) {
+        [self showListOfTwitterAccountsFromStore:accountStore];
+        
+    } else {
+        [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error) {
+            if (granted) {
+                [self showListOfTwitterAccountsFromStore:accountStore];
+                
+            } else {
+                [[[UIAlertView alloc] initWithTitle:@"Error"
+                                            message:@"Cannot link account without permission"
+                                           delegate:nil
+                                  cancelButtonTitle:@"Ok"
+                                  otherButtonTitles:nil] show];
+            }
+        }];
+    }
+}
+
+
+#pragma mark -
+#pragma mark Twitter
+
+- (void)showListOfTwitterAccountsFromStore:(ACAccountStore *)accountStore {
+    ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    NSArray *twitterAccounts = [accountStore accountsWithAccountType:accountType];
+    
+    UIActionSheet *actions = [[UIActionSheet alloc] initWithTitle:@"Choose Account to Use"
+                                                         delegate:self
+                                                cancelButtonTitle:@"Cancel"
+                                           destructiveButtonTitle:nil
+                                                otherButtonTitles:nil];
+    
+    NSMutableArray *shownAccounts = [NSMutableArray array];
+    
+    for (ACAccount *oneAccount in twitterAccounts) {
+        [actions addButtonWithTitle:oneAccount.username];
+        [shownAccounts addObject:oneAccount];
+    }
+    
+    _shownAccounts = [shownAccounts copy];
+    
+    [actions showInView:self.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    ACAccount *account = _shownAccounts[buttonIndex - 1];
+    
+    NSURL *URL = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/update_with_media.json"];
+    
+    NSDictionary *parameters = @{@"status": @"Testing 123"};
+    
+    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
+                                            requestMethod:SLRequestMethodPOST
+                                                      URL:URL
+                                               parameters:parameters];
+    
+    request.account = account;
+    
+    NSData *imageData = [[NSFileManager defaultManager] contentsAtPath:self.filePath];
+    [request addMultipartData:imageData withName:@"media[]" type:@"image/gif" filename:@"image.gif"];
+    
+    self.progressHUD = [[BGProgressHUD alloc] init];
+    self.progressHUD.center = self.view.center;
+    self.progressHUD.text = @"Tweeting GIF";
+    [self.view addSubview:self.progressHUD];
+    self.view.userInteractionEnabled = NO;
+    
+    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.progressHUD removeFromSuperview];
+            self.view.userInteractionEnabled = YES;
+        });
+        
+        if (responseData) {
+            NSError *parseError = nil;
+            id json = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&parseError];
+            if (!json) {
+                NSLog(@"Parse Error: %@", parseError);
+            } else {
+                NSLog(@"%@", json);
+            }
+            
+        } else {
+            NSLog(@"Request Error: %@", [error localizedDescription]);
+            [[[UIAlertView alloc] initWithTitle:@"Error"
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:@"Ok"
+                              otherButtonTitles:nil] show];
+        }
+    }];
 }
 
 
