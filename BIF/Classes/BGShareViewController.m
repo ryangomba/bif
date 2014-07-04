@@ -321,11 +321,13 @@ static NSString * kCellReuseID = @"cell";
             
         } else {
             NSLog(@"Request Error: %@", [error localizedDescription]);
-            [[[UIAlertView alloc] initWithTitle:@"Error"
-                                        message:error.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:@"Ok"
-                              otherButtonTitles:nil] show];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Error"
+                                            message:error.localizedDescription
+                                           delegate:nil
+                                  cancelButtonTitle:@"Ok"
+                                  otherButtonTitles:nil] show];
+            });
         }
     }];
 }
