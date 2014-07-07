@@ -11,8 +11,17 @@
 
 #import "BGBurstGroup.h"
 
+@class BGBurstGroupFetcher;
+@protocol BGBurstGroupFetcherDelegate <NSObject>
+
+- (void)burstGroupFetcher:(BGBurstGroupFetcher *)fetcher didFetchBurstGroups:(NSArray *)burstGroups;
+
+@end
+
 @interface BGBurstGroupFetcher : NSObject
 
-+ (void)fetchBurstGroupsWithCompletion:(void(^)(NSArray *burstGroups))completion;
+@property (nonatomic, weak) id<BGBurstGroupFetcherDelegate> delegate;
+
+- (void)fetchBurstGroups;
 
 @end

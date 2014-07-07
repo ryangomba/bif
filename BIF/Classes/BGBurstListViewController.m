@@ -15,7 +15,9 @@
 
 static NSString * const kCellReuseID = @"cell";
 
-@interface BGBurstListViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface BGBurstListViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BGBurstGroupFetcherDelegate>
+
+@property (nonatomic, strong) BGBurstGroupFetcher *burstFetcher;
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSArray *burstGroups;
@@ -47,18 +49,20 @@ static NSString * const kCellReuseID = @"cell";
     self.collectionView.frame = self.view.bounds;
     [self.view addSubview:self.collectionView];
 
-    [BGBurstGroupFetcher fetchBurstGroupsWithCompletion:^(NSArray *burstGroups) {
-        for (BGBurstGroup *burstGroup in burstGroups) {
-            NSLog(@"%@ %@ %lu", burstGroup.burstIdentifier, burstGroup.creationDate, (unsigned long)burstGroup.photos.count);
-        }
-        self.burstGroups = burstGroups;
-        [self.collectionView reloadData];
-    }];
+    [self.burstFetcher fetchBurstGroups];
 }
 
 
 #pragma mark -
 #pragma mark Properties
+
+- (BGBurstGroupFetcher *)burstFetcher {
+    if (!_burstFetcher) {
+        _burstFetcher = [[BGBurstGroupFetcher alloc] init];
+        _burstFetcher.delegate = self;
+    }
+    return _burstFetcher;
+}
 
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
@@ -72,6 +76,16 @@ static NSString * const kCellReuseID = @"cell";
         [_collectionView registerClass:[BGBurstGroupCell class] forCellWithReuseIdentifier:kCellReuseID];
     }
     return _collectionView;
+}
+
+
+#pragma mark -
+#pragma mark BGBurstGroupFetcherDelegate
+
+- (void)burstGroupFetcher:(BGBurstGroupFetcher *)fetcher didFetchBurstGroups:(NSArray *)burstGroups {
+    self.burstGroups = burstGroups;
+    
+    [self.collectionView reloadData];
 }
 
 
