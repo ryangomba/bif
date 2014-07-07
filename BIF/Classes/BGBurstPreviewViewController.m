@@ -312,6 +312,10 @@
     // HACK
     CGFloat outputSize = 320.0;
     CGRect textRect = [self.previewView convertRect:self.textView.internalTextView.frame fromView:self.textView];
+    textRect.origin.x /= self.previewView.frame.size.width;
+    textRect.origin.y /= self.previewView.frame.size.height;
+    textRect.size.width /= self.previewView.frame.size.width;
+    textRect.size.height /= self.previewView.frame.size.height;
     
     [BGGIFMaker makeGIFWithImages:self.previewView.allImagesInRangeWithLoopModeApplied
                        outputSize:outputSize

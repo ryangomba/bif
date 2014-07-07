@@ -44,6 +44,12 @@
                          textRect:(CGRect)textRect
                    textAttributes:(NSDictionary *)textAttributes {
 
+    // TEMP weak
+    textRect.origin.x *= outputSize;
+    textRect.origin.y *= outputSize;
+    textRect.size.width *= outputSize;
+    textRect.size.height *= outputSize;
+    
     NSDictionary *fileProperties = @{
         (__bridge id)kCGImagePropertyGIFDictionary: @{
             (__bridge id)kCGImagePropertyGIFLoopCount: @0,
@@ -79,6 +85,8 @@
             [text drawInRect:textRect withAttributes:textAttributes];
             UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
+            
+            finalImage = [finalImage squareThumbnailImageOfSize:320.0]; // HACK
             
             CGImageDestinationAddImage(destination, finalImage.CGImage, (__bridge CFDictionaryRef)frameProperties);
         }

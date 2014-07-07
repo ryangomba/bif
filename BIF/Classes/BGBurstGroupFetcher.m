@@ -10,6 +10,8 @@
 
 #import "BGDatabase.h"
 
+static NSInteger kMinPhotosPerBurst = 5;
+
 @implementation BGBurstGroupFetcher
 
 + (void)fetchBurstGroupsWithCompletion:(void(^)(NSArray *burstGroups))completion {
@@ -51,8 +53,9 @@
             [burstGroup.photos addObject:asset];
             burstGroup.creationDate = [asset.creationDate earlierDate:burstGroup.creationDate];
         }];
-        
-        NSArray *burstGroups = [burstGroupsMap.allValues sortedArrayUsingComparator:^NSComparisonResult(BGBurstGroup *group1, BGBurstGroup *group2) {
+        NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"photos.@count >= %d", kMinPhotosPerBurst];
+        NSArray *burstGroups = [burstGroupsMap.allValues filteredArrayUsingPredicate:filterPredicate];
+        burstGroups = [burstGroups sortedArrayUsingComparator:^NSComparisonResult(BGBurstGroup *group1, BGBurstGroup *group2) {
             return [group2.creationDate compare:group1.creationDate];
         }];
         dispatch_async(dispatch_get_main_queue(), ^{
