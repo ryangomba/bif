@@ -77,6 +77,7 @@
 		94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		94F2DB4C1966F9DF00FBCA07 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		94F2DB501966FAED00FBCA07 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		94F2DB5C196B46B600FBCA07 /* BIF-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BIF-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,11 +97,9 @@
 		94A1076C1957D5F8009E7A5F = {
 			isa = PBXGroup;
 			children = (
-				94F2DB501966FAED00FBCA07 /* Social.framework */,
-				94F2DB4C1966F9DF00FBCA07 /* Accounts.framework */,
-				94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */,
 				94A107951957D61E009E7A5F /* Classes */,
 				94A107B41957D61E009E7A5F /* Support */,
+				94F2DB52196B444A00FBCA07 /* Frameworks */,
 				94A107761957D5F8009E7A5F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -116,42 +115,13 @@
 		94A107951957D61E009E7A5F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				94F2DB411964A8C100FBCA07 /* BGNavigationController.h */,
-				94F2DB421964A8C100FBCA07 /* BGNavigationController.m */,
-				94A107961957D61E009E7A5F /* BGAppDelegate.h */,
-				94A107971957D61E009E7A5F /* BGAppDelegate.m */,
-				94A107981957D61E009E7A5F /* BGBurstGroup.h */,
-				94A107991957D61E009E7A5F /* BGBurstGroup.m */,
-				94A1079A1957D61E009E7A5F /* BGBurstGroupCell.h */,
-				94A1079B1957D61E009E7A5F /* BGBurstGroupCell.m */,
-				94A1079C1957D61E009E7A5F /* BGBurstGroupFetcher.h */,
-				94A1079D1957D61E009E7A5F /* BGBurstGroupFetcher.m */,
-				94A1079E1957D61E009E7A5F /* BGBurstGroupRangePicker.h */,
-				94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */,
-				94A107A01957D61E009E7A5F /* BGBurstGroupView.h */,
-				94A107A11957D61E009E7A5F /* BGBurstGroupView.m */,
-				94A107A21957D61E009E7A5F /* BGBurstInfo.h */,
-				94A107A31957D61E009E7A5F /* BGBurstInfo.m */,
-				94A107A41957D61E009E7A5F /* BGBurstListViewController.h */,
-				94A107A51957D61E009E7A5F /* BGBurstListViewController.m */,
-				94A107A61957D61E009E7A5F /* BGBurstPreviewView.h */,
-				94A107A71957D61E009E7A5F /* BGBurstPreviewView.m */,
-				94A107A81957D61E009E7A5F /* BGBurstPreviewViewController.h */,
-				94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */,
-				94A107AA1957D61E009E7A5F /* BGDatabase.h */,
-				94A107AB1957D61E009E7A5F /* BGDatabase.m */,
-				94A107AC1957D61E009E7A5F /* BGFileUploader.h */,
-				94A107AD1957D61E009E7A5F /* BGFileUploader.m */,
-				94A107AE1957D61E009E7A5F /* BGGIFMaker.h */,
-				94A107AF1957D61E009E7A5F /* BGGIFMaker.m */,
-				94A107B01957D61E009E7A5F /* BGProgressHUD.h */,
-				94A107B11957D61E009E7A5F /* BGProgressHUD.m */,
-				94A107B21957D61E009E7A5F /* UIImage+Resize.h */,
-				94A107B31957D61E009E7A5F /* UIImage+Resize.m */,
-				94F2DB441964CA0000FBCA07 /* BGTextView.h */,
-				94F2DB451964CA0000FBCA07 /* BGTextView.m */,
-				94F2DB471965BB8B00FBCA07 /* BGShareViewController.h */,
-				94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */,
+				94F2DB5A196B451E00FBCA07 /* Model */,
+				94F2DB55196B44A400FBCA07 /* Rendering */,
+				94F2DB58196B44DA00FBCA07 /* Common UI */,
+				94F2DB56196B44CC00FBCA07 /* Root */,
+				94F2DB53196B446200FBCA07 /* List */,
+				94F2DB59196B450F00FBCA07 /* Editing */,
+				94F2DB57196B44D600FBCA07 /* Sharing */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -160,11 +130,107 @@
 			isa = PBXGroup;
 			children = (
 				94F2DB401964A74400FBCA07 /* BIFHelpers.h */,
+				94F2DB5C196B46B600FBCA07 /* BIF-Prefix.pch */,
 				94A107B51957D61E009E7A5F /* Images.xcassets */,
 				94A107CE1957D66F009E7A5F /* BIF-Info.plist */,
 				94A107B71957D61E009E7A5F /* main.m */,
 			);
 			path = Support;
+			sourceTree = "<group>";
+		};
+		94F2DB52196B444A00FBCA07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				94F2DB501966FAED00FBCA07 /* Social.framework */,
+				94F2DB4C1966F9DF00FBCA07 /* Accounts.framework */,
+				94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		94F2DB53196B446200FBCA07 /* List */ = {
+			isa = PBXGroup;
+			children = (
+				94A107A41957D61E009E7A5F /* BGBurstListViewController.h */,
+				94A107A51957D61E009E7A5F /* BGBurstListViewController.m */,
+				94A1079A1957D61E009E7A5F /* BGBurstGroupCell.h */,
+				94A1079B1957D61E009E7A5F /* BGBurstGroupCell.m */,
+			);
+			name = List;
+			sourceTree = "<group>";
+		};
+		94F2DB55196B44A400FBCA07 /* Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				94A107AE1957D61E009E7A5F /* BGGIFMaker.h */,
+				94A107AF1957D61E009E7A5F /* BGGIFMaker.m */,
+				94A107B21957D61E009E7A5F /* UIImage+Resize.h */,
+				94A107B31957D61E009E7A5F /* UIImage+Resize.m */,
+			);
+			name = Rendering;
+			sourceTree = "<group>";
+		};
+		94F2DB56196B44CC00FBCA07 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				94A107961957D61E009E7A5F /* BGAppDelegate.h */,
+				94A107971957D61E009E7A5F /* BGAppDelegate.m */,
+				94F2DB411964A8C100FBCA07 /* BGNavigationController.h */,
+				94F2DB421964A8C100FBCA07 /* BGNavigationController.m */,
+			);
+			name = Root;
+			sourceTree = "<group>";
+		};
+		94F2DB57196B44D600FBCA07 /* Sharing */ = {
+			isa = PBXGroup;
+			children = (
+				94F2DB471965BB8B00FBCA07 /* BGShareViewController.h */,
+				94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */,
+				94A107AC1957D61E009E7A5F /* BGFileUploader.h */,
+				94A107AD1957D61E009E7A5F /* BGFileUploader.m */,
+			);
+			name = Sharing;
+			sourceTree = "<group>";
+		};
+		94F2DB58196B44DA00FBCA07 /* Common UI */ = {
+			isa = PBXGroup;
+			children = (
+				94A107A01957D61E009E7A5F /* BGBurstGroupView.h */,
+				94A107A11957D61E009E7A5F /* BGBurstGroupView.m */,
+				94A107A61957D61E009E7A5F /* BGBurstPreviewView.h */,
+				94A107A71957D61E009E7A5F /* BGBurstPreviewView.m */,
+				94A107B01957D61E009E7A5F /* BGProgressHUD.h */,
+				94A107B11957D61E009E7A5F /* BGProgressHUD.m */,
+				94F2DB441964CA0000FBCA07 /* BGTextView.h */,
+				94F2DB451964CA0000FBCA07 /* BGTextView.m */,
+			);
+			name = "Common UI";
+			sourceTree = "<group>";
+		};
+		94F2DB59196B450F00FBCA07 /* Editing */ = {
+			isa = PBXGroup;
+			children = (
+				94A107A81957D61E009E7A5F /* BGBurstPreviewViewController.h */,
+				94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */,
+				94A1079E1957D61E009E7A5F /* BGBurstGroupRangePicker.h */,
+				94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */,
+			);
+			name = Editing;
+			sourceTree = "<group>";
+		};
+		94F2DB5A196B451E00FBCA07 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				94A107981957D61E009E7A5F /* BGBurstGroup.h */,
+				94A107991957D61E009E7A5F /* BGBurstGroup.m */,
+				94A1079C1957D61E009E7A5F /* BGBurstGroupFetcher.h */,
+				94A1079D1957D61E009E7A5F /* BGBurstGroupFetcher.m */,
+				94A107A21957D61E009E7A5F /* BGBurstInfo.h */,
+				94A107A31957D61E009E7A5F /* BGBurstInfo.m */,
+				94A107AA1957D61E009E7A5F /* BGDatabase.h */,
+				94A107AB1957D61E009E7A5F /* BGDatabase.m */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -340,6 +406,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Support/BIF-Prefix.pch";
 				INFOPLIST_FILE = "Support/BIF-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -351,6 +419,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Support/BIF-Prefix.pch";
 				INFOPLIST_FILE = "Support/BIF-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

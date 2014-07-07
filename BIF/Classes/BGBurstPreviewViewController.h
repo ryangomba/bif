@@ -1,13 +1,4 @@
-//
-//  CHBurstGroupPreviewViewController.h
-//  Photos
-//
-//  Created by Ryan Gomba on 6/2/14.
-//  Copyright (c) 2014 Ryan Gomba. All rights reserved.
-//
-
-@import Foundation;
-@import UIKit;
+// Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 #import "BGBurstGroup.h"
 

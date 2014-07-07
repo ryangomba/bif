@@ -1,12 +1,4 @@
-//
-//  BGDatabase.h
-//  BurstGIF
-//
-//  Created by Ryan Gomba on 6/8/14.
-//  Copyright (c) 2014 Ryan Gomba. All rights reserved.
-//
-
-#import <Foundation/Foundation.h>
+// Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 #import "BGBurstInfo.h"
 

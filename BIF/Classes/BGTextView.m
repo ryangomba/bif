@@ -1,10 +1,4 @@
-//
-//  BGTextView.m
-//  BIF
-//
-//  Created by Ryan Gomba on 7/2/14.
-//  Copyright (c) 2014 Ryan Gomba. All rights reserved.
-//
+// Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 #import "BGTextView.h"
 

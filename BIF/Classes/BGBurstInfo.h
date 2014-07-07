@@ -1,13 +1,6 @@
-//
-//  BGBurstInfo.h
-//  BurstGIF
-//
-//  Created by Ryan Gomba on 6/8/14.
-//  Copyright (c) 2014 Ryan Gomba. All rights reserved.
-//
+// Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
-#import <Foundation/Foundation.h>
-#import <CoreGraphics/CoreGraphics.h>
+@import CoreGraphics;
 
 typedef NS_ENUM(NSInteger, LoopMode) {
     LoopModeLoop,

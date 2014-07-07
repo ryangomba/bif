@@ -1,10 +1,4 @@
-//
-//  BGShareViewController.m
-//  BIF
-//
-//  Created by Ryan Gomba on 7/3/14.
-//  Copyright (c) 2014 Ryan Gomba. All rights reserved.
-//
+// Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 #import "BGShareViewController.h"
 
@@ -12,9 +6,9 @@
 #import "BGFileUploader.h"
 
 // TODO move
-#import <MessageUI/MessageUI.h>
-#import <Accounts/Accounts.h>
-#import <Social/Social.h>
+@import MessageUI;
+@import Accounts;
+@import Social;
 
 typedef NS_ENUM(NSInteger, ShareService) {
     ShareServiceCopyLink,

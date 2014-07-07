@@ -1,16 +1,10 @@
-//
-//  CHGIFMaker.m
-//  Photos
-//
-//  Created by Ryan Gomba on 6/2/14.
-//  Copyright (c) 2014 Ryan Gomba. All rights reserved.
-//
+// Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 #import "BGGIFMaker.h"
 
-#import <UIKit/UIKit.h>
-#import <ImageIO/ImageIO.h>
-#import <MobileCoreServices/MobileCoreServices.h>
+@import ImageIO;
+@import MobileCoreServices;
+
 #import "UIImage+Resize.h"
 
 @implementation BGGIFMaker

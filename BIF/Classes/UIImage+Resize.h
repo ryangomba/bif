@@ -1,6 +1,4 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
-
-@import UIKit;
+// Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 @interface UIImage (Resize)
 
