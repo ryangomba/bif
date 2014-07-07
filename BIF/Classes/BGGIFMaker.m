@@ -76,17 +76,18 @@
     
     for (UIImage *image in images) {
         @autoreleasepool {
-            UIImage *resizedImage = [image squareThumbnailImageOfSize:outputSize];
-
-            // draw text
             CGSize contextSize = CGSizeMake(outputSize, outputSize);
-            UIGraphicsBeginImageContextWithOptions(contextSize, NO, 0);
+            UIGraphicsBeginImageContextWithOptions(contextSize, NO, 1.0);
+            
+            // draw image
+            UIImage *resizedImage = [image squareThumbnailImageOfSize:outputSize];
             [resizedImage drawAtPoint:CGPointZero];
+            
+            // draw text
             [text drawInRect:textRect withAttributes:textAttributes];
+            
             UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
-            
-            finalImage = [finalImage squareThumbnailImageOfSize:320.0]; // HACK
             
             CGImageDestinationAddImage(destination, finalImage.CGImage, (__bridge CFDictionaryRef)frameProperties);
         }
