@@ -25,6 +25,7 @@
 		94A107C71957D61E009E7A5F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94A107B51957D61E009E7A5F /* Images.xcassets */; };
 		94A107C91957D61E009E7A5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B71957D61E009E7A5F /* main.m */; };
 		94CA402219D1BE7F00F6C4A7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */; };
+		94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */; };
 		94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB421964A8C100FBCA07 /* BGNavigationController.m */; };
 		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
 		94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */; };
@@ -69,6 +70,8 @@
 		94A107B71957D61E009E7A5F /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		94A107CE1957D66F009E7A5F /* BIF-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BIF-Info.plist"; sourceTree = "<group>"; };
 		94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
+		94CA402319D1CC1C00F6C4A7 /* RGGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGGeometry.h; sourceTree = "<group>"; };
+		94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGGeometry.m; sourceTree = "<group>"; };
 		94F2DB401964A74400FBCA07 /* BIFHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIFHelpers.h; sourceTree = "<group>"; };
 		94F2DB411964A8C100FBCA07 /* BGNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGNavigationController.h; sourceTree = "<group>"; };
 		94F2DB421964A8C100FBCA07 /* BGNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGNavigationController.m; sourceTree = "<group>"; };
@@ -169,6 +172,8 @@
 				94A107AF1957D61E009E7A5F /* BGGIFMaker.m */,
 				94A107B21957D61E009E7A5F /* UIImage+Resize.h */,
 				94A107B31957D61E009E7A5F /* UIImage+Resize.m */,
+				94CA402319D1CC1C00F6C4A7 /* RGGeometry.h */,
+				94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */,
 			);
 			name = Rendering;
 			sourceTree = "<group>";
@@ -312,6 +317,7 @@
 				94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */,
 				94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */,
 				94A107BF1957D61E009E7A5F /* BGBurstListViewController.m in Sources */,
+				94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */,
 				94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */,
 				94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */,
 				94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */,

@@ -3,14 +3,19 @@
 #import "BGBurstPreviewView.h"
 
 #import "UIImage+Resize.h"
+#import "RGGeometry.h"
+
+#define kMaximumZoomScale 2.0
 
 @import Photos;
 
-@interface BGBurstPreviewView ()
+@interface BGBurstPreviewView ()<UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *assetImages;
 @property (nonatomic, strong) NSMutableArray *ongoingImageRequestIDs;
 
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIImageView *animatedImageView;
 @property (nonatomic, strong) UIImageView *staticImageView;
 
@@ -21,18 +26,29 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.animatedImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
+        self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        self.scrollView.showsHorizontalScrollIndicator = NO;
+        self.scrollView.showsVerticalScrollIndicator = NO;
+        self.scrollView.bounces = NO;
+        self.scrollView.bouncesZoom = NO;
+        self.scrollView.delegate = self;
+        [self addSubview:self.scrollView];
+        
+        self.contentView = [[UIView alloc] initWithFrame:CGRectZero];
+        self.contentView.clipsToBounds = YES;
+        [self.scrollView addSubview:self.contentView];
+        
+        self.animatedImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         self.animatedImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.animatedImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.animatedImageView.clipsToBounds = YES;
         self.animatedImageView.animationRepeatCount = 0;
-        [self addSubview:self.animatedImageView];
+        [self.contentView addSubview:self.animatedImageView];
         
-        self.staticImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.staticImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         self.staticImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.staticImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.staticImageView.clipsToBounds = YES;
-        [self addSubview:self.staticImageView];
+        [self.contentView addSubview:self.staticImageView];
         
         self.ongoingImageRequestIDs = [NSMutableArray array];
     }
@@ -48,6 +64,8 @@
     for (NSInteger i = 0; i < assets.count; i++) {
         [self.assetImages addObject:[NSNull null]];
     }
+    
+    [self prepareImageViews];
     
     [self fetchImages];
 }
@@ -88,8 +106,27 @@
     }
 }
 
+- (void)prepareImageViews {
+    NSAssert(self.assets.count > 0, @"No assets");
+    
+    PHAsset *firstAsset = self.assets.firstObject;
+    CGFloat burstAspectRatio = firstAsset.pixelWidth / (CGFloat)firstAsset.pixelHeight;
+    CGSize imageSize = RGSizeOuterSizeWithAspectRatio(self.bounds.size, burstAspectRatio);
+    
+    self.contentView.frame = CGRectMake(0.0, 0.0, imageSize.width, imageSize.height);
+    self.scrollView.contentSize = CGSizeMake(imageSize.width, imageSize.height);
+    
+    CGFloat imageViewX = (imageSize.width - self.bounds.size.width) / 2;
+    CGFloat imageViewY = (imageSize.height - self.bounds.size.height) / 2;
+    self.scrollView.contentOffset = CGPointMake(imageViewX, imageViewY);
+    
+    self.scrollView.maximumZoomScale = kMaximumZoomScale;
+}
+
 - (void)fetchImages {
-    CGSize imageSize = self.bounds.size;
+    NSAssert(self.assets.count > 0, @"No assets");
+    
+    CGSize imageSize = self.animatedImageView.frame.size;
     imageSize.width *= [UIScreen mainScreen].scale;
     imageSize.height *= [UIScreen mainScreen].scale;
     
@@ -185,6 +222,13 @@
 - (void)stopAnimating {
     self.staticImageView.hidden = NO;
     [self.animatedImageView stopAnimating];
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.contentView;
 }
 
 @end
