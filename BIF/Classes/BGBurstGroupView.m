@@ -40,7 +40,7 @@
 
 - (void)cancelImageFetchRequests {
     for (NSNumber *requestIDValue in self.ongoingImageRequestIDs) {
-        PHImageRequestID requestID = [requestIDValue unsignedIntegerValue];
+        PHImageRequestID requestID = [requestIDValue intValue];
         [[PHImageManager defaultManager] cancelImageRequest:requestID];
     }
 }

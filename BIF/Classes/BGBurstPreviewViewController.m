@@ -68,7 +68,13 @@
     self.textView.frame = self.previewView.frame;
     [self.view addSubview:self.textView];
     
-    self.dismissKeyboardButton.frame = UIEdgeInsetsInsetRect(self.previewView.frame, UIEdgeInsetsMake(267.0, 267.0, 0.0, 0.0));
+    CGFloat textButtonSize = 44.0;
+    CGFloat textButtonX = CGRectGetMaxX(self.previewView.frame) - kBGDefaultPadding - textButtonSize;
+    CGFloat textButtonY = CGRectGetMaxY(self.previewView.frame) - kBGDefaultPadding - textButtonSize;
+    self.textButton.frame = CGRectMake(textButtonX, textButtonY, textButtonSize, textButtonSize);
+    [self.view addSubview:self.textButton];
+    
+    self.dismissKeyboardButton.frame = self.textButton.frame;
     [self.view addSubview:self.dismissKeyboardButton];
     self.dismissKeyboardButton.hidden = YES;
 
@@ -77,18 +83,15 @@
     self.rangePicker.burstGroup = self.burstGroup;
     [self.view addSubview:self.rangePicker];
 
-    CGFloat speedSliderY = CGRectGetMaxY(self.rangePicker.frame) + kBGDefaultPadding;
-    self.speedSlider.frame = CGRectMake(elementX, speedSliderY, elementWidth, 20.0);
-    [self.view addSubview:self.speedSlider];
-    
-    CGFloat loopModeControlY = CGRectGetMaxY(self.speedSlider.frame) + kBGDefaultPadding;
-    self.loopModeControl.frame = CGRectMake(elementX, loopModeControlY, 200.0, 44.0);
+    CGFloat loopModeControlY = CGRectGetMaxY(self.rangePicker.frame) + kBGDefaultPadding;
+    self.loopModeControl.frame = CGRectMake(elementX, loopModeControlY, 100.0, 44.0);
     [self.view addSubview:self.loopModeControl];
     
-    CGFloat textButtonX = CGRectGetMaxX(self.loopModeControl.frame) + kBGDefaultPadding;
-    CGFloat textButtonWidth = elementWidth - self.loopModeControl.bounds.size.width - kBGDefaultPadding;
-    self.textButton.frame = CGRectMake(textButtonX, loopModeControlY, textButtonWidth, 44.0);
-    [self.view addSubview:self.textButton];
+    CGFloat speedSliderY = loopModeControlY;
+    CGFloat speedSliderX = CGRectGetMaxX(self.loopModeControl.frame) + kBGDefaultPadding;
+    CGFloat speedSliderWidth = elementWidth - self.loopModeControl.frame.size.width - kBGDefaultPadding;
+    self.speedSlider.frame = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, 44.0);
+    [self.view addSubview:self.speedSlider];
     
     [self updatePhotoRange];
     

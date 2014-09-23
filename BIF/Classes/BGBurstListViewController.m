@@ -26,7 +26,7 @@ static NSString * const kCellReuseID = @"cell";
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        self.navigationItem.title = @"Choose a Video";
+        self.navigationItem.title = @"Choose a Burst";
     }
     return self;
 }

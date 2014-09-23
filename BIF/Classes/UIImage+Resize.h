@@ -20,4 +20,8 @@
 // Returns an image with the original aspect ratio that is at least as large as the passed in bounds.
 - (UIImage *)resizedImageWithBounds:(CGSize)bounds;
 
++ (CGAffineTransform)transformForImageOfSize:(CGSize)imageSize
+                                 orientation:(UIImageOrientation)imageOrientation
+                                     newSize:(CGSize)newImageSize;
+
 @end

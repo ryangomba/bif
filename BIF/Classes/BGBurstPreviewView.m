@@ -83,7 +83,7 @@
 
 - (void)cancelImageFetchRequests {
     for (NSNumber *requestIDValue in self.ongoingImageRequestIDs) {
-        PHImageRequestID requestID = [requestIDValue unsignedIntegerValue];
+        PHImageRequestID requestID = [requestIDValue intValue];
         [[PHImageManager defaultManager] cancelImageRequest:requestID];
     }
 }
@@ -96,6 +96,9 @@
     for (PHAsset *asset in self.assets) {
         PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
         options.resizeMode = PHImageRequestOptionsResizeModeExact;
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
+        options.version = PHImageRequestOptionsVersionOriginal;
+        options.networkAccessAllowed = YES;
         
         PHImageRequestID requestID;
         requestID = [[PHImageManager defaultManager] requestImageForAsset:asset
@@ -104,16 +107,19 @@
                                                                   options:options
                                                             resultHandler:^(UIImage *result, NSDictionary *info)
                      {
+                         if (!result) {
+                             NSLog(@"WTF, no image, no info");
+                             return;
+                         }
                          dispatch_async(dispatch_get_main_queue(), ^{
                              [self.ongoingImageRequestIDs removeObject:@(requestID)];
                              
                              NSInteger index = [self.assets indexOfObject:asset];
                              self.assetImages[index] = result;
                              
-                             // HACK
-                             if (asset.pixelHeight > asset.pixelWidth) {
-                                 self.animatedImageView.transform = CGAffineTransformMakeRotation(M_PI_2);
-                             }
+                             UIImageOrientation orientation = [info[@"PHImageFileOrientationKey"] integerValue];
+                             CGAffineTransform transform = [UIImage transformForImageOfSize:result.size orientation:orientation newSize:imageSize];
+                             self.animatedImageView.transform = transform;
                              
                              [self updateImages];
                          });
