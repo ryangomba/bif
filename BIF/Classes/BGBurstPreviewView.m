@@ -224,6 +224,20 @@
     [self.animatedImageView stopAnimating];
 }
 
+
+#pragma mark -
+#pragma mark Cropping
+
+- (CGRect)cropRect {
+    CGSize imageSize = self.staticImageView.image.size;
+    
+    CGFloat cropX = self.scrollView.contentOffset.x;
+    CGFloat cropY = self.scrollView.contentOffset.y;
+    CGFloat cropSize = MIN(imageSize.width, imageSize.height) / self.scrollView.zoomScale;
+    return CGRectMake(cropX, cropY, cropSize, cropSize);
+}
+
+
 #pragma mark -
 #pragma mark UIScrollViewDelegate
 

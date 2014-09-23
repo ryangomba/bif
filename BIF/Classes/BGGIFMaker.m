@@ -10,6 +10,7 @@
 @implementation BGGIFMaker
 
 + (void)makeGIFWithImages:(NSArray *)images
+                 cropRect:(CGRect)cropRect
                outputSize:(CGFloat)outputSize
             frameDuration:(CGFloat)frameDuration
                      text:(NSString *)text
@@ -19,6 +20,7 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         NSString *filePath = [self doMakeGIFWithImages:images
+                                              cropRect:cropRect
                                             outputSize:outputSize
                                          frameDuration:frameDuration
                                                   text:text
@@ -32,6 +34,7 @@
 }
 
 + (NSString *)doMakeGIFWithImages:(NSArray *)images
+                         cropRect:(CGRect)cropRect
                        outputSize:(CGFloat)outputSize
                     frameDuration:(CGFloat)frameDuration
                              text:(NSString *)text
@@ -72,9 +75,10 @@
         @autoreleasepool {
             CGSize contextSize = CGSizeMake(outputSize, outputSize);
             UIGraphicsBeginImageContextWithOptions(contextSize, NO, 1.0);
-            
+
             // draw image
-            UIImage *resizedImage = [image squareThumbnailImageOfSize:outputSize];
+            UIImage *croppedImage = [image croppedImage:cropRect];
+            UIImage *resizedImage = [croppedImage squareThumbnailImageOfSize:outputSize];
             [resizedImage drawAtPoint:CGPointZero];
             
             // draw text

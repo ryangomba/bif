@@ -315,6 +315,7 @@
     textRect.size.height /= self.previewView.frame.size.height;
     
     [BGGIFMaker makeGIFWithImages:self.previewView.allImagesInRangeWithLoopModeApplied
+                         cropRect:self.previewView.cropRect
                        outputSize:outputSize
                     frameDuration:(1.0 / self.burstGroup.burstInfo.framesPerSecond)
                              text:self.burstGroup.burstInfo.text

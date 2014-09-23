@@ -12,6 +12,8 @@
 @property (nonatomic, assign) NSUInteger staticIndex;
 @property (nonatomic, assign) BOOL animated;
 
+@property (nonatomic, assign, readonly) CGRect cropRect;
+
 - (NSArray *)allImagesInRangeWithLoopModeApplied;
 
 @end
