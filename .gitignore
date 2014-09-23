@@ -1,0 +1,5 @@
+*.xcuserstate
+*.xcodeproj/xcuserdata
+*.xcworkspace/xcuserdata
+*.lock
+*Pods/

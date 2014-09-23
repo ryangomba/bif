@@ -188,7 +188,7 @@ static NSString * kCellReuseID = @"cell";
                               cancelButtonTitle:@"Sweet"
                               otherButtonTitles:nil] show];
             
-            [[UIApplication sharedApplication] openURL:url];
+//            [[UIApplication sharedApplication] openURL:url];
             
         } else {
             [[[UIAlertView alloc] initWithTitle:@"Error"

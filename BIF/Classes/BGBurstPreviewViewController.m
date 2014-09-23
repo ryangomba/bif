@@ -47,7 +47,7 @@
         self.previewView.loopMode = self.burstGroup.burstInfo.loopMode;
         
         self.navigationItem.title = @"Edit";
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStylePlain target:self action:@selector(onDoneButtonTapped)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStylePlain target:self action:@selector(onShareButtonTapped)];
     }
     return self;
 }
@@ -299,7 +299,7 @@
     };
 }
 
-- (void)onDoneButtonTapped {
+- (void)onShareButtonTapped {
     self.progressHUD = [[BGProgressHUD alloc] init];
     self.progressHUD.center = self.view.center;
     self.progressHUD.text = @"Generating GIF";
@@ -317,7 +317,7 @@
     [BGGIFMaker makeGIFWithImages:self.previewView.allImagesInRangeWithLoopModeApplied
                        outputSize:outputSize
                     frameDuration:(1.0 / self.burstGroup.burstInfo.framesPerSecond)
-     text:self.burstGroup.burstInfo.text
+                             text:self.burstGroup.burstInfo.text
                          textRect:textRect
                    textAttributes:self.textAttributes
                        completion:^(NSString *filePath)
