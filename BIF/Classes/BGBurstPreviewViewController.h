@@ -11,8 +11,13 @@
 
 @interface BGBurstPreviewViewController : UIViewController
 
+@property (nonatomic, strong, readonly) UIView *mediaView;
+@property (nonatomic, assign, readonly) CGRect normalFrameForMediaView;
+
 @property (nonatomic, weak) id<BGBurstPreviewViewControllerDelegate> delegate;
 
 - (instancetype)initWithBurstGroup:(BGBurstGroup *)burstGroup NS_DESIGNATED_INITIALIZER;
+
+- (void)display:(BOOL)display;
 
 @end

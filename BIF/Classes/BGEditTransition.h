@@ -2,4 +2,8 @@
 
 @interface BGEditTransition : NSObject<UIViewControllerTransitioningDelegate>
 
+- (instancetype)initWithOriginatingRect:(CGRect)originatingRect
+                              finalRect:(CGRect)finalRect
+                              mediaView:(UIView *)mediaView;
+
 @end

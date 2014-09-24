@@ -19,7 +19,7 @@
 
 @property (nonatomic, strong) UIView *containerView;
 
-@property (nonatomic, strong) BGBurstPreviewView *previewView;
+@property (nonatomic, strong, readwrite) BGBurstPreviewView *previewView;
 
 @property (nonatomic, strong) UIView *topBar;
 @property (nonatomic, strong) BGTextButton *backButton;
@@ -62,6 +62,31 @@
 
 
 #pragma mark -
+#pragma mark Layout Helpers
+
+- (CGFloat)previewSize {
+    return [UIScreen mainScreen].bounds.size.width;
+}
+
+- (CGFloat)topBarHeight {
+    return([UIScreen mainScreen].bounds.size.height - [self previewSize]) * 0.35;
+}
+
+- (CGFloat)bottomBarHeight {
+    return([UIScreen mainScreen].bounds.size.height - [self previewSize]) * 0.65;
+}
+
+- (CGRect)normalFrameForMediaView {
+    CGFloat previewSize = [UIScreen mainScreen].bounds.size.width;
+    return CGRectMake(0.0, [self topBarHeight], previewSize, previewSize);
+}
+
+- (UIView *)mediaView {
+    return self.previewView;
+}
+
+
+#pragma mark -
 #pragma mark View Lifecycle
 
 - (void)viewDidLoad {
@@ -73,20 +98,16 @@
     self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.containerView];
     
-    CGFloat previewSize = self.view.bounds.size.width;
-    CGFloat topBarHeight = (self.view.bounds.size.height - previewSize) * 0.4;
-    CGFloat bottomBarHeight = self.view.bounds.size.height - topBarHeight - previewSize;
-    
     // top bar
     
-    self.topBar.frame = CGRectMake(0.0, 0.0, self.view.bounds.size.width, topBarHeight);
+    self.topBar.frame = CGRectMake(0.0, 0.0, self.view.bounds.size.width, [self topBarHeight]);
     [self.containerView addSubview:self.topBar];
     
     [self setUpTopBar];
     
     // preview area
     
-    self.previewView.frame = CGRectMake(0.0, topBarHeight, previewSize, previewSize);
+    self.previewView.frame = [self normalFrameForMediaView];
     self.previewView.assets = self.burstGroup.photos;
     self.previewView.cropInfo = self.burstGroup.burstInfo.cropInfo;
     [self.containerView addSubview:self.previewView];
@@ -104,7 +125,7 @@
 
     // bottom bar
     
-    self.bottomBar.frame = CGRectMake(0.0, CGRectGetMaxY(self.previewView.frame), self.view.bounds.size.width, bottomBarHeight);
+    self.bottomBar.frame = CGRectMake(0.0, CGRectGetMaxY(self.previewView.frame), self.view.bounds.size.width, [self bottomBarHeight]);
     [self.containerView addSubview:self.bottomBar];
     
     [self setUpBottomBar];
@@ -143,6 +164,7 @@
 #pragma mark Status Bar
 
 - (BOOL)prefersStatusBarHidden {
+//    return NO;
     return YES;
 }
 
@@ -572,13 +594,26 @@ shouldChangeTextInRange:(NSRange)range
         containerCenter.y = newContainerY + self.containerView.bounds.size.height / 2.0;
         self.containerView.center = containerCenter;
         
-        CGFloat barScale = isDismissing ? 1.0 : 0.75;
-        CGFloat barAlpha = isDismissing ? 1.0 : 0.0;
-        self.topBar.transform = CGAffineTransformMakeScale(barScale, barScale);
-        self.topBar.alpha = barAlpha;
-        self.bottomBar.transform = CGAffineTransformMakeScale(barScale, barScale);
-        self.bottomBar.alpha = barAlpha;
+        [self display:isDismissing];
     }];
+}
+
+
+#pragma mark -
+#pragma mark Animations
+
+- (void)display:(BOOL)display {
+    CGFloat barAlpha = display ? 1.0 : 0.0;
+    self.topBar.alpha = barAlpha;
+    self.bottomBar.alpha = barAlpha;
+    
+    CGFloat barScale = display ? 1.0 : 0.1;
+    self.backButton.transform = CGAffineTransformMakeScale(barScale, barScale);
+    self.shareButton.transform = CGAffineTransformMakeScale(barScale, barScale);
+    self.rangePicker.transform = CGAffineTransformMakeScale(barScale, barScale);
+    self.repeatButton.transform = CGAffineTransformMakeScale(barScale, barScale);
+    self.textButton.transform = CGAffineTransformMakeScale(barScale, barScale);
+    self.speedSlider.transform = CGAffineTransformMakeScale(barScale, barScale);
 }
 
 

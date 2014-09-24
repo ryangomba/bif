@@ -146,9 +146,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     BGBurstGroup *burstGroup = self.burstGroups[indexPath.row];
     BGBurstPreviewViewController *vc = [[BGBurstPreviewViewController alloc] initWithBurstGroup:burstGroup];
+    [vc view]; // HACK force load
     vc.delegate = self;
     
-    self.editTransition = [[BGEditTransition alloc] init];
+    CGRect frameInCollectionView = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath].frame;
+    CGRect originatingRect = [self.collectionView convertRect:frameInCollectionView toView:nil];
+    self.editTransition = [[BGEditTransition alloc] initWithOriginatingRect:originatingRect finalRect:vc.normalFrameForMediaView mediaView:vc.mediaView];
     vc.transitioningDelegate = self.editTransition;
     
     [self presentViewController:vc animated:YES completion:nil];
