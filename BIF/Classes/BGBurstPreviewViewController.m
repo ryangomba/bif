@@ -17,6 +17,8 @@
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
 
+@property (nonatomic, strong) UIView *containerView;
+
 @property (nonatomic, strong) BGBurstPreviewView *previewView;
 
 @property (nonatomic, strong) UIView *topBar;
@@ -67,6 +69,10 @@
     
     self.view.backgroundColor = [UIColor colorWithWhite:0.1 alpha:1.0];
     
+    self.containerView = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:self.containerView];
+    
     CGFloat previewSize = self.view.bounds.size.width;
     CGFloat topBarHeight = (self.view.bounds.size.height - previewSize) * 0.4;
     CGFloat bottomBarHeight = self.view.bounds.size.height - topBarHeight - previewSize;
@@ -74,7 +80,7 @@
     // top bar
     
     self.topBar.frame = CGRectMake(0.0, 0.0, self.view.bounds.size.width, topBarHeight);
-    [self.view addSubview:self.topBar];
+    [self.containerView addSubview:self.topBar];
     
     [self setUpTopBar];
     
@@ -83,23 +89,23 @@
     self.previewView.frame = CGRectMake(0.0, topBarHeight, previewSize, previewSize);
     self.previewView.assets = self.burstGroup.photos;
     self.previewView.cropInfo = self.burstGroup.burstInfo.cropInfo;
-    [self.view addSubview:self.previewView];
+    [self.containerView addSubview:self.previewView];
     
-    self.textView.frame = self.previewView.frame;
-    [self.view addSubview:self.textView];
+    self.textView.frame = self.previewView.bounds;
+    [self.previewView addSubview:self.textView];
     
-    CGFloat dismissButtonSize = 44.0;
-    CGFloat dismissButtonX = CGRectGetMaxX(self.previewView.frame) - kBGDefaultPadding - dismissButtonSize;
-    CGFloat dismissButtonY = CGRectGetMaxY(self.previewView.frame) - kBGDefaultPadding - dismissButtonSize;
+    CGFloat dismissButtonSize = 44.0; // HACK hardcoded
+    CGFloat dismissButtonX = CGRectGetMaxX(self.previewView.frame) - dismissButtonSize;
+    CGFloat dismissButtonY = self.view.bounds.size.height - dismissButtonSize;
     CGRect dismissButtonRect = CGRectMake(dismissButtonX, dismissButtonY, dismissButtonSize, dismissButtonSize);
     self.dismissKeyboardButton.frame = dismissButtonRect;
     [self.view addSubview:self.dismissKeyboardButton];
-    self.dismissKeyboardButton.hidden = YES;
+    self.dismissKeyboardButton.alpha = 0.0;
 
     // bottom bar
     
     self.bottomBar.frame = CGRectMake(0.0, CGRectGetMaxY(self.previewView.frame), self.view.bounds.size.width, bottomBarHeight);
-    [self.view addSubview:self.bottomBar];
+    [self.containerView addSubview:self.bottomBar];
     
     [self setUpBottomBar];
     
@@ -115,10 +121,20 @@
     self.previewView.animated = YES;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardWillHide:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [BGDatabase saveBurstInfo:self.burstGroup.burstInfo];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
@@ -508,7 +524,7 @@
 #pragma mark UITextViewDelegate
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
-    self.dismissKeyboardButton.hidden = NO;
+    //
 }
 
 - (BOOL)textView:(UITextView *)textView
@@ -525,12 +541,51 @@ shouldChangeTextInRange:(NSRange)range
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
-    self.dismissKeyboardButton.hidden = YES;
-    
     if (!textView.hasText) {
         self.showingText = NO;
         [self updateTextVisibility];
     }
+}
+
+
+#pragma mark -
+#pragma mark Keyboard
+
+- (void)onKeyboardWillShow:(NSNotification *)notification {
+    
+}
+
+- (void)onKeyboardWillHide:(NSNotification *)notification {
+    
+}
+
+- (void)onKeyboardWillChangeFrame:(NSNotification *)notification {
+    CGRect newFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat animationDuration = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] floatValue];
+    UIViewAnimationCurve animationCurve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    
+    [UIView animateWithDuration:animationDuration animations:^{
+        [UIView setAnimationCurve:animationCurve];
+        
+        CGPoint dismissButtonCenter = self.dismissKeyboardButton.center;
+        dismissButtonCenter.y = newFrame.origin.y - self.dismissKeyboardButton.bounds.size.height / 2;
+        self.dismissKeyboardButton.center = dismissButtonCenter;
+        
+        BOOL isDismissing = ABS(newFrame.origin.y - self.view.bounds.size.height) < 10.0;
+        self.dismissKeyboardButton.alpha = isDismissing ? 0.0 : 1.0;
+        
+        CGFloat newContainerY = isDismissing ? 0.0 : (newFrame.origin.y - self.previewView.bounds.size.height) / 2 - self.topBar.bounds.size.height;
+        CGPoint containerCenter = self.containerView.center;
+        containerCenter.y = newContainerY + self.containerView.bounds.size.height / 2.0;
+        self.containerView.center = containerCenter;
+        
+        CGFloat barScale = isDismissing ? 1.0 : 0.5;
+        CGFloat barAlpha = isDismissing ? 1.0 : 0.0;
+        self.topBar.transform = CGAffineTransformMakeScale(barScale, barScale);
+        self.topBar.alpha = barAlpha;
+        self.bottomBar.transform = CGAffineTransformMakeScale(barScale, barScale);
+        self.bottomBar.alpha = barAlpha;
+    }];
 }
 
 
