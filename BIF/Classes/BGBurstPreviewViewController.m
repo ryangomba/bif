@@ -11,17 +11,23 @@
 #import "BIFHelpers.h"
 #import "BGTextView.h"
 #import "BGShareViewController.h"
+#import "BGTextButton.h"
 
-@interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate>
+@interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate, BGBurstPreviewViewDelegate, BGShareViewControllerDelegate>
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
 
 @property (nonatomic, strong) BGBurstPreviewView *previewView;
 
+@property (nonatomic, strong) UIView *topBar;
+@property (nonatomic, strong) BGTextButton *backButton;
+@property (nonatomic, strong) BGTextButton *shareButton;
+
 @property (nonatomic, strong) BGTextView *textView;
 @property (nonatomic, strong) UIButton *dismissKeyboardButton;
 @property (nonatomic, strong) UIPanGestureRecognizer *textPanRecognizer;
 
+@property (nonatomic, strong) UIView *bottomBar;
 @property (nonatomic, strong) UISlider *speedSlider;
 @property (nonatomic, strong) BGBurstGroupRangePicker *rangePicker;
 @property (nonatomic, strong) UISegmentedControl *loopModeControl;
@@ -36,6 +42,9 @@
 
 @implementation BGBurstPreviewViewController
 
+#pragma mark -
+#pragma mark NSObject
+
 - (instancetype)initWithBurstGroup:(BGBurstGroup *)burstGroup {
     if (self = [super initWithNibName:nil bundle:nil]) {
         self.burstGroup = burstGroup;
@@ -45,24 +54,35 @@
         
         self.loopModeControl.selectedSegmentIndex = self.burstGroup.burstInfo.loopMode;
         self.previewView.loopMode = self.burstGroup.burstInfo.loopMode;
-        
-        self.navigationItem.title = @"Edit";
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStylePlain target:self action:@selector(onShareButtonTapped)];
     }
     return self;
 }
 
+
+#pragma mark -
+#pragma mark View Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
-    
-    CGFloat elementX = kBGDefaultPadding;
-    CGFloat elementWidth = self.view.bounds.size.width - 2 * kBGDefaultPadding;
+    self.view.backgroundColor = [UIColor colorWithWhite:0.1 alpha:1.0];
     
     CGFloat previewSize = self.view.bounds.size.width;
-    self.previewView.frame = CGRectMake(0.0, 0.0, previewSize, previewSize);
+    CGFloat topBarHeight = (self.view.bounds.size.height - previewSize) * 0.4;
+    CGFloat bottomBarHeight = self.view.bounds.size.height - topBarHeight - previewSize;
+    
+    // top bar
+    
+    self.topBar.frame = CGRectMake(0.0, 0.0, self.view.bounds.size.width, topBarHeight);
+    [self.view addSubview:self.topBar];
+    
+    [self setUpTopBar];
+    
+    // preview area
+    
+    self.previewView.frame = CGRectMake(0.0, topBarHeight, previewSize, previewSize);
     self.previewView.assets = self.burstGroup.photos;
+    self.previewView.cropInfo = self.burstGroup.burstInfo.cropInfo;
     [self.view addSubview:self.previewView];
     
     self.textView.frame = self.previewView.frame;
@@ -78,20 +98,14 @@
     [self.view addSubview:self.dismissKeyboardButton];
     self.dismissKeyboardButton.hidden = YES;
 
-    CGFloat rangePickerY = CGRectGetMaxY(self.previewView.frame) + kBGDefaultPadding;
-    self.rangePicker.frame = CGRectMake(elementX, rangePickerY, elementWidth, 60.0);
-    self.rangePicker.burstGroup = self.burstGroup;
-    [self.view addSubview:self.rangePicker];
-
-    CGFloat loopModeControlY = CGRectGetMaxY(self.rangePicker.frame) + kBGDefaultPadding;
-    self.loopModeControl.frame = CGRectMake(elementX, loopModeControlY, 100.0, 44.0);
-    [self.view addSubview:self.loopModeControl];
+    // bottom bar
     
-    CGFloat speedSliderY = loopModeControlY;
-    CGFloat speedSliderX = CGRectGetMaxX(self.loopModeControl.frame) + kBGDefaultPadding;
-    CGFloat speedSliderWidth = elementWidth - self.loopModeControl.frame.size.width - kBGDefaultPadding;
-    self.speedSlider.frame = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, 44.0);
-    [self.view addSubview:self.speedSlider];
+    self.bottomBar.frame = CGRectMake(0.0, CGRectGetMaxY(self.previewView.frame), self.view.bounds.size.width, bottomBarHeight);
+    [self.view addSubview:self.bottomBar];
+    
+    [self setUpBottomBar];
+    
+    // setup
     
     [self updatePhotoRange];
     
@@ -109,10 +123,92 @@
     [BGDatabase saveBurstInfo:self.burstGroup.burstInfo];
 }
 
+
+#pragma mark -
+#pragma mark Status Bar
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+
+#pragma mark -
+#pragma mark Bar Setup
+
+- (void)setUpTopBar {
+    CGFloat buttonWidth = 88.0;
+    CGFloat buttonHeight = MIN(self.topBar.bounds.size.height, 88.0);
+    CGFloat buttonHorizontalMargin = kBGDefaultPadding;
+    CGFloat buttonVerticalMargin = (self.topBar.bounds.size.height - buttonHeight) / 2;
+    
+    self.backButton.frame = CGRectMake(buttonHorizontalMargin, buttonVerticalMargin, buttonWidth, buttonHeight);
+    [self.topBar addSubview:self.backButton];
+    
+    CGFloat shareButtonX = self.topBar.bounds.size.width - buttonHorizontalMargin - buttonWidth;
+    self.shareButton.frame = CGRectMake(shareButtonX, buttonVerticalMargin, buttonWidth, buttonHeight);
+    [self.topBar addSubview:self.shareButton];
+}
+
+- (void)setUpBottomBar {
+    CGFloat elementX = kBGLargePadding;
+    CGFloat elementWidth = self.view.bounds.size.width - 2 * kBGLargePadding;
+    
+    CGFloat rangePickerY = 25.0; // HACK hardcoded
+    self.rangePicker.frame = CGRectMake(elementX, rangePickerY, elementWidth, 32.0); // HACK hardcoded
+    self.rangePicker.burstGroup = self.burstGroup;
+    [self.bottomBar addSubview:self.rangePicker];
+    
+    CGFloat loopModeControlY = CGRectGetMaxY(self.rangePicker.frame) + 25.0; // HACK hardcoded
+    self.loopModeControl.frame = CGRectMake(elementX, loopModeControlY, 100.0, 44.0);
+    [self.bottomBar addSubview:self.loopModeControl];
+    
+    CGFloat speedSliderY = loopModeControlY;
+    CGFloat speedSliderX = CGRectGetMaxX(self.loopModeControl.frame) + kBGDefaultPadding;
+    CGFloat speedSliderWidth = elementWidth - self.loopModeControl.frame.size.width - kBGDefaultPadding;
+    self.speedSlider.frame = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, 44.0);
+    [self.bottomBar addSubview:self.speedSlider];
+}
+
+
+#pragma mark -
+#pragma mark Properties
+
+- (UIView *)topBar {
+    if (!_topBar) {
+        _topBar = [[UIView alloc] initWithFrame:CGRectZero];
+    }
+    return _topBar;
+}
+
+- (BGTextButton *)backButton {
+    if (!_backButton) {
+        _backButton = [[BGTextButton alloc] initWithFrame:CGRectZero];
+        [_backButton setImageNamed:@"backGlyph"];
+        [_backButton setTitle:NSLocalizedString(@"Back", nil)];
+        [_backButton addTarget:self
+                        action:@selector(onBackButtonTapped)
+              forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _backButton;
+}
+
+- (BGTextButton *)shareButton {
+    if (!_shareButton) {
+        _shareButton = [[BGTextButton alloc] initWithFrame:CGRectZero];
+        [_shareButton setImageNamed:@"shareGlyph"];
+        [_shareButton setTitle:NSLocalizedString(@"Share", nil)];
+        [_shareButton addTarget:self
+                         action:@selector(onShareButtonTapped)
+               forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _shareButton;
+}
+
 - (BGBurstPreviewView *)previewView {
     if (!_previewView) {
         _previewView = [[BGBurstPreviewView alloc] initWithFrame:CGRectZero];
         _previewView.backgroundColor = [UIColor whiteColor];
+        _previewView.delegate = self;
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] init];
         [tap addTarget:self action:@selector(onPreviewViewTapped)];
@@ -154,6 +250,13 @@
                          forControlEvents:UIControlEventTouchUpInside];
     }
     return _dismissKeyboardButton;
+}
+
+- (UIView *)bottomBar {
+    if (!_bottomBar) {
+        _bottomBar = [[UIView alloc] initWithFrame:CGRectZero];
+    }
+    return _bottomBar;
 }
 
 - (UISlider *)speedSlider {
@@ -299,6 +402,14 @@
     };
 }
 
+
+#pragma mark -
+#pragma mark Button Listeners
+
+- (void)onBackButtonTapped {
+    [self.delegate burstPreviewViewControllerWantsDismissal:self];
+}
+
 - (void)onShareButtonTapped {
     self.progressHUD = [[BGProgressHUD alloc] init];
     self.progressHUD.center = self.view.center;
@@ -314,8 +425,18 @@
     textRect.size.width /= self.previewView.frame.size.width;
     textRect.size.height /= self.previewView.frame.size.height;
     
-    [BGGIFMaker makeGIFWithImages:self.previewView.allImagesInRangeWithLoopModeApplied
-                         cropRect:self.previewView.cropRect
+    NSArray *images = self.previewView.allImagesInRangeWithLoopModeApplied;
+    CGSize imageSize = [images.firstObject size];
+    
+    CGRect cropInfo = self.previewView.cropInfo;
+    CGRect cropRect = CGRectZero;
+    cropRect.origin.x = imageSize.width * cropInfo.origin.x;
+    cropRect.origin.y = imageSize.height * cropInfo.origin.y;
+    cropRect.size.width = imageSize.width * cropInfo.size.width;
+    cropRect.size.height = imageSize.height * cropInfo.size.height;
+    
+    [BGGIFMaker makeGIFWithImages:images
+                         cropRect:cropRect
                        outputSize:outputSize
                     frameDuration:(1.0 / self.burstGroup.burstInfo.framesPerSecond)
                              text:self.burstGroup.burstInfo.text
@@ -326,10 +447,18 @@
         [self.progressHUD removeFromSuperview];
         self.view.userInteractionEnabled = YES;
         
-        BGShareViewController *shareVC =
-        [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup filePath:filePath];
-        [self.navigationController pushViewController:shareVC animated:YES];
+        BGShareViewController *shareVC = [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup filePath:filePath];
+        [self presentViewController:shareVC animated:NO completion:nil];
+        shareVC.delegate = self;
     }];
+}
+
+
+#pragma mark -
+#pragma mark BGBurstPreviewViewDelegate
+
+- (void)burstPreviewView:(BGBurstPreviewView *)previewView didChangeCropInfo:(CGRect)cropInfo {
+    self.burstGroup.burstInfo.cropInfo = cropInfo;
 }
 
 
@@ -389,6 +518,14 @@ shouldChangeTextInRange:(NSRange)range
 
 - (void)updatePhotoRange {
     self.previewView.range = self.burstGroup.range;
+}
+
+
+#pragma mark -
+#pragma mark BGShareViewControllerDelegate
+
+- (void)shareViewControllerWantsDismissal:(BGShareViewController *)controller {
+    [controller dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end

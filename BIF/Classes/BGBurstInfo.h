@@ -14,6 +14,7 @@ typedef NS_ENUM(NSInteger, LoopMode) {
 @property (nonatomic, copy) NSString *startFrameIdentifier;
 @property (nonatomic, copy) NSString *endFrameIdentifier;
 @property (nonatomic, assign) LoopMode loopMode;
+@property (nonatomic, assign) CGRect cropInfo;
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, assign) CGFloat textPosition;

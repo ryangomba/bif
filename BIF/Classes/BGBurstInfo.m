@@ -9,6 +9,7 @@ static NSString * const kEndFrameIdentifierKey = @"endFrameIdentifierKey";
 static NSString * const kLoopModeKey = @"loopModeKey";
 static NSString * const kTextKey = @"textKey";
 static NSString * const kTextPositionKey = @"textPositionKey";
+static NSString * const kCropInfoKey = @"cropInfoKey";
 
 static CGFloat const kDefaultFramesPerSecond = 12.0;
 
@@ -19,6 +20,7 @@ static CGFloat const kDefaultFramesPerSecond = 12.0;
         self.burstIdentifier = burstIdentifier;
         self.framesPerSecond = kDefaultFramesPerSecond;
         self.textPosition = 0.5;
+        self.cropInfo = CGRectZero;
     }
     return self;
 }
@@ -32,6 +34,7 @@ static CGFloat const kDefaultFramesPerSecond = 12.0;
         self.startFrameIdentifier = dictionary[kStartFrameIdentifierKey];
         self.endFrameIdentifier = dictionary[kEndFrameIdentifierKey];
         self.loopMode = [dictionary[kLoopModeKey] integerValue];
+        self.cropInfo = CGRectFromString(dictionary[kCropInfoKey]);
         
         self.text = dictionary[kTextKey];
         self.textPosition = [dictionary[kTextPositionKey] floatValue];
@@ -48,6 +51,7 @@ static CGFloat const kDefaultFramesPerSecond = 12.0;
     [dictionary setValue:self.startFrameIdentifier forKey:kStartFrameIdentifierKey];
     [dictionary setValue:self.endFrameIdentifier forKey:kEndFrameIdentifierKey];
     [dictionary setValue:@(self.loopMode) forKey:kLoopModeKey];
+    [dictionary setValue:NSStringFromCGRect(self.cropInfo) forKey:kCropInfoKey];
     
     [dictionary setValue:self.text forKey:kTextKey];
     [dictionary setValue:@(self.textPosition) forKey:kTextPositionKey];

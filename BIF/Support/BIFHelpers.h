@@ -8,4 +8,5 @@ alpha:alphaValue]
 
 #define HEX_COLOR(rgbValue) ALPHA_COLOR(rgbValue, 1.0)
 
-#define kBGDefaultPadding 12.0
+#define kBGDefaultPadding 15.0
+#define kBGLargePadding 20.0

@@ -7,7 +7,7 @@
 #import "BGBurstGroupView.h"
 
 static CGFloat const kHandleTouchWidth = 44.0;
-static CGFloat const kHandleWidth = 4.0;
+static CGFloat const kHandleWidth = 22.0;
 
 @interface BGBurstGroupRangePicker ()
 
@@ -24,6 +24,8 @@ static CGFloat const kHandleWidth = 4.0;
     if (self = [super initWithFrame:frameRect]) {
         self.burstGroupView = [[BGBurstGroupView alloc] initWithFrame:self.bounds];
         self.burstGroupView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        self.burstGroupView.layer.cornerRadius = 4.0;
+        self.burstGroupView.layer.masksToBounds = YES;
         [self addSubview:self.burstGroupView];
         
         [self addSubview:self.startHandle];
@@ -42,7 +44,7 @@ static CGFloat const kHandleWidth = 4.0;
     self.burstGroupView.assets = burstGroup.photos;
 }
 
-- (UIView *)newHandle {
+- (UIView *)newHandleWithImageName:(NSString *)imageName {
     CGFloat handleHeight = self.frame.size.height;
     
     CGRect handleContainerRect = CGRectMake(0.0, 0.0, kHandleTouchWidth, handleHeight);
@@ -51,9 +53,9 @@ static CGFloat const kHandleWidth = 4.0;
     
     CGFloat handleInsetX = (kHandleTouchWidth - kHandleWidth) / 2.0;
     CGRect handleRect = CGRectMake(handleInsetX, 0.0, kHandleWidth, handleHeight);
-    UIView *handle = [[UIView alloc] initWithFrame:handleRect];
+    UIImageView *handle = [[UIImageView alloc] initWithFrame:handleRect];
     handle.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    handle.backgroundColor = [UIColor blueColor];
+    handle.image = [UIImage imageNamed:imageName];
     [handleContainer addSubview:handle];
     
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] init];
@@ -65,14 +67,14 @@ static CGFloat const kHandleWidth = 4.0;
 
 - (UIView *)startHandle {
     if (!_startHandle) {
-        _startHandle = [self newHandle];
+        _startHandle = [self newHandleWithImageName:@"startHandle"];
     }
     return _startHandle;
 }
 
 - (UIView *)endHandle {
     if (!_endHandle) {
-        _endHandle = [self newHandle];
+        _endHandle = [self newHandleWithImageName:@"endHandle"];
     }
     return _endHandle;
 }
@@ -136,7 +138,7 @@ static CGFloat const kHandleWidth = 4.0;
                 defaultPosition:(CGFloat)defaultPosition {
     
     CGFloat position = [self relativePositionForFrameID:frameID defaultValue:defaultPosition];
-    CGFloat x = self.bounds.size.width * position;
+    CGFloat x = kHandleWidth / 2.0 + (self.bounds.size.width - kHandleWidth) * position;
     CGPoint center = CGPointMake(x, self.bounds.size.height / 2.0);
     handle.center = center;
 }
@@ -146,7 +148,7 @@ static CGFloat const kHandleWidth = 4.0;
     NSUInteger changedIndex = 0;
     
     NSUInteger startFrameIndex;
-    CGFloat startPosition = self.startHandle.center.x / self.bounds.size.width;
+    CGFloat startPosition = (self.startHandle.center.x - kHandleWidth / 2.0) / (self.bounds.size.width - kHandleWidth);
     NSString *newStartFrameID = [self frameIDForRelativePosition:startPosition index:&startFrameIndex];
     if (![self.burstGroup.burstInfo.startFrameIdentifier isEqualToString:newStartFrameID]) {
         self.burstGroup.burstInfo.startFrameIdentifier = newStartFrameID;
@@ -155,7 +157,7 @@ static CGFloat const kHandleWidth = 4.0;
     }
     
     NSUInteger endFrameIndex;
-    CGFloat endPosition = self.endHandle.center.x / self.bounds.size.width;
+    CGFloat endPosition = (self.endHandle.center.x - kHandleWidth / 2.0) / (self.bounds.size.width - kHandleWidth);
     NSString *endFrameID = [self frameIDForRelativePosition:endPosition index:&endFrameIndex];
     if (![self.burstGroup.burstInfo.endFrameIdentifier isEqualToString:endFrameID]) {
         self.burstGroup.burstInfo.endFrameIdentifier = endFrameID;

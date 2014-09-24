@@ -9,7 +9,7 @@
 
 static NSString * const kCellReuseID = @"cell";
 
-@interface BGBurstListViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BGBurstGroupFetcherDelegate>
+@interface BGBurstListViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BGBurstGroupFetcherDelegate, BGBurstPreviewViewControllerDelegate>
 
 @property (nonatomic, strong) BGBurstGroupFetcher *burstFetcher;
 
@@ -143,7 +143,16 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     BGBurstGroup *burstGroup = self.burstGroups[indexPath.row];
     BGBurstPreviewViewController *vc = [[BGBurstPreviewViewController alloc] initWithBurstGroup:burstGroup];
-    [self.navigationController pushViewController:vc animated:YES];
+    vc.delegate = self;
+    [self presentViewController:vc animated:NO completion:nil];
+}
+
+
+#pragma mark -
+#pragma mark BGBurstPreviewViewControllerDelegate
+
+- (void)burstPreviewViewControllerWantsDismissal:(BGBurstPreviewViewController *)controller {
+    [controller dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end

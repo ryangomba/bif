@@ -26,6 +26,9 @@
 		94A107C91957D61E009E7A5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B71957D61E009E7A5F /* main.m */; };
 		94CA402219D1BE7F00F6C4A7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */; };
 		94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */; };
+		94CA402819D320A900F6C4A7 /* BGTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402719D320A900F6C4A7 /* BGTextButton.m */; };
+		94CA402C19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402A19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf */; };
+		94CA402D19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402B19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf */; };
 		94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB421964A8C100FBCA07 /* BGNavigationController.m */; };
 		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
 		94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */; };
@@ -72,6 +75,10 @@
 		94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		94CA402319D1CC1C00F6C4A7 /* RGGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGGeometry.h; sourceTree = "<group>"; };
 		94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGGeometry.m; sourceTree = "<group>"; };
+		94CA402619D320A900F6C4A7 /* BGTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGTextButton.h; sourceTree = "<group>"; };
+		94CA402719D320A900F6C4A7 /* BGTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGTextButton.m; sourceTree = "<group>"; };
+		94CA402A19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaSoft-Bold.otf"; sourceTree = "<group>"; };
+		94CA402B19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaSoft-Medium.otf"; sourceTree = "<group>"; };
 		94F2DB401964A74400FBCA07 /* BIFHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIFHelpers.h; sourceTree = "<group>"; };
 		94F2DB411964A8C100FBCA07 /* BGNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGNavigationController.h; sourceTree = "<group>"; };
 		94F2DB421964A8C100FBCA07 /* BGNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGNavigationController.m; sourceTree = "<group>"; };
@@ -134,6 +141,7 @@
 		94A107B41957D61E009E7A5F /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				94CA402919D3236D00F6C4A7 /* Fonts */,
 				94F2DB401964A74400FBCA07 /* BIFHelpers.h */,
 				94F2DB5C196B46B600FBCA07 /* BIF-Prefix.pch */,
 				94A107B51957D61E009E7A5F /* Images.xcassets */,
@@ -142,6 +150,15 @@
 				94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */,
 			);
 			path = Support;
+			sourceTree = "<group>";
+		};
+		94CA402919D3236D00F6C4A7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				94CA402A19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf */,
+				94CA402B19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		94F2DB52196B444A00FBCA07 /* Frameworks */ = {
@@ -211,6 +228,8 @@
 				94A107B11957D61E009E7A5F /* BGProgressHUD.m */,
 				94F2DB441964CA0000FBCA07 /* BGTextView.h */,
 				94F2DB451964CA0000FBCA07 /* BGTextView.m */,
+				94CA402619D320A900F6C4A7 /* BGTextButton.h */,
+				94CA402719D320A900F6C4A7 /* BGTextButton.m */,
 			);
 			name = "Common UI";
 			sourceTree = "<group>";
@@ -299,7 +318,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				94A107C71957D61E009E7A5F /* Images.xcassets in Resources */,
+				94CA402C19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf in Resources */,
 				94CA402219D1BE7F00F6C4A7 /* Launch Screen.xib in Resources */,
+				94CA402D19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +334,7 @@
 				94A107C11957D61E009E7A5F /* BGBurstPreviewViewController.m in Sources */,
 				94A107B81957D61E009E7A5F /* BGAppDelegate.m in Sources */,
 				94A107BD1957D61E009E7A5F /* BGBurstGroupView.m in Sources */,
+				94CA402819D320A900F6C4A7 /* BGTextButton.m in Sources */,
 				94A107B91957D61E009E7A5F /* BGBurstGroup.m in Sources */,
 				94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */,
 				94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */,

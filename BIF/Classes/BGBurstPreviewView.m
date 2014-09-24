@@ -228,13 +228,31 @@
 #pragma mark -
 #pragma mark Cropping
 
-- (CGRect)cropRect {
-    CGSize imageSize = self.staticImageView.image.size;
+- (void)setCropInfo:(CGRect)cropInfo {
+    NSAssert(self.assets, @"setAssets: should be called first");
     
-    CGFloat cropX = self.scrollView.contentOffset.x;
-    CGFloat cropY = self.scrollView.contentOffset.y;
-    CGFloat cropSize = MIN(imageSize.width, imageSize.height) / self.scrollView.zoomScale;
-    return CGRectMake(cropX, cropY, cropSize, cropSize);
+    if (CGRectEqualToRect(cropInfo, CGRectZero)) {
+        return;
+    }
+    
+    CGFloat contentOffsetX = cropInfo.origin.x * self.scrollView.contentSize.width;
+    CGFloat contentOffsetY = cropInfo.origin.y * self.scrollView.contentSize.height;
+    CGFloat contentWidth = cropInfo.size.width * self.scrollView.contentSize.width;
+    CGFloat contentHeight = cropInfo.size.height * self.scrollView.contentSize.height;
+    
+    CGRect zoomRect = CGRectMake(contentOffsetX, contentOffsetY, contentWidth, contentHeight);
+    [self.scrollView zoomToRect:zoomRect animated:NO];
+}
+
+- (CGRect)cropInfo {
+    CGFloat normalizedX = self.scrollView.contentOffset.x / self.scrollView.contentSize.width;
+    CGFloat normalizedY = self.scrollView.contentOffset.y / self.scrollView.contentSize.height;
+    
+    CGFloat zoomSize = MIN(self.scrollView.contentSize.width, self.scrollView.contentSize.height) / self.scrollView.zoomScale;
+    CGFloat normalizedWidth = zoomSize / self.scrollView.contentSize.width;
+    CGFloat normalizedHeight = zoomSize / self.scrollView.contentSize.height;
+    
+    return CGRectMake(normalizedX, normalizedY, normalizedWidth, normalizedHeight);
 }
 
 
@@ -243,6 +261,14 @@
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.contentView;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    [self.delegate burstPreviewView:self didChangeCropInfo:self.cropInfo];
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    [self.delegate burstPreviewView:self didChangeCropInfo:self.cropInfo];
 }
 
 @end

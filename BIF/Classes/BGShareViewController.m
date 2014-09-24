@@ -11,6 +11,7 @@
 @import Social;
 
 typedef NS_ENUM(NSInteger, ShareService) {
+    ShareServiceCancel,
     ShareServiceCopyLink,
     ShareServiceMessage,
     ShareServiceTwitter,
@@ -67,6 +68,14 @@ static NSString * kCellReuseID = @"cell";
 
 
 #pragma mark -
+#pragma mark Status Bar
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+
+#pragma mark -
 #pragma mark Properties
 
 - (UITableView *)tableView {
@@ -101,6 +110,9 @@ static NSString * kCellReuseID = @"cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellReuseID forIndexPath:indexPath];
     
     switch (indexPath.row) {
+        case ShareServiceCancel:
+            cell.textLabel.text = @"Cancel";
+            break;
         case ShareServiceCopyLink:
             cell.textLabel.text = @"Copy Link";
             break;
@@ -134,6 +146,10 @@ static NSString * kCellReuseID = @"cell";
     [tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow animated:YES];
     
     switch (indexPath.row) {
+        case ShareServiceCancel: {
+            [self.delegate shareViewControllerWantsDismissal:self];
+        } break;
+            
         case ShareServiceCopyLink: {
             [self uploadGIFAtPath:self.filePath];
         } break;
