@@ -7,7 +7,10 @@
 #import "BGBurstGroupView.h"
 
 static CGFloat const kHandleTouchWidth = 44.0;
+static CGFloat const kHandleTouchHeight = 66.0;
 static CGFloat const kHandleWidth = 22.0;
+static CGFloat const kHandleHeight = 32.0;
+static CGFloat const kMinimumRelativeBurstLength = 0.2;
 
 @interface BGBurstGroupRangePicker ()
 
@@ -44,15 +47,19 @@ static CGFloat const kHandleWidth = 22.0;
     self.burstGroupView.assets = burstGroup.photos;
 }
 
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    CGFloat handleInsetX = (kHandleTouchWidth - kHandleWidth) / 2.0;
+    CGFloat handleInsetY = (kHandleTouchHeight - self.bounds.size.height) / 2.0;
+    return CGRectContainsPoint(CGRectInset(self.bounds, -handleInsetX, -handleInsetY), point);
+}
+
 - (UIView *)newHandleWithImageName:(NSString *)imageName {
-    CGFloat handleHeight = self.frame.size.height;
-    
-    CGRect handleContainerRect = CGRectMake(0.0, 0.0, kHandleTouchWidth, handleHeight);
+    CGRect handleContainerRect = CGRectMake(0.0, 0.0, kHandleTouchWidth, kHandleTouchHeight);
     UIView *handleContainer = [[UIView alloc] initWithFrame:handleContainerRect];
-    handleContainer.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     
     CGFloat handleInsetX = (kHandleTouchWidth - kHandleWidth) / 2.0;
-    CGRect handleRect = CGRectMake(handleInsetX, 0.0, kHandleWidth, handleHeight);
+    CGFloat handleInsetY = (kHandleTouchHeight - kHandleHeight) / 2.0;
+    CGRect handleRect = CGRectMake(handleInsetX, handleInsetY, kHandleWidth, kHandleHeight);
     UIImageView *handle = [[UIImageView alloc] initWithFrame:handleRect];
     handle.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     handle.image = [UIImage imageNamed:imageName];
@@ -91,8 +98,7 @@ static CGFloat const kHandleWidth = 22.0;
         case UIGestureRecognizerStateChanged: {
             CGPoint newCenter = startCenter;
             newCenter.x += [recognizer translationInView:self].x;
-            recognizer.view.center = newCenter;
-            [self updateFrameIDs];
+            [self updateFrameIDsWithDesiredCenter:newCenter forHandle:recognizer.view];
         } break;
             
         case UIGestureRecognizerStateCancelled:
@@ -143,30 +149,37 @@ static CGFloat const kHandleWidth = 22.0;
     handle.center = center;
 }
 
-- (void)updateFrameIDs {
+- (void)updateFrameIDsWithDesiredCenter:(CGPoint)desiredCenter forHandle:(UIView *)movedHandle {
     BOOL updated = NO;
     NSUInteger changedIndex = 0;
     
     NSUInteger startFrameIndex;
-    CGFloat startPosition = (self.startHandle.center.x - kHandleWidth / 2.0) / (self.bounds.size.width - kHandleWidth);
+    CGPoint startHandleCenter = [movedHandle isEqual:self.startHandle] ? desiredCenter : self.startHandle.center;
+    CGFloat startPosition = (startHandleCenter.x - kHandleWidth / 2.0) / (self.bounds.size.width - kHandleWidth);
     NSString *newStartFrameID = [self frameIDForRelativePosition:startPosition index:&startFrameIndex];
+    
+    NSUInteger endFrameIndex;
+    CGPoint endHandleCenter = [movedHandle isEqual:self.endHandle] ? desiredCenter : self.endHandle.center;
+    CGFloat endPosition = (endHandleCenter.x - kHandleWidth / 2.0) / (self.bounds.size.width - kHandleWidth);
+    NSString *endFrameID = [self frameIDForRelativePosition:endPosition index:&endFrameIndex];
+    
+    if (ABS(startPosition - endPosition) <= kMinimumRelativeBurstLength) {
+        return;
+    }
+    
     if (![self.burstGroup.burstInfo.startFrameIdentifier isEqualToString:newStartFrameID]) {
         self.burstGroup.burstInfo.startFrameIdentifier = newStartFrameID;
+        [self updateStartHandlePosition];
         changedIndex = startFrameIndex;
         updated = YES;
     }
-    
-    NSUInteger endFrameIndex;
-    CGFloat endPosition = (self.endHandle.center.x - kHandleWidth / 2.0) / (self.bounds.size.width - kHandleWidth);
-    NSString *endFrameID = [self frameIDForRelativePosition:endPosition index:&endFrameIndex];
+
     if (![self.burstGroup.burstInfo.endFrameIdentifier isEqualToString:endFrameID]) {
         self.burstGroup.burstInfo.endFrameIdentifier = endFrameID;
+        [self updateEndHandlePosition];
         changedIndex = endFrameIndex;
         updated = YES;
     }
-    
-    [self updateStartHandlePosition];
-    [self updateEndHandlePosition];
     
     if (updated) {
         [self.delegate burstGroupRangePickerDidUpdateRange:self frameIndex:changedIndex];

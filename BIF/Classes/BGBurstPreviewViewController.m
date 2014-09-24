@@ -30,8 +30,8 @@
 @property (nonatomic, strong) UIView *bottomBar;
 @property (nonatomic, strong) UISlider *speedSlider;
 @property (nonatomic, strong) BGBurstGroupRangePicker *rangePicker;
-@property (nonatomic, strong) UISegmentedControl *loopModeControl;
-@property (nonatomic, strong) UIButton *textButton;
+@property (nonatomic, strong) BGTextButton *repeatButton;
+@property (nonatomic, strong) BGTextButton *textButton;
 
 @property (nonatomic, strong) BGProgressHUD *progressHUD;
 
@@ -52,7 +52,7 @@
         self.speedSlider.value = [self sliderValueForFramesPerSecond:self.burstGroup.burstInfo.framesPerSecond];
         self.previewView.framesPerSecond = self.burstGroup.burstInfo.framesPerSecond;
         
-        self.loopModeControl.selectedSegmentIndex = self.burstGroup.burstInfo.loopMode;
+        [self updateRepeatButtonForLoopMode:self.burstGroup.burstInfo.loopMode];
         self.previewView.loopMode = self.burstGroup.burstInfo.loopMode;
     }
     return self;
@@ -88,13 +88,11 @@
     self.textView.frame = self.previewView.frame;
     [self.view addSubview:self.textView];
     
-    CGFloat textButtonSize = 44.0;
-    CGFloat textButtonX = CGRectGetMaxX(self.previewView.frame) - kBGDefaultPadding - textButtonSize;
-    CGFloat textButtonY = CGRectGetMaxY(self.previewView.frame) - kBGDefaultPadding - textButtonSize;
-    self.textButton.frame = CGRectMake(textButtonX, textButtonY, textButtonSize, textButtonSize);
-    [self.view addSubview:self.textButton];
-    
-    self.dismissKeyboardButton.frame = self.textButton.frame;
+    CGFloat dismissButtonSize = 44.0;
+    CGFloat dismissButtonX = CGRectGetMaxX(self.previewView.frame) - kBGDefaultPadding - dismissButtonSize;
+    CGFloat dismissButtonY = CGRectGetMaxY(self.previewView.frame) - kBGDefaultPadding - dismissButtonSize;
+    CGRect dismissButtonRect = CGRectMake(dismissButtonX, dismissButtonY, dismissButtonSize, dismissButtonSize);
+    self.dismissKeyboardButton.frame = dismissButtonRect;
     [self.view addSubview:self.dismissKeyboardButton];
     self.dismissKeyboardButton.hidden = YES;
 
@@ -136,8 +134,8 @@
 #pragma mark Bar Setup
 
 - (void)setUpTopBar {
-    CGFloat buttonWidth = 88.0;
-    CGFloat buttonHeight = MIN(self.topBar.bounds.size.height, 88.0);
+    CGFloat buttonWidth = 56.0; // HACK hardcoded
+    CGFloat buttonHeight = MIN(self.topBar.bounds.size.height, 56.0);
     CGFloat buttonHorizontalMargin = kBGDefaultPadding;
     CGFloat buttonVerticalMargin = (self.topBar.bounds.size.height - buttonHeight) / 2;
     
@@ -150,23 +148,34 @@
 }
 
 - (void)setUpBottomBar {
+    CGFloat buttonSize = 56.0; // HACK hardcoded
+    CGFloat rangePickerHeight = 32.0; // HACK hardcoded
+    
+    CGFloat contentHeight = rangePickerHeight + buttonSize;
+    CGFloat verticalSpacing = (self.bottomBar.bounds.size.height - contentHeight) / 3;
+    
     CGFloat elementX = kBGLargePadding;
     CGFloat elementWidth = self.view.bounds.size.width - 2 * kBGLargePadding;
     
-    CGFloat rangePickerY = 25.0; // HACK hardcoded
-    self.rangePicker.frame = CGRectMake(elementX, rangePickerY, elementWidth, 32.0); // HACK hardcoded
+    CGFloat rangePickerY = verticalSpacing;
+    self.rangePicker.frame = CGRectMake(elementX, rangePickerY, elementWidth, rangePickerHeight);
     self.rangePicker.burstGroup = self.burstGroup;
     [self.bottomBar addSubview:self.rangePicker];
     
-    CGFloat loopModeControlY = CGRectGetMaxY(self.rangePicker.frame) + 25.0; // HACK hardcoded
-    self.loopModeControl.frame = CGRectMake(elementX, loopModeControlY, 100.0, 44.0);
-    [self.bottomBar addSubview:self.loopModeControl];
+    CGFloat buttonY = CGRectGetMaxY(self.rangePicker.frame) + verticalSpacing;
     
-    CGFloat speedSliderY = loopModeControlY;
-    CGFloat speedSliderX = CGRectGetMaxX(self.loopModeControl.frame) + kBGDefaultPadding;
-    CGFloat speedSliderWidth = elementWidth - self.loopModeControl.frame.size.width - kBGDefaultPadding;
-    self.speedSlider.frame = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, 44.0);
+    self.repeatButton.frame = CGRectMake(elementX, buttonY, buttonSize, buttonSize);
+    [self.bottomBar addSubview:self.repeatButton];
+    
+    CGFloat speedSliderY = buttonY;
+    CGFloat speedSliderX = CGRectGetMaxX(self.repeatButton.frame) + kBGDefaultPadding;
+    CGFloat speedSliderWidth = elementWidth - (self.repeatButton.frame.size.width + kBGDefaultPadding) * 2;
+    self.speedSlider.frame = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, buttonSize);
     [self.bottomBar addSubview:self.speedSlider];
+
+    CGFloat textButtonX = self.bottomBar.bounds.size.width - kBGLargePadding - buttonSize;
+    self.textButton.frame = CGRectMake(textButtonX, buttonY, buttonSize, buttonSize);
+    [self.bottomBar addSubview:self.textButton];
 }
 
 
@@ -269,21 +278,21 @@
     return _speedSlider;
 }
 
-- (UISegmentedControl *)loopModeControl {
-    if (!_loopModeControl) {
-        _loopModeControl = [[UISegmentedControl alloc] initWithItems:@[@"Loop", @"Reverse"]];
-        [_loopModeControl addTarget:self
+- (BGTextButton *)repeatButton {
+    if (!_repeatButton) {
+        _repeatButton = [[BGTextButton alloc] initWithFrame:CGRectZero];
+        [_repeatButton addTarget:self
                              action:@selector(onLoopModeChanged)
-                   forControlEvents:UIControlEventValueChanged];
+                   forControlEvents:UIControlEventTouchUpInside];
     }
-    return _loopModeControl;
+    return _repeatButton;
 }
 
-- (UIButton *)textButton {
+- (BGTextButton *)textButton {
     if (!_textButton) {
-        _textButton = [[UIButton alloc] initWithFrame:CGRectZero];
-        _textButton.backgroundColor = [UIColor grayColor];
-        [_textButton setTitle:@"T" forState:UIControlStateNormal];
+        _textButton = [[BGTextButton alloc] initWithFrame:CGRectZero];
+        [_textButton setImageNamed:@"textGlyph"];
+        [_textButton setTitle:@"Text"];
         [_textButton addTarget:self
                         action:@selector(onTextButtonTapped)
               forControlEvents:UIControlEventTouchUpInside];
@@ -318,9 +327,34 @@
 }
 
 - (void)onLoopModeChanged {
-    LoopMode loopMode = self.loopModeControl.selectedSegmentIndex;
-    self.burstGroup.burstInfo.loopMode = loopMode;
-    self.previewView.loopMode = loopMode;
+    LoopMode newLoopMode;
+    
+    switch (self.burstGroup.burstInfo.loopMode) {
+        case LoopModeLoop:
+            newLoopMode = LoopModeReverse;
+            break;
+            
+        case LoopModeReverse:
+            newLoopMode = LoopModeLoop;
+            break;
+    }
+    
+    self.burstGroup.burstInfo.loopMode = newLoopMode;
+    self.previewView.loopMode = newLoopMode;
+}
+
+- (void)updateRepeatButtonForLoopMode:(LoopMode)loopMode {
+    switch (loopMode) {
+        case LoopModeLoop:
+            [self.repeatButton setImageNamed:@"loopGlyph"];
+            [self.repeatButton setTitle:@"Loop"];
+            break;
+            
+        case LoopModeReverse:
+            [self.repeatButton setImageNamed:@"reverseGlyph"];
+            [self.repeatButton setTitle:@"Reverse"];
+            break;
+    }
 }
 
 - (void)onPreviewViewTapped {
