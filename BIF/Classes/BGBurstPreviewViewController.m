@@ -67,7 +67,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor colorWithWhite:0.1 alpha:1.0];
+    self.view.backgroundColor = kBGBackgroundColor;
     
     self.containerView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -124,9 +124,10 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardWillHide:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillChangeFrame:)
+                                                 name:UIKeyboardWillChangeFrameNotification
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -551,14 +552,6 @@ shouldChangeTextInRange:(NSRange)range
 #pragma mark -
 #pragma mark Keyboard
 
-- (void)onKeyboardWillShow:(NSNotification *)notification {
-    
-}
-
-- (void)onKeyboardWillHide:(NSNotification *)notification {
-    
-}
-
 - (void)onKeyboardWillChangeFrame:(NSNotification *)notification {
     CGRect newFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGFloat animationDuration = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] floatValue];
@@ -579,7 +572,7 @@ shouldChangeTextInRange:(NSRange)range
         containerCenter.y = newContainerY + self.containerView.bounds.size.height / 2.0;
         self.containerView.center = containerCenter;
         
-        CGFloat barScale = isDismissing ? 1.0 : 0.5;
+        CGFloat barScale = isDismissing ? 1.0 : 0.75;
         CGFloat barAlpha = isDismissing ? 1.0 : 0.0;
         self.topBar.transform = CGAffineTransformMakeScale(barScale, barScale);
         self.topBar.alpha = barAlpha;

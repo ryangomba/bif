@@ -18,6 +18,15 @@
         self.burstGroupView = [[BGBurstGroupView alloc] initWithFrame:self.contentView.bounds];
         self.burstGroupView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         [self.contentView addSubview:self.burstGroupView];
+        
+        self.burstGroupView.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.burstGroupView.layer.shadowOpacity = 0.5;
+        self.burstGroupView.layer.shadowOffset = CGSizeZero;
+        self.burstGroupView.layer.shadowRadius = 1.0;
+        self.burstGroupView.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.burstGroupView.bounds].CGPath;
+        
+        self.burstGroupView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.1].CGColor;
+        self.burstGroupView.layer.borderWidth = 1.0 / [UIScreen mainScreen].scale;
     }
     return self;
 }

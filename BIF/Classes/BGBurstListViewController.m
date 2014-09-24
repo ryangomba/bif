@@ -38,7 +38,7 @@ static NSString * const kCellReuseID = @"cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = kBGBackgroundColor;
     
     self.collectionView.frame = self.view.bounds;
     [self.view addSubview:self.collectionView];

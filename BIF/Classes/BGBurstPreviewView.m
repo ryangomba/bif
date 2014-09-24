@@ -51,8 +51,24 @@
         [self.contentView addSubview:self.staticImageView];
         
         self.ongoingImageRequestIDs = [NSMutableArray array];
+        
+        // border and shadow
+        
+        self.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.layer.shadowOpacity = 0.5;
+        self.layer.shadowOffset = CGSizeZero;
+        self.layer.shadowRadius = 4.0;
+        
+        self.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.1].CGColor;
+        self.layer.borderWidth = 1.0 / [UIScreen mainScreen].scale;
     }
     return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
 }
 
 - (void)setAssets:(NSArray *)assets {
