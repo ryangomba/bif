@@ -6,6 +6,7 @@
 #import "BGBurstGroupCell.h"
 #import "BGBurstPreviewViewController.h"
 #import "BIFHelpers.h"
+#import "BGEditTransition.h"
 
 static NSString * const kCellReuseID = @"cell";
 
@@ -15,6 +16,8 @@ static NSString * const kCellReuseID = @"cell";
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSArray *burstGroups;
+
+@property (nonatomic, strong) BGEditTransition *editTransition;
 
 @end
 
@@ -144,7 +147,11 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     BGBurstGroup *burstGroup = self.burstGroups[indexPath.row];
     BGBurstPreviewViewController *vc = [[BGBurstPreviewViewController alloc] initWithBurstGroup:burstGroup];
     vc.delegate = self;
-    [self presentViewController:vc animated:NO completion:nil];
+    
+    self.editTransition = [[BGEditTransition alloc] init];
+    vc.transitioningDelegate = self.editTransition;
+    
+    [self presentViewController:vc animated:YES completion:nil];
 }
 
 
@@ -152,7 +159,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark BGBurstPreviewViewControllerDelegate
 
 - (void)burstPreviewViewControllerWantsDismissal:(BGBurstPreviewViewController *)controller {
-    [controller dismissViewControllerAnimated:NO completion:nil];
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

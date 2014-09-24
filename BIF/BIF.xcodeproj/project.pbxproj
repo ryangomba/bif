@@ -29,6 +29,7 @@
 		94CA402819D320A900F6C4A7 /* BGTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402719D320A900F6C4A7 /* BGTextButton.m */; };
 		94CA402C19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402A19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf */; };
 		94CA402D19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402B19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf */; };
+		94CA403019D3423500F6C4A7 /* BGEditTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402F19D3423500F6C4A7 /* BGEditTransition.m */; };
 		94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB421964A8C100FBCA07 /* BGNavigationController.m */; };
 		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
 		94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */; };
@@ -79,6 +80,8 @@
 		94CA402719D320A900F6C4A7 /* BGTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGTextButton.m; sourceTree = "<group>"; };
 		94CA402A19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaSoft-Bold.otf"; sourceTree = "<group>"; };
 		94CA402B19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaSoft-Medium.otf"; sourceTree = "<group>"; };
+		94CA402E19D3423500F6C4A7 /* BGEditTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGEditTransition.h; sourceTree = "<group>"; };
+		94CA402F19D3423500F6C4A7 /* BGEditTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGEditTransition.m; sourceTree = "<group>"; };
 		94F2DB401964A74400FBCA07 /* BIFHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIFHelpers.h; sourceTree = "<group>"; };
 		94F2DB411964A8C100FBCA07 /* BGNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGNavigationController.h; sourceTree = "<group>"; };
 		94F2DB421964A8C100FBCA07 /* BGNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGNavigationController.m; sourceTree = "<group>"; };
@@ -241,6 +244,8 @@
 				94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */,
 				94A1079E1957D61E009E7A5F /* BGBurstGroupRangePicker.h */,
 				94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */,
+				94CA402E19D3423500F6C4A7 /* BGEditTransition.h */,
+				94CA402F19D3423500F6C4A7 /* BGEditTransition.m */,
 			);
 			name = Editing;
 			sourceTree = "<group>";
@@ -339,6 +344,7 @@
 				94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */,
 				94F2DB431964A8C100FBCA07 /* BGNavigationController.m in Sources */,
 				94A107BF1957D61E009E7A5F /* BGBurstListViewController.m in Sources */,
+				94CA403019D3423500F6C4A7 /* BGEditTransition.m in Sources */,
 				94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */,
 				94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */,
 				94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */,
