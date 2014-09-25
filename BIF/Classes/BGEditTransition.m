@@ -118,7 +118,7 @@
 
     CGFloat duration = [self animationDuration] * [transitionContext isAnimated];
 
-    [UIView animateWithDuration:duration - 0.25 delay:0.25 usingSpringWithDamping:0.85 initialSpringVelocity:0.0 options:0 animations:^{
+    [UIView animateWithDuration:duration - 0.15 delay:0.15 usingSpringWithDamping:0.85 initialSpringVelocity:0.0 options:0 animations:^{
         mediaView.alpha = 1.0;
         mediaView.transform = CGAffineTransformIdentity;
     } completion:nil];

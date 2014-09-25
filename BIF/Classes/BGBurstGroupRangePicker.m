@@ -19,6 +19,10 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 @property (nonatomic, strong) UIView *startHandle;
 @property (nonatomic, strong) UIView *endHandle;
 
+@property (nonatomic, strong) UIView *leftTrimOverlayView;
+@property (nonatomic, strong) UIView *rightTrimOverlayView;
+@property (nonatomic, strong) UIView *centerTrimOverlayView;
+
 @end
 
 @implementation BGBurstGroupRangePicker
@@ -26,6 +30,11 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self addSubview:self.burstGroupView];
+        
+        [self.burstGroupView addSubview:self.leftTrimOverlayView];
+        [self.burstGroupView addSubview:self.rightTrimOverlayView];
+        [self.burstGroupView addSubview:self.centerTrimOverlayView];
+        
         [self addSubview:self.startHandle];
         [self addSubview:self.endHandle];
         
@@ -44,13 +53,18 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
     [self updateStartHandlePosition];
     [self updateEndHandlePosition];
     
+    BOOL editViewAlpha = editable ? 1.0 : 0.0;
+    
     void(^animationBlock)(void) = ^{
-        self.startHandle.alpha = editable ? 1.0 : 0.0;
-        self.endHandle.alpha = editable ? 1.0 : 0.0;
+        self.leftTrimOverlayView.alpha = editViewAlpha;
+        self.rightTrimOverlayView.alpha = editViewAlpha;
+        self.centerTrimOverlayView.alpha = editViewAlpha;
+        self.startHandle.alpha = editViewAlpha;
+        self.endHandle.alpha = editViewAlpha;
     };
     
     if (animated) {
-        [UIView animateWithDuration:0.3 animations:animationBlock];
+        [UIView animateWithDuration:0.15 animations:animationBlock];
     } else {
         animationBlock();
     }
@@ -114,6 +128,31 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
     return _endHandle;
 }
 
+- (UIView *)leftTrimOverlayView {
+    if (!_leftTrimOverlayView) {
+        _leftTrimOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, kHandleHeight)];
+        _leftTrimOverlayView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.75];
+    }
+    return _leftTrimOverlayView;
+}
+
+- (UIView *)rightTrimOverlayView {
+    if (!_rightTrimOverlayView) {
+        _rightTrimOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, kHandleHeight)];
+        _rightTrimOverlayView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.75];
+    }
+    return _rightTrimOverlayView;
+}
+
+- (UIView *)centerTrimOverlayView {
+    if (!_centerTrimOverlayView) {
+        _centerTrimOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0.0, -1.0, 0.0, kHandleHeight + 2.0)];
+        _centerTrimOverlayView.layer.borderColor = [UIColor colorWithWhite:0.0 alpha:0.25].CGColor;
+        _centerTrimOverlayView.layer.borderWidth = 1.0 / [UIScreen mainScreen].scale;
+    }
+    return _centerTrimOverlayView;
+}
+
 - (void)onPan:(UIPanGestureRecognizer *)recognizer {
     static CGPoint startCenter;
     
@@ -175,6 +214,27 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
     CGFloat x = kHandleWidth / 2.0 + (self.bounds.size.width - kHandleWidth) * position;
     CGPoint center = CGPointMake(x, self.bounds.size.height / 2.0);
     handle.center = center;
+    
+    [self updateOverlayViewPositions];
+}
+
+- (void)updateOverlayViewPositions {
+    CGFloat startX = CGRectGetMaxX(self.startHandle.frame) - (kHandleTouchWidth - kHandleWidth) / 2;
+    CGFloat endX = CGRectGetMinX(self.endHandle.frame) + (kHandleTouchWidth - kHandleWidth) / 2;
+    
+    CGRect leftOverlayRect = self.leftTrimOverlayView.frame;
+    leftOverlayRect.size.width = startX;
+    self.leftTrimOverlayView.frame = leftOverlayRect;
+    
+    CGRect rightOverlayRect = self.rightTrimOverlayView.frame;
+    rightOverlayRect.origin.x = endX;
+    rightOverlayRect.size.width = self.bounds.size.width - endX;
+    self.rightTrimOverlayView.frame = rightOverlayRect;
+    
+    CGRect centerOverlayRect = self.centerTrimOverlayView.frame;
+    centerOverlayRect.origin.x = startX;
+    centerOverlayRect.size.width = endX - startX;
+    self.centerTrimOverlayView.frame = centerOverlayRect;
 }
 
 - (void)updateFrameIDsWithDesiredCenter:(CGPoint)desiredCenter forHandle:(UIView *)movedHandle {

@@ -17,11 +17,11 @@ static CGFloat const kButtonSize = 56.0;
 static CGFloat const kRangePickerHeight = 60.0;
 static CGFloat const kPreviewPadding = 10.0;
 
-@interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate, BGBurstPreviewViewDelegate, BGShareViewControllerDelegate>
+@interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate, BGBurstPreviewViewDelegate, BGShareViewControllerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
 
-@property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) UIScrollView *containerView;
 
 @property (nonatomic, strong, readwrite) BGBurstPreviewView *previewView;
 
@@ -34,12 +34,15 @@ static CGFloat const kPreviewPadding = 10.0;
 @property (nonatomic, strong) UIPanGestureRecognizer *textPanRecognizer;
 
 @property (nonatomic, strong) UIView *bottomBar;
-@property (nonatomic, strong) UISlider *speedSlider;
 @property (nonatomic, strong) BGBurstGroupRangePicker *rangePicker;
+@property (nonatomic, strong) UITapGestureRecognizer *rangePickerTapRecognizer;
+@property (nonatomic, strong) UISlider *speedSlider;
 @property (nonatomic, strong) BGTextButton *repeatButton;
 @property (nonatomic, strong) BGTextButton *textButton;
 
 @property (nonatomic, strong) BGProgressHUD *progressHUD;
+
+@property (nonatomic, assign) CGFloat currentKeyboardTopY;
 
 @property (nonatomic, assign) BOOL showingText;
 
@@ -93,8 +96,12 @@ static CGFloat const kPreviewPadding = 10.0;
     
     self.view.backgroundColor = kBGBackgroundColor;
     
-    self.containerView = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.containerView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    [self.containerView setKeyboardDismissMode:UIScrollViewKeyboardDismissModeInteractive];
     self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.containerView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height + 1.0);
+    self.containerView.delegate = self;
+    [self.containerView setScrollEnabled:NO];
     [self.view addSubview:self.containerView];
     
     // top bar
@@ -114,10 +121,11 @@ static CGFloat const kPreviewPadding = 10.0;
     self.textView.frame = self.previewView.bounds;
     [self.previewView addSubview:self.textView];
     
-    CGFloat dismissButtonSize = 44.0; // HACK hardcoded
-    CGFloat dismissButtonX = CGRectGetMaxX(self.previewView.frame) - dismissButtonSize;
-    CGFloat dismissButtonY = self.view.bounds.size.height - dismissButtonSize;
-    CGRect dismissButtonRect = CGRectMake(dismissButtonX, dismissButtonY, dismissButtonSize, dismissButtonSize);
+    CGFloat dismissKeyboardButtonWidth = 44.0; // HACK hardcoded
+    CGFloat dismissKeyboardButtonHeight = 44.0; // HACK hardcoded
+    CGFloat dismissButtonX = (self.view.bounds.size.width - dismissKeyboardButtonWidth) / 2;
+    CGFloat dismissButtonY = self.view.bounds.size.height - dismissKeyboardButtonHeight;
+    CGRect dismissButtonRect = CGRectMake(dismissButtonX, dismissButtonY, dismissKeyboardButtonWidth, dismissKeyboardButtonHeight);
     self.dismissKeyboardButton.frame = dismissButtonRect;
     [self.view addSubview:self.dismissKeyboardButton];
     self.dismissKeyboardButton.alpha = 0.0;
@@ -125,7 +133,7 @@ static CGFloat const kPreviewPadding = 10.0;
     // bottom bar
     
     self.bottomBar.frame = CGRectMake(0.0, CGRectGetMaxY(self.previewView.frame), self.view.bounds.size.width, [self bottomBarHeight]);
-    [self.containerView addSubview:self.bottomBar];
+    [self.view addSubview:self.bottomBar];
     
     [self setUpBottomBar];
     
@@ -193,31 +201,42 @@ static CGFloat const kPreviewPadding = 10.0;
 - (void)setUpBottomBar {
     CGFloat verticalSpacing = [self verticalSpacingForBottomView];
     
-    CGFloat elementX = kBGLargePadding;
-    CGFloat elementWidth = self.view.bounds.size.width - 2 * kBGLargePadding;
-    
     CGFloat rangePickerY = verticalSpacing;
-    CGRect rangePickerRect = CGRectMake(elementX, rangePickerY, elementWidth, kRangePickerHeight);
+    CGFloat rangePickerPadding = kBGLargePadding;
+    CGFloat rangePickerWidth = self.view.bounds.size.width - 2 * rangePickerPadding;
+    CGRect rangePickerRect = CGRectMake(rangePickerPadding, rangePickerY, rangePickerWidth, kRangePickerHeight);
     CGRect rangePickerViewRect = rangePickerRect;
     self.rangePicker.frame = rangePickerViewRect;
     [self.bottomBar addSubview:self.rangePicker];
     
+    CGFloat buttonPadding = kBGDefaultPadding;
     CGFloat buttonY = CGRectGetMaxY(rangePickerRect) + verticalSpacing;
-    CGRect repeatButtonRect = CGRectMake(elementX, buttonY, kButtonSize, kButtonSize);
-    self.repeatButton.frame = repeatButtonRect;
-    [self.bottomBar addSubview:self.repeatButton];
+    CGRect textButtonRect = CGRectMake(buttonPadding, buttonY, kButtonSize, kButtonSize);
+    self.textButton.frame = textButtonRect;
+    [self.bottomBar addSubview:self.textButton];
     
+    CGFloat sliderPadding = 32.0; // HACK hardcoded
     CGFloat speedSliderY = buttonY;
-    CGFloat speedSliderX = CGRectGetMaxX(self.repeatButton.frame) + kBGDefaultPadding;
-    CGFloat speedSliderWidth = elementWidth - (self.repeatButton.frame.size.width + kBGDefaultPadding) * 2;
+    CGFloat speedSliderX = CGRectGetMaxX(textButtonRect) + sliderPadding;
+    CGFloat speedSliderWidth = self.view.bounds.size.width - (textButtonRect.size.width + sliderPadding + buttonPadding) * 2;
     CGRect speedSliderRect = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, kButtonSize);
     self.speedSlider.frame = speedSliderRect;
     [self.bottomBar addSubview:self.speedSlider];
     
-    CGFloat textButtonX = self.bottomBar.bounds.size.width - kBGLargePadding - kButtonSize;
-    CGRect textButtonRect = CGRectMake(textButtonX, buttonY, kButtonSize, kButtonSize);
-    self.textButton.frame = textButtonRect;
-    [self.bottomBar addSubview:self.textButton];
+    UIImageView *turtleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 12.0, 12.0)];
+    turtleView.image = [UIImage imageNamed:@"turtleGlyph"];
+    turtleView.center = CGPointMake(-10, 28.0);
+    [self.speedSlider insertSubview:turtleView atIndex:0];
+    
+    UIImageView *rabbitView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 12.0, 12.0)];
+    rabbitView.image = [UIImage imageNamed:@"rabbitGlyph"];
+    rabbitView.center = CGPointMake(speedSliderWidth + 10.0, 28.0);
+    [self.speedSlider insertSubview:rabbitView atIndex:0];
+    
+    CGFloat repeatButtonX = self.bottomBar.bounds.size.width - buttonPadding - kButtonSize;
+    CGRect repeatButtonRect = CGRectMake(repeatButtonX, buttonY, kButtonSize, kButtonSize);
+    self.repeatButton.frame = repeatButtonRect;
+    [self.bottomBar addSubview:self.repeatButton];
 }
 
 
@@ -294,8 +313,8 @@ static CGFloat const kPreviewPadding = 10.0;
 - (UIButton *)dismissKeyboardButton {
     if (!_dismissKeyboardButton) {
         _dismissKeyboardButton = [[UIButton alloc] initWithFrame:CGRectZero];
-        _dismissKeyboardButton.backgroundColor = [UIColor grayColor];
-        [_dismissKeyboardButton setTitle:@"Dismiss" forState:UIControlStateNormal];
+        [_dismissKeyboardButton setImage:[UIImage imageNamed:@"dismissKeyboardGlyph"] forState:UIControlStateNormal];
+        _dismissKeyboardButton.imageView.contentMode = UIViewContentModeCenter;
         [_dismissKeyboardButton addTarget:self
                                    action:@selector(onDismissKeyboardButtonTapped)
                          forControlEvents:UIControlEventTouchUpInside];
@@ -308,6 +327,14 @@ static CGFloat const kPreviewPadding = 10.0;
         _bottomBar = [[UIView alloc] initWithFrame:CGRectZero];
     }
     return _bottomBar;
+}
+
+- (UITapGestureRecognizer *)rangePickerTapRecognizer {
+    if (!_rangePickerTapRecognizer) {
+        _rangePickerTapRecognizer = [[UITapGestureRecognizer alloc] init];
+        [_rangePickerTapRecognizer addTarget:self action:@selector(onRangePickerTapped:)];
+    }
+    return _rangePickerTapRecognizer;
 }
 
 - (UISlider *)speedSlider {
@@ -392,19 +419,17 @@ static CGFloat const kPreviewPadding = 10.0;
 }
 
 - (void)onPreviewViewTapped {
-    self.showingText = YES;
-    [self updateTextVisibility];
-    [self.textView becomeFirstResponder];
+    [self enterTextMode];
 }
 
 - (void)onTextButtonTapped {
-    self.showingText = !self.showingText;
-    
+    [self enterTextMode];
+}
+
+- (void)enterTextMode {
+    self.showingText = YES;
     [self updateTextVisibility];
-    
-    if (self.showingText && !self.textView.internalTextView.hasText) {
-        [self.textView becomeFirstResponder];
-    }
+    [self.textView becomeFirstResponder];
 }
 
 - (void)updateTextVisibility {
@@ -521,6 +546,12 @@ static CGFloat const kPreviewPadding = 10.0;
     }];
 }
 
+- (void)onRangePickerTapped:(UITapGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        [self.delegate burstPreviewViewControllerWantsDismissal:self];
+    }
+}
+
 
 #pragma mark -
 #pragma mark BGBurstPreviewViewDelegate
@@ -542,7 +573,7 @@ static CGFloat const kPreviewPadding = 10.0;
 #pragma mark UITextViewDelegate
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
-    //
+    [self.containerView setScrollEnabled:YES];
 }
 
 - (BOOL)textView:(UITextView *)textView
@@ -563,6 +594,7 @@ shouldChangeTextInRange:(NSRange)range
         self.showingText = NO;
         [self updateTextVisibility];
     }
+    [self.containerView setScrollEnabled:NO];
 }
 
 
@@ -574,22 +606,22 @@ shouldChangeTextInRange:(NSRange)range
     CGFloat animationDuration = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] floatValue];
     UIViewAnimationCurve animationCurve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     
+    self.currentKeyboardTopY = newFrame.origin.y;
+    
     [UIView animateWithDuration:animationDuration animations:^{
         [UIView setAnimationCurve:animationCurve];
         
-        CGPoint dismissButtonCenter = self.dismissKeyboardButton.center;
-        dismissButtonCenter.y = newFrame.origin.y - self.dismissKeyboardButton.bounds.size.height / 2;
-        self.dismissKeyboardButton.center = dismissButtonCenter;
+        [self updateDismissKeyboardButtonPosition];
         
         BOOL isDismissing = ABS(newFrame.origin.y - self.view.bounds.size.height) < 10.0;
         self.dismissKeyboardButton.alpha = isDismissing ? 0.0 : 1.0;
         
-        CGFloat newContainerY = isDismissing ? 0.0 : (newFrame.origin.y - self.previewView.bounds.size.height) / 2 - self.topBar.bounds.size.height;
+        CGFloat newContainerY = isDismissing ? 0.0 : -(self.topBar.bounds.size.height - kPreviewPadding);
         CGPoint containerCenter = self.containerView.center;
         containerCenter.y = newContainerY + self.containerView.bounds.size.height / 2.0;
         self.containerView.center = containerCenter;
         
-        [self display:isDismissing];
+        [self display:isDismissing includeRangePicker:YES];
     }];
 }
 
@@ -598,16 +630,28 @@ shouldChangeTextInRange:(NSRange)range
 #pragma mark Animations
 
 - (void)display:(BOOL)display {
+    [self display:display includeRangePicker:NO];
+}
+
+- (void)display:(BOOL)display includeRangePicker:(BOOL)includeRangePicker {
     CGFloat barAlpha = display ? 1.0 : 0.0;
     self.topBar.alpha = barAlpha;
     self.bottomBar.alpha = barAlpha;
     
     CGFloat barScale = display ? 1.0 : 0.1;
-    self.backButton.transform = CGAffineTransformMakeScale(barScale, barScale);
-    self.shareButton.transform = CGAffineTransformMakeScale(barScale, barScale);
-    self.repeatButton.transform = CGAffineTransformMakeScale(barScale, barScale);
-    self.textButton.transform = CGAffineTransformMakeScale(barScale, barScale);
-    self.speedSlider.transform = CGAffineTransformMakeScale(barScale, barScale);
+    CGAffineTransform barTransform = CGAffineTransformMakeScale(barScale, barScale);
+    self.backButton.transform = barTransform;
+    self.shareButton.transform = barTransform;
+    self.repeatButton.transform = barTransform;
+    self.textButton.transform = barTransform;
+    self.speedSlider.transform = barTransform;
+    
+    if (includeRangePicker) {
+        self.rangePicker.alpha = barAlpha;
+        
+        CGFloat rangePickerScale = display ? 1.0 : 0.8;
+        self.rangePicker.transform = CGAffineTransformMakeScale(rangePickerScale, rangePickerScale);
+    }
 }
 
 
@@ -641,6 +685,25 @@ shouldChangeTextInRange:(NSRange)range
 
 
 #pragma mark -
+#pragma mark UIScrollViewDelegae
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    scrollView.contentOffset = CGPointMake(0.0, 0.0);
+}
+
+
+#pragma mark -
+#pragma mark Dismiss Keybord Button
+
+- (void)updateDismissKeyboardButtonPosition {
+    CGPoint dismissButtonCenter = self.dismissKeyboardButton.center;
+    dismissButtonCenter.y = self.currentKeyboardTopY - (self.currentKeyboardTopY - (kPreviewPadding + [self previewSize])) / 2;
+    dismissButtonCenter.y -= self.containerView.contentOffset.y;
+    self.dismissKeyboardButton.center = dismissButtonCenter;
+}
+
+
+#pragma mark -
 #pragma mark BGEditTransitionPreviewController
 
 - (CGRect)rectForRangePickerView {
@@ -653,6 +716,7 @@ shouldChangeTextInRange:(NSRange)range
     BGBurstGroupRangePicker *rangePicker = self.rangePicker;
     rangePicker.delegate = nil;
     [rangePicker setEditable:NO animated:NO];
+    [rangePicker removeGestureRecognizer:self.rangePickerTapRecognizer];
     self.rangePicker = nil;
     return rangePicker;
 }
@@ -661,6 +725,7 @@ shouldChangeTextInRange:(NSRange)range
     self.rangePicker = rangePickerView;
     [self.rangePicker setEditable:YES animated:YES];
     self.rangePicker.delegate = self;
+    [self.rangePicker addGestureRecognizer:self.rangePickerTapRecognizer];
 }
 
 - (UIView *)mediaView {
