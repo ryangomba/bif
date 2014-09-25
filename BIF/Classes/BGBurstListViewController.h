@@ -1,6 +1,9 @@
 // Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
-@interface BGBurstListViewController : UIViewController
+// HACK messy
+#import "BGEditTransition.h"
+
+@interface BGBurstListViewController : UIViewController<BGEditTransitionListController>
 
 @end
 

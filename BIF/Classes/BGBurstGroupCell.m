@@ -2,11 +2,9 @@
 
 #import "BGBurstGroupCell.h"
 
-#import "BGBurstGroupView.h"
-
 @interface BGBurstGroupCell ()
 
-@property (nonatomic, strong) BGBurstGroupView *burstGroupView;
+@property (nonatomic, strong, readwrite) BGBurstGroupView *burstGroupView;
 
 @end
 
@@ -39,6 +37,15 @@
     _burstGroup = burstGroup;
 
     self.burstGroupView.assets = burstGroup.photos;
+}
+
+- (BGBurstGroupView *)stealBurstGroupView {
+    return self.burstGroupView;
+}
+
+- (void)returnBurstGroupView:(BGBurstGroupView *)burstGroupView {
+    burstGroupView.frame = self.contentView.bounds;
+    [self.contentView addSubview:self.burstGroupView];
 }
 
 - (void)prepareForReuse {

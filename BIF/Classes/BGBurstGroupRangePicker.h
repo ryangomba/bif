@@ -1,6 +1,7 @@
 // Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 #import "BGBurstGroup.h"
+#import "BGBurstGroupView.h"
 
 @class BGBurstGroupRangePicker;
 @protocol BGBurstGroupRangePickerDelegate <NSObject>
@@ -14,6 +15,7 @@
 @interface BGBurstGroupRangePicker : UIView
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
+@property (nonatomic, strong) BGBurstGroupView *burstGroupView;
 
 @property (nonatomic, weak) id<BGBurstGroupRangePickerDelegate> delegate;
 

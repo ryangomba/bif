@@ -2,10 +2,12 @@
 
 #import "BGBurstListViewController.h"
 
-#import "BGBurstGroupFetcher.h"
-#import "BGBurstGroupCell.h"
-#import "BGBurstPreviewViewController.h"
 #import "BIFHelpers.h"
+#import "BGBurstGroup.h"
+#import "BGBurstGroupView.h"
+#import "BGBurstGroupCell.h"
+#import "BGBurstGroupFetcher.h"
+#import "BGBurstPreviewViewController.h"
 #import "BGEditTransition.h"
 
 static NSString * const kCellReuseID = @"cell";
@@ -18,6 +20,8 @@ static NSString * const kCellReuseID = @"cell";
 @property (nonatomic, strong) NSArray *burstGroups;
 
 @property (nonatomic, strong) BGEditTransition *editTransition;
+
+@property (nonatomic, strong) UINavigationBar *navigationBar;
 
 @end
 
@@ -43,7 +47,12 @@ static NSString * const kCellReuseID = @"cell";
     
     self.view.backgroundColor = kBGBackgroundColor;
     
-    self.collectionView.frame = self.view.bounds;
+    self.navigationBar.frame = CGRectMake(0.0, 0.0, self.view.bounds.size.width, 64.0); // hack hardcoded
+    [self.view addSubview:self.navigationBar];
+    [self.navigationBar pushNavigationItem:self.navigationItem animated:NO];
+    
+    UIEdgeInsets collectionViewInsets = UIEdgeInsetsMake(self.navigationBar.bounds.size.height, 0.0, 0.0, 0.0);
+    self.collectionView.frame = UIEdgeInsetsInsetRect(self.view.bounds, collectionViewInsets);
     [self.view addSubview:self.collectionView];
 
     [self.burstFetcher fetchBurstGroups];
@@ -51,7 +60,26 @@ static NSString * const kCellReuseID = @"cell";
 
 
 #pragma mark -
+#pragma mark Status Bar
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
+
+#pragma mark -
 #pragma mark Properties
+
+- (UINavigationBar *)navigationBar {
+    if (!_navigationBar) {
+        _navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectZero];
+        _navigationBar.barTintColor = HEX_COLOR(0xf63440);
+        _navigationBar.tintColor = [UIColor whiteColor];
+        _navigationBar.titleTextAttributes = @{ NSForegroundColorAttributeName: [UIColor whiteColor] };
+        _navigationBar.translucent = NO;
+    }
+    return _navigationBar;
+}
 
 - (BGBurstGroupFetcher *)burstFetcher {
     if (!_burstFetcher) {
@@ -87,6 +115,20 @@ static NSString * const kCellReuseID = @"cell";
 
 
 #pragma mark -
+#pragma mark IndexPath Helpers
+
+- (BGBurstGroup *)burstGroupAtIndexPath:(NSIndexPath *)indexPath {
+    return self.burstGroups[indexPath.row];
+}
+
+- (NSIndexPath *)indexPathForBurstGroup:(BGBurstGroup *)burstGroup {
+    NSUInteger burstGroupIndex = [self.burstGroups indexOfObject:burstGroup];
+    NSAssert(burstGroupIndex != NSNotFound, @"Burst group not represented in list");
+    return [NSIndexPath indexPathForRow:burstGroupIndex inSection:0];
+}
+
+
+#pragma mark -
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -100,7 +142,7 @@ static NSString * const kCellReuseID = @"cell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     BGBurstGroupCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseID forIndexPath:indexPath];
 
-    BGBurstGroup *burstGroup = self.burstGroups[indexPath.row];
+    BGBurstGroup *burstGroup = [self burstGroupAtIndexPath:indexPath];
     cell.burstGroup = burstGroup;
     
     return cell;
@@ -144,14 +186,12 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    BGBurstGroup *burstGroup = self.burstGroups[indexPath.row];
+    BGBurstGroup *burstGroup = [self burstGroupAtIndexPath:indexPath];
     BGBurstPreviewViewController *vc = [[BGBurstPreviewViewController alloc] initWithBurstGroup:burstGroup];
     [vc view]; // HACK force load
     vc.delegate = self;
     
-    CGRect frameInCollectionView = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath].frame;
-    CGRect originatingRect = [self.collectionView convertRect:frameInCollectionView toView:nil];
-    self.editTransition = [[BGEditTransition alloc] initWithOriginatingRect:originatingRect finalRect:vc.normalFrameForMediaView mediaView:vc.mediaView];
+    self.editTransition = [[BGEditTransition alloc] initWithBurstGroup:burstGroup fromController:self toController:vc];
     vc.transitioningDelegate = self.editTransition;
     
     [self presentViewController:vc animated:YES completion:nil];
@@ -163,6 +203,28 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)burstPreviewViewControllerWantsDismissal:(BGBurstPreviewViewController *)controller {
     [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+#pragma mark -
+#pragma mark BGEditTransitionListController
+
+- (CGRect)rectForBurstGroupViewForBurstGroup:(BGBurstGroup *)burstGroup {
+    NSIndexPath *indexPath = [self indexPathForBurstGroup:burstGroup];
+    CGRect cellFrame = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath].frame;
+    return [self.collectionView convertRect:cellFrame toView:nil];
+}
+
+- (BGBurstGroupView *)stealBurstGroupViewForBurstGroup:(BGBurstGroup *)burstGroup {
+    NSIndexPath *indexPath = [self indexPathForBurstGroup:burstGroup];
+    BGBurstGroupCell *cell = (id)[self.collectionView cellForItemAtIndexPath:indexPath];
+    return [cell stealBurstGroupView];
+}
+
+- (void)returnBurstGroupView:(BGBurstGroupView *)burstGroupView forBurstGroup:(BGBurstGroup *)burstGroup {
+    NSIndexPath *indexPath = [self indexPathForBurstGroup:burstGroup];
+    BGBurstGroupCell *cell = (id)[self.collectionView cellForItemAtIndexPath:indexPath];
+    [cell returnBurstGroupView:burstGroupView];
 }
 
 @end

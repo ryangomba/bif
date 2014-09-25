@@ -81,10 +81,6 @@
     return CGRectMake(0.0, [self topBarHeight], previewSize, previewSize);
 }
 
-- (UIView *)mediaView {
-    return self.previewView;
-}
-
 
 #pragma mark -
 #pragma mark View Lifecycle
@@ -643,6 +639,27 @@ shouldChangeTextInRange:(NSRange)range
 
 - (void)shareViewControllerWantsDismissal:(BGShareViewController *)controller {
     [controller dismissViewControllerAnimated:NO completion:nil];
+}
+
+
+#pragma mark -
+#pragma mark BGEditTransitionPreviewController
+
+- (CGRect)rectForBurstGroupView {
+    // HACK harcoded
+    return CGRectMake(kBGDefaultPadding, 500.0, self.view.bounds.size.width, 64.0);
+}
+
+- (BGBurstGroupView *)stealBurstGroupView {
+    return self.rangePicker.burstGroupView;
+}
+
+- (void)setBurstGroupView:(BGBurstGroupView *)burstGroupView {
+    self.rangePicker.burstGroupView = burstGroupView;
+}
+
+- (UIView *)mediaView {
+    return self.previewView;
 }
 
 @end

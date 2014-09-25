@@ -14,8 +14,6 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 
 @interface BGBurstGroupRangePicker ()
 
-@property (nonatomic, strong) BGBurstGroupView *burstGroupView;
-
 @property (nonatomic, strong) UIView *startHandle;
 @property (nonatomic, strong) UIView *endHandle;
 
@@ -25,26 +23,20 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 
 - (instancetype)initWithFrame:(CGRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        self.burstGroupView = [[BGBurstGroupView alloc] initWithFrame:self.bounds];
-        self.burstGroupView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        self.burstGroupView.layer.cornerRadius = 4.0;
-        self.burstGroupView.layer.masksToBounds = YES;
-        [self addSubview:self.burstGroupView];
-        
         [self addSubview:self.startHandle];
         [self addSubview:self.endHandle];
     }
     return self;
 }
 
-- (void)setBurstGroup:(BGBurstGroup *)burstGroup {
-    if (burstGroup == _burstGroup) {
-        return;
-    }
+- (void)setBurstGroupView:(BGBurstGroupView *)burstGroupView {
+    _burstGroupView = burstGroupView;
     
-    _burstGroup = burstGroup;
-    
-    self.burstGroupView.assets = burstGroup.photos;
+    _burstGroupView.frame = self.bounds;
+    self.burstGroupView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.burstGroupView.layer.cornerRadius = 4.0;
+    self.burstGroupView.layer.masksToBounds = YES;
+    [self insertSubview:self.burstGroupView atIndex:0];
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
