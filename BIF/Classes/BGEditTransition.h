@@ -1,21 +1,21 @@
 // Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 #import "BGBurstGroup.h"
-#import "BGBurstGroupView.h"
+#import "BGBurstGroupRangePicker.h"
 
 @protocol BGEditTransitionListController <NSObject>
 
-- (CGRect)rectForBurstGroupViewForBurstGroup:(BGBurstGroup *)burstGroup;
-- (BGBurstGroupView *)stealBurstGroupViewForBurstGroup:(BGBurstGroup *)burstGroup;
-- (void)returnBurstGroupView:(BGBurstGroupView *)burstGroupView forBurstGroup:(BGBurstGroup *)burstGroup;
+- (CGRect)rectForRangePickerViewForBurstGroup:(BGBurstGroup *)burstGroup;
+- (BGBurstGroupRangePicker *)stealRangePickerViewForBurstGroup:(BGBurstGroup *)burstGroup;
+- (void)returnRangePickerView:(BGBurstGroupRangePicker *)rangePickerView forBurstGroup:(BGBurstGroup *)burstGroup;
 
 @end
 
 @protocol BGEditTransitionPreviewController <NSObject>
 
-- (CGRect)rectForBurstGroupView;
-- (BGBurstGroupView *)stealBurstGroupView;
-- (void)setBurstGroupView:(BGBurstGroupView *)burstGroupView;
+- (CGRect)rectForRangePickerView;
+- (BGBurstGroupRangePicker *)stealRangePickerView;
+- (void)setRangePickerView:(BGBurstGroupRangePicker *)rangePickerView;
 
 - (UIView *)mediaView;
 - (void)display:(BOOL)display;

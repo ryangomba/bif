@@ -4,7 +4,7 @@
 
 #import "BIFHelpers.h"
 #import "BGBurstGroup.h"
-#import "BGBurstGroupView.h"
+#import "BGBurstGroupRangePicker.h"
 #import "BGBurstGroupCell.h"
 #import "BGBurstGroupFetcher.h"
 #import "BGBurstPreviewViewController.h"
@@ -209,22 +209,22 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark -
 #pragma mark BGEditTransitionListController
 
-- (CGRect)rectForBurstGroupViewForBurstGroup:(BGBurstGroup *)burstGroup {
+- (CGRect)rectForRangePickerViewForBurstGroup:(BGBurstGroup *)burstGroup {
     NSIndexPath *indexPath = [self indexPathForBurstGroup:burstGroup];
     CGRect cellFrame = [self.collectionView layoutAttributesForItemAtIndexPath:indexPath].frame;
-    return [self.collectionView convertRect:cellFrame toView:nil];
+    return [self.collectionView convertRect:cellFrame toView:self.view];
 }
 
-- (BGBurstGroupView *)stealBurstGroupViewForBurstGroup:(BGBurstGroup *)burstGroup {
+- (BGBurstGroupRangePicker *)stealRangePickerViewForBurstGroup:(BGBurstGroup *)burstGroup {
     NSIndexPath *indexPath = [self indexPathForBurstGroup:burstGroup];
     BGBurstGroupCell *cell = (id)[self.collectionView cellForItemAtIndexPath:indexPath];
-    return [cell stealBurstGroupView];
+    return [cell stealRangePickerView];
 }
 
-- (void)returnBurstGroupView:(BGBurstGroupView *)burstGroupView forBurstGroup:(BGBurstGroup *)burstGroup {
+- (void)returnRangePickerView:(BGBurstGroupRangePicker *)rangePickerView forBurstGroup:(BGBurstGroup *)burstGroup {
     NSIndexPath *indexPath = [self indexPathForBurstGroup:burstGroup];
     BGBurstGroupCell *cell = (id)[self.collectionView cellForItemAtIndexPath:indexPath];
-    [cell returnBurstGroupView:burstGroupView];
+    [cell returnRangePickerView:rangePickerView];
 }
 
 @end

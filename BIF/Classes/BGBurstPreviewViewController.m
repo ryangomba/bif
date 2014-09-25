@@ -13,6 +13,9 @@
 #import "BGShareViewController.h"
 #import "BGTextButton.h"
 
+static CGFloat const kButtonSize = 56.0;
+static CGFloat const kRangePickerHeight = 60.0;
+
 @interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate, BGBurstPreviewViewDelegate, BGShareViewControllerDelegate>
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
@@ -182,34 +185,38 @@
     [self.topBar addSubview:self.shareButton];
 }
 
+- (CGFloat)verticalSpacingForBottomView {
+    CGFloat contentHeight = kRangePickerHeight + kButtonSize;
+    return (self.bottomBar.bounds.size.height - contentHeight) / 3;
+}
+
 - (void)setUpBottomBar {
-    CGFloat buttonSize = 56.0; // HACK hardcoded
-    CGFloat rangePickerHeight = 32.0; // HACK hardcoded
-    
-    CGFloat contentHeight = rangePickerHeight + buttonSize;
-    CGFloat verticalSpacing = (self.bottomBar.bounds.size.height - contentHeight) / 3;
+    CGFloat verticalSpacing = [self verticalSpacingForBottomView];
     
     CGFloat elementX = kBGLargePadding;
     CGFloat elementWidth = self.view.bounds.size.width - 2 * kBGLargePadding;
     
     CGFloat rangePickerY = verticalSpacing;
-    self.rangePicker.frame = CGRectMake(elementX, rangePickerY, elementWidth, rangePickerHeight);
-    self.rangePicker.burstGroup = self.burstGroup;
+    CGRect rangePickerRect = CGRectMake(elementX, rangePickerY, elementWidth, kRangePickerHeight);
+    CGRect rangePickerViewRect = rangePickerRect;
+    self.rangePicker.frame = rangePickerViewRect;
     [self.bottomBar addSubview:self.rangePicker];
     
-    CGFloat buttonY = CGRectGetMaxY(self.rangePicker.frame) + verticalSpacing;
-    
-    self.repeatButton.frame = CGRectMake(elementX, buttonY, buttonSize, buttonSize);
+    CGFloat buttonY = CGRectGetMaxY(rangePickerRect) + verticalSpacing;
+    CGRect repeatButtonRect = CGRectMake(elementX, buttonY, kButtonSize, kButtonSize);
+    self.repeatButton.frame = repeatButtonRect;
     [self.bottomBar addSubview:self.repeatButton];
     
     CGFloat speedSliderY = buttonY;
     CGFloat speedSliderX = CGRectGetMaxX(self.repeatButton.frame) + kBGDefaultPadding;
     CGFloat speedSliderWidth = elementWidth - (self.repeatButton.frame.size.width + kBGDefaultPadding) * 2;
-    self.speedSlider.frame = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, buttonSize);
+    CGRect speedSliderRect = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, kButtonSize);
+    self.speedSlider.frame = speedSliderRect;
     [self.bottomBar addSubview:self.speedSlider];
-
-    CGFloat textButtonX = self.bottomBar.bounds.size.width - kBGLargePadding - buttonSize;
-    self.textButton.frame = CGRectMake(textButtonX, buttonY, buttonSize, buttonSize);
+    
+    CGFloat textButtonX = self.bottomBar.bounds.size.width - kBGLargePadding - kButtonSize;
+    CGRect textButtonRect = CGRectMake(textButtonX, buttonY, kButtonSize, kButtonSize);
+    self.textButton.frame = textButtonRect;
     [self.bottomBar addSubview:self.textButton];
 }
 
@@ -345,14 +352,6 @@
 
 - (CGFloat)sliderValueForFramesPerSecond:(CGFloat)framesPerSecond {
     return (framesPerSecond - kMinimumFPS) / (kMaximumFPS - kMinimumFPS);
-}
-
-- (BGBurstGroupRangePicker *)rangePicker {
-    if (!_rangePicker) {
-        _rangePicker = [[BGBurstGroupRangePicker alloc] initWithFrame:CGRectZero];
-        _rangePicker.delegate = self;
-    }
-    return _rangePicker;
 }
 
 - (void)onSpeedSliderChanged {
@@ -606,7 +605,6 @@ shouldChangeTextInRange:(NSRange)range
     CGFloat barScale = display ? 1.0 : 0.1;
     self.backButton.transform = CGAffineTransformMakeScale(barScale, barScale);
     self.shareButton.transform = CGAffineTransformMakeScale(barScale, barScale);
-    self.rangePicker.transform = CGAffineTransformMakeScale(barScale, barScale);
     self.repeatButton.transform = CGAffineTransformMakeScale(barScale, barScale);
     self.textButton.transform = CGAffineTransformMakeScale(barScale, barScale);
     self.speedSlider.transform = CGAffineTransformMakeScale(barScale, barScale);
@@ -645,17 +643,24 @@ shouldChangeTextInRange:(NSRange)range
 #pragma mark -
 #pragma mark BGEditTransitionPreviewController
 
-- (CGRect)rectForBurstGroupView {
-    // HACK harcoded
-    return CGRectMake(kBGDefaultPadding, 500.0, self.view.bounds.size.width, 64.0);
+- (CGRect)rectForRangePickerView {
+    CGFloat rangePickerY = [self topBarHeight] +  [self previewSize] + [self verticalSpacingForBottomView];
+    CGFloat rangePickerWidth = self.view.bounds.size.width - 2 * kBGLargePadding;
+    return CGRectMake(kBGLargePadding, rangePickerY, rangePickerWidth, kRangePickerHeight);
 }
 
-- (BGBurstGroupView *)stealBurstGroupView {
-    return self.rangePicker.burstGroupView;
+- (BGBurstGroupRangePicker *)stealRangePickerView {
+    BGBurstGroupRangePicker *rangePicker = self.rangePicker;
+    rangePicker.delegate = nil;
+    [rangePicker setEditable:NO animated:YES];
+    self.rangePicker = nil;
+    return rangePicker;
 }
 
-- (void)setBurstGroupView:(BGBurstGroupView *)burstGroupView {
-    self.rangePicker.burstGroupView = burstGroupView;
+- (void)setRangePickerView:(BGBurstGroupRangePicker *)rangePickerView {
+    self.rangePicker = rangePickerView;
+    [self.rangePicker setEditable:YES animated:YES];
+    self.rangePicker.delegate = self;
 }
 
 - (UIView *)mediaView {

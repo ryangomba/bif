@@ -7,12 +7,14 @@
 #import "BGBurstGroupView.h"
 
 static CGFloat const kHandleTouchWidth = 44.0;
-static CGFloat const kHandleTouchHeight = 66.0;
+static CGFloat const kHandleTouchHeight = 88.0;
 static CGFloat const kHandleWidth = 22.0;
-static CGFloat const kHandleHeight = 32.0;
+static CGFloat const kHandleHeight = 60.0;
 static CGFloat const kMinimumRelativeBurstLength = 0.2;
 
 @interface BGBurstGroupRangePicker ()
+
+@property (nonatomic, strong) BGBurstGroupView *burstGroupView;
 
 @property (nonatomic, strong) UIView *startHandle;
 @property (nonatomic, strong) UIView *endHandle;
@@ -21,22 +23,34 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 
 @implementation BGBurstGroupRangePicker
 
-- (instancetype)initWithFrame:(CGRect)frameRect {
-    if (self = [super initWithFrame:frameRect]) {
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        [self addSubview:self.burstGroupView];
         [self addSubview:self.startHandle];
         [self addSubview:self.endHandle];
+        
+        [self setEditable:NO animated:NO];
     }
     return self;
 }
 
-- (void)setBurstGroupView:(BGBurstGroupView *)burstGroupView {
-    _burstGroupView = burstGroupView;
+- (void)setBurstGroup:(BGBurstGroup *)burstGroup {
+    _burstGroup = burstGroup;
     
-    _burstGroupView.frame = self.bounds;
-    self.burstGroupView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.burstGroupView.layer.cornerRadius = 4.0;
-    self.burstGroupView.layer.masksToBounds = YES;
-    [self insertSubview:self.burstGroupView atIndex:0];
+    self.burstGroupView.assets = burstGroup.photos;
+}
+
+- (void)setEditable:(BOOL)editable animated:(BOOL)animated {
+    void(^animationBlock)(void) = ^{
+        self.startHandle.alpha = editable ? 1.0 : 0.0;
+        self.endHandle.alpha = editable ? 1.0 : 0.0;
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.3 animations:animationBlock];
+    } else {
+        animationBlock();
+    }
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
@@ -62,6 +76,25 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
     [handleContainer addGestureRecognizer:pan];
 
     return handleContainer;
+}
+
+- (BGBurstGroupView *)burstGroupView {
+    if (!_burstGroupView) {
+        _burstGroupView = [[BGBurstGroupView alloc] initWithFrame:self.bounds];
+        _burstGroupView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        
+        _burstGroupView.layer.cornerRadius = 4.0;
+        _burstGroupView.layer.masksToBounds = YES;
+        
+        _burstGroupView.layer.shadowColor = [UIColor blackColor].CGColor;
+        _burstGroupView.layer.shadowOpacity = 0.5;
+        _burstGroupView.layer.shadowOffset = CGSizeZero;
+        _burstGroupView.layer.shadowRadius = 1.0;
+        
+        _burstGroupView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.1].CGColor;
+        _burstGroupView.layer.borderWidth = 1.0 / [UIScreen mainScreen].scale;
+    }
+    return _burstGroupView;
 }
 
 - (UIView *)startHandle {
@@ -183,6 +216,8 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
     
     [self updateStartHandlePosition];
     [self updateEndHandlePosition];
+    
+    self.burstGroupView.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.burstGroupView.bounds].CGPath;
 }
 
 @end

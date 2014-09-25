@@ -15,8 +15,9 @@
 @interface BGBurstGroupRangePicker : UIView
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
-@property (nonatomic, strong) BGBurstGroupView *burstGroupView;
 
 @property (nonatomic, weak) id<BGBurstGroupRangePickerDelegate> delegate;
+
+- (void)setEditable:(BOOL)editable animated:(BOOL)animated;
 
 @end

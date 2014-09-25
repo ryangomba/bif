@@ -81,7 +81,7 @@
     
     containerView.backgroundColor = kBGBackgroundColor;
     
-    CGRect originatingBurstViewRect = [fromVC rectForBurstGroupViewForBurstGroup:self.burstGroup];
+    CGRect originatingBurstViewRect = [fromVC rectForRangePickerViewForBurstGroup:self.burstGroup];
 
     CGRect topSnapshotRect = CGRectMake(0.0, 0.0, fromVC.view.bounds.size.width, originatingBurstViewRect.origin.y);
     UIView *topSnapshotView = [fromVC.view resizableSnapshotViewFromRect:topSnapshotRect afterScreenUpdates:NO withCapInsets:UIEdgeInsetsZero];
@@ -105,9 +105,9 @@
     [containerView addSubview:toVC.view];
     [toVC display:NO];
     
-    BGBurstGroupView *burstGroupView = [fromVC stealBurstGroupViewForBurstGroup:self.burstGroup];
-    burstGroupView.frame = [fromVC rectForBurstGroupViewForBurstGroup:self.burstGroup];
-    [containerView addSubview:burstGroupView];
+    BGBurstGroupRangePicker *rangePickerView = [fromVC stealRangePickerViewForBurstGroup:self.burstGroup];
+    rangePickerView.frame = [fromVC rectForRangePickerViewForBurstGroup:self.burstGroup];
+    [containerView addSubview:rangePickerView];
     
     toVC.view.backgroundColor = [UIColor clearColor];
     
@@ -133,7 +133,7 @@
         topSnapshotView.frame = topSnapshotFrame;
         topSnapshotView.alpha = 0.0;
         
-        burstGroupView.frame = [toVC rectForBurstGroupView];
+        rangePickerView.frame = [toVC rectForRangePickerView];
         
         CGRect bottomSnapshotFrame = bottomSnapshotView.frame;
         bottomSnapshotFrame.origin.y = containerView.bounds.size.height;
@@ -147,7 +147,7 @@
 
         toVC.view.backgroundColor = kBGBackgroundColor;
         
-        [toVC setBurstGroupView:burstGroupView];
+        [toVC setRangePickerView:rangePickerView];
         
         [transitionContext completeTransition:YES];
     }];
@@ -164,10 +164,10 @@
 
     fromVC.view.backgroundColor = [UIColor clearColor];
     
-    CGRect originatingBurstViewRect = [toVC rectForBurstGroupViewForBurstGroup:self.burstGroup];
+    CGRect originatingBurstViewRect = [toVC rectForRangePickerViewForBurstGroup:self.burstGroup];
     
-    BGBurstGroupView *burstGroupView = [fromVC stealBurstGroupView];
-    burstGroupView.frame = [fromVC rectForBurstGroupView];
+    BGBurstGroupRangePicker *rangePickerView = [fromVC stealRangePickerView];
+    rangePickerView.frame = [fromVC rectForRangePickerView];
     
     [UIView animateWithDuration:duration / 2 delay:0.0 usingSpringWithDamping:0.7 initialSpringVelocity:0.0 options:0 animations:^{
         fromVC.mediaView.alpha = 0.0;
@@ -184,7 +184,7 @@
         self.topSnapshotView.frame = topSnapshotFrame;
         self.topSnapshotView.alpha = 1.0;
         
-        burstGroupView.frame = originatingBurstViewRect;
+        rangePickerView.frame = originatingBurstViewRect;
         
         CGRect bottomSnapshotFrame = self.bottomSnapshotView.frame;
         bottomSnapshotFrame.origin.y = containerView.bounds.size.height - self.bottomSnapshotView.bounds.size.height;
@@ -199,7 +199,7 @@
         [containerView addSubview:toVC.view];
         
         [toVC.view setTransform:CGAffineTransformIdentity];
-        [toVC returnBurstGroupView:burstGroupView forBurstGroup:self.burstGroup];
+        [toVC returnRangePickerView:rangePickerView forBurstGroup:self.burstGroup];
 
         [transitionContext completeTransition:YES];
     }];

@@ -26,8 +26,16 @@
             [self addSubview:imageView];
             [self.imageViews addObject:imageView];
         }
+        
+        [self doLayout];
     }
     return self;
+}
+
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    
+    [self doLayout];
 }
 
 - (void)setAssets:(NSArray *)assets {
@@ -36,6 +44,7 @@
     _assets = [self evenlySpacedSubsetOfSize:kMaxNumberOfImages forArray:assets];
     
     [self fetchImages];
+    [self doLayout];
 }
 
 - (void)cancelImageFetchRequests {
@@ -92,9 +101,7 @@
     return subsetArray;
 }
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
+- (void)doLayout {
     CGSize imageSize = [self imageSize];
     
     CGFloat x = 0.0;
