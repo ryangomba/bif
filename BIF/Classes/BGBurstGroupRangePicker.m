@@ -41,6 +41,9 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 }
 
 - (void)setEditable:(BOOL)editable animated:(BOOL)animated {
+    [self updateStartHandlePosition];
+    [self updateEndHandlePosition];
+    
     void(^animationBlock)(void) = ^{
         self.startHandle.alpha = editable ? 1.0 : 0.0;
         self.endHandle.alpha = editable ? 1.0 : 0.0;
@@ -213,9 +216,6 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
-    [self updateStartHandlePosition];
-    [self updateEndHandlePosition];
     
     self.burstGroupView.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.burstGroupView.bounds].CGPath;
 }

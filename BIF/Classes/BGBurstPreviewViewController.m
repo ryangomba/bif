@@ -15,6 +15,7 @@
 
 static CGFloat const kButtonSize = 56.0;
 static CGFloat const kRangePickerHeight = 60.0;
+static CGFloat const kPreviewPadding = 10.0;
 
 @interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate, BGBurstPreviewViewDelegate, BGShareViewControllerDelegate>
 
@@ -68,7 +69,7 @@ static CGFloat const kRangePickerHeight = 60.0;
 #pragma mark Layout Helpers
 
 - (CGFloat)previewSize {
-    return [UIScreen mainScreen].bounds.size.width;
+    return [UIScreen mainScreen].bounds.size.width - 2 * kPreviewPadding;
 }
 
 - (CGFloat)topBarHeight {
@@ -80,8 +81,7 @@ static CGFloat const kRangePickerHeight = 60.0;
 }
 
 - (CGRect)normalFrameForMediaView {
-    CGFloat previewSize = [UIScreen mainScreen].bounds.size.width;
-    return CGRectMake(0.0, [self topBarHeight], previewSize, previewSize);
+    return CGRectMake(kPreviewPadding, [self topBarHeight], [self previewSize], [self previewSize]);
 }
 
 
@@ -652,7 +652,7 @@ shouldChangeTextInRange:(NSRange)range
 - (BGBurstGroupRangePicker *)stealRangePickerView {
     BGBurstGroupRangePicker *rangePicker = self.rangePicker;
     rangePicker.delegate = nil;
-    [rangePicker setEditable:NO animated:YES];
+    [rangePicker setEditable:NO animated:NO];
     self.rangePicker = nil;
     return rangePicker;
 }

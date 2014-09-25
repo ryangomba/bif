@@ -120,7 +120,7 @@
 
     [UIView animateWithDuration:duration - 0.25 delay:0.25 usingSpringWithDamping:0.85 initialSpringVelocity:0.0 options:0 animations:^{
         mediaView.alpha = 1.0;
-        mediaView.transform = CGAffineTransformMakeScale(0.975, 0.975);
+        mediaView.transform = CGAffineTransformIdentity;
     } completion:nil];
 
     [UIView animateWithDuration:duration delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:0.0 options:0 animations:^{
