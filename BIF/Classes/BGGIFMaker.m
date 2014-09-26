@@ -13,9 +13,7 @@
                  cropRect:(CGRect)cropRect
                outputSize:(CGFloat)outputSize
             frameDuration:(CGFloat)frameDuration
-                     text:(NSString *)text
-                 textRect:(CGRect)textRect
-           textAttributes:(NSDictionary *)textAttributes
+             textElements:(NSArray *)textElements
                completion:(void (^)(NSString *))completion {
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -23,9 +21,7 @@
                                               cropRect:cropRect
                                             outputSize:outputSize
                                          frameDuration:frameDuration
-                                                  text:text
-                                              textRect:textRect
-                                        textAttributes:textAttributes];
+                                          textElements:textElements];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             completion(filePath);
@@ -37,15 +33,7 @@
                          cropRect:(CGRect)cropRect
                        outputSize:(CGFloat)outputSize
                     frameDuration:(CGFloat)frameDuration
-                             text:(NSString *)text
-                         textRect:(CGRect)textRect
-                   textAttributes:(NSDictionary *)textAttributes {
-
-    // TEMP weak
-    textRect.origin.x *= outputSize;
-    textRect.origin.y *= outputSize;
-    textRect.size.width *= outputSize;
-    textRect.size.height *= outputSize;
+                     textElements:(NSArray *)textElements {
     
     NSDictionary *fileProperties = @{
         (__bridge id)kCGImagePropertyGIFDictionary: @{
@@ -82,7 +70,16 @@
             [resizedImage drawAtPoint:CGPointZero];
             
             // draw text
-            [text drawInRect:textRect withAttributes:textAttributes];
+            for (BGTextElement *textElement in textElements) {
+                // TEMP weak
+                CGRect textRect = textElement.textRect;
+                textRect.origin.x = ceilf(textRect.origin.x * outputSize);
+                textRect.origin.y = ceilf(textRect.origin.y * outputSize);
+                textRect.size.width = ceilf(textRect.size.width * outputSize);
+                textRect.size.height = ceilf(textRect.size.height * outputSize);
+                
+                [textElement.text drawInRect:textRect withAttributes:textElement.textAttributes];
+            }
             
             UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();

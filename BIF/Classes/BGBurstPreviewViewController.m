@@ -33,6 +33,7 @@ static CGFloat const kPreviewPadding = 10.0;
 @property (nonatomic, strong) BGTextView *textView;
 @property (nonatomic, strong) UIButton *dismissKeyboardButton;
 @property (nonatomic, strong) UIPanGestureRecognizer *textPanRecognizer;
+@property (nonatomic, strong) UILabel *watermarkLabel;
 
 @property (nonatomic, strong) UIView *bottomBar;
 @property (nonatomic, strong) BGBurstGroupRangePicker *rangePicker;
@@ -118,6 +119,12 @@ static CGFloat const kPreviewPadding = 10.0;
     self.previewView.assets = self.burstGroup.photos;
     self.previewView.cropInfo = self.burstGroup.burstInfo.cropInfo;
     [self.containerView addSubview:self.previewView];
+    
+    CGRect watermarkRect = self.watermarkLabel.frame;
+    watermarkRect.origin.x = 6.0;
+    watermarkRect.origin.y = self.previewView.bounds.size.height - watermarkRect.size.height - 3.0;
+    self.watermarkLabel.frame = watermarkRect;
+    [self.previewView addSubview:self.watermarkLabel];
     
     self.textView.frame = self.previewView.bounds;
     [self.previewView addSubview:self.textView];
@@ -289,6 +296,19 @@ static CGFloat const kPreviewPadding = 10.0;
     return _previewView;
 }
 
+- (NSDictionary *)textAttributes {
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    
+    return @{
+        NSForegroundColorAttributeName: [UIColor whiteColor],
+        NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:48.0],
+        NSParagraphStyleAttributeName: paragraphStyle,
+        NSStrokeColorAttributeName:[UIColor blackColor],
+        NSStrokeWidthAttributeName: @(-5.0),
+    };
+}
+
 - (BGTextView *)textView {
     if (!_textView) {
         _textView = [[BGTextView alloc] initWithFrame:CGRectZero];
@@ -310,6 +330,27 @@ static CGFloat const kPreviewPadding = 10.0;
         [_textPanRecognizer addTarget:self action:@selector(onTextPan:)];
     }
     return _textPanRecognizer;
+}
+
+- (NSDictionary *)watermarkAttributes {
+    return @{
+        NSForegroundColorAttributeName: [UIColor colorWithWhite:1.0 alpha:0.5],
+        NSFontAttributeName: [UIFont fontWithName:@"ProximaNovaSoft-Bold" size:24.0],
+    };
+}
+
+- (UILabel *)watermarkLabel {
+    if (!_watermarkLabel) {
+        _watermarkLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        
+        _watermarkLabel.attributedText =
+        [[NSAttributedString alloc] initWithString:@"BIF" attributes:self.watermarkAttributes];
+        
+        [_watermarkLabel sizeToFit];
+        UIEdgeInsets safetyInsets = UIEdgeInsetsMake(0.0, 0.0, -4.0, -4.0);
+        _watermarkLabel.frame = UIEdgeInsetsInsetRect(_watermarkLabel.frame, safetyInsets);
+    }
+    return _watermarkLabel;
 }
 
 - (UIButton *)dismissKeyboardButton {
@@ -404,18 +445,20 @@ static CGFloat const kPreviewPadding = 10.0;
     
     self.burstGroup.burstInfo.loopMode = newLoopMode;
     self.previewView.loopMode = newLoopMode;
+    
+    [self updateRepeatButtonForLoopMode:newLoopMode];
 }
 
 - (void)updateRepeatButtonForLoopMode:(LoopMode)loopMode {
     switch (loopMode) {
         case LoopModeLoop:
             [self.repeatButton setImageNamed:@"loopGlyph"];
-            [self.repeatButton setTitle:@"Loop"];
+            [self.repeatButton setTitle:@"Looped"];
             break;
             
         case LoopModeReverse:
             [self.repeatButton setImageNamed:@"reverseGlyph"];
-            [self.repeatButton setTitle:@"Reverse"];
+            [self.repeatButton setTitle:@"Reversed"];
             break;
     }
 }
@@ -478,25 +521,6 @@ static CGFloat const kPreviewPadding = 10.0;
     [self.textView resignFirstResponder];
 }
 
-- (NSDictionary *)textAttributes {
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.alignment = NSTextAlignmentCenter;
-    
-    NSShadow *shadow = [[NSShadow alloc] init];
-    shadow.shadowColor = [UIColor blackColor];
-    shadow.shadowOffset = CGSizeZero;
-    shadow.shadowBlurRadius = 5.0;
-    
-    return @{
-        NSForegroundColorAttributeName: [UIColor whiteColor],
-        NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:48.0],
-        NSParagraphStyleAttributeName: paragraphStyle,
-        NSStrokeColorAttributeName:[UIColor blackColor],
-        NSStrokeWidthAttributeName: @(-5.0),
-//        NSShadowAttributeName: shadow,
-    };
-}
-
 
 #pragma mark -
 #pragma mark Button Listeners
@@ -508,11 +532,6 @@ static CGFloat const kPreviewPadding = 10.0;
 - (void)onShareButtonTapped {
     // HACK
     CGFloat outputSize = 320.0;
-    CGRect textRect = [self.previewView convertRect:self.textView.internalTextView.frame fromView:self.textView];
-    textRect.origin.x /= self.previewView.frame.size.width;
-    textRect.origin.y /= self.previewView.frame.size.height;
-    textRect.size.width /= self.previewView.frame.size.width;
-    textRect.size.height /= self.previewView.frame.size.height;
     
     NSArray *images = self.previewView.allImagesInRangeWithLoopModeApplied;
     CGSize imageSize = [images.firstObject size];
@@ -524,14 +543,36 @@ static CGFloat const kPreviewPadding = 10.0;
     cropRect.size.width = imageSize.width * cropInfo.size.width;
     cropRect.size.height = imageSize.height * cropInfo.size.height;
     
+    CGRect textRect = [self.previewView convertRect:self.textView.internalTextView.frame fromView:self.textView];
+    textRect.origin.x /= self.previewView.frame.size.width;
+    textRect.origin.y /= self.previewView.frame.size.height;
+    textRect.size.width /= self.previewView.frame.size.width;
+    textRect.size.height /= self.previewView.frame.size.height;
+    
+    BGTextElement *textElement = [[BGTextElement alloc] init];
+    textElement.text = self.burstGroup.burstInfo.text;
+    textElement.textAttributes = self.textAttributes;
+    textElement.textRect = textRect;
+    
+    CGRect watermarkRect = self.watermarkLabel.frame;
+    watermarkRect.origin.x /= self.previewView.frame.size.width;
+    watermarkRect.origin.y /= self.previewView.frame.size.height;
+    watermarkRect.size.width /= self.previewView.frame.size.width;
+    watermarkRect.size.height /= self.previewView.frame.size.height;
+    
+    BGTextElement *watermarkElement = [[BGTextElement alloc] init];
+    watermarkElement.text = self.watermarkLabel.text;
+    watermarkElement.textAttributes = self.watermarkAttributes;
+    watermarkElement.textRect = watermarkRect;
+    
+    NSArray *textElements = @[textElement, watermarkElement];
+    
     BGFinalizedBurst *finalizedBurst =
     [[BGFinalizedBurst alloc] initWithImages:images
                                     cropRect:cropRect
                                   outputSize:outputSize
                                frameDuration:(1.0 / self.burstGroup.burstInfo.framesPerSecond)
-                                        text:self.burstGroup.burstInfo.text
-                                    textRect:textRect
-                              textAttributes:self.textAttributes];
+                                textElements:textElements];
 
     BGShareViewController *shareVC = [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup finalizedBurst:finalizedBurst];
     self.shareTransition = [[BGShareTransition alloc] init];
@@ -709,7 +750,6 @@ shouldChangeTextInRange:(NSRange)range
 - (BGBurstGroupRangePicker *)stealRangePickerView {
     BGBurstGroupRangePicker *rangePicker = self.rangePicker;
     rangePicker.delegate = nil;
-    [rangePicker setEditable:NO animated:NO];
     [rangePicker removeGestureRecognizer:self.rangePickerTapRecognizer];
     self.rangePicker = nil;
     return rangePicker;
@@ -717,7 +757,6 @@ shouldChangeTextInRange:(NSRange)range
 
 - (void)setRangePickerView:(BGBurstGroupRangePicker *)rangePickerView {
     self.rangePicker = rangePickerView;
-    [self.rangePicker setEditable:YES animated:YES];
     self.rangePicker.delegate = self;
     [self.rangePicker addGestureRecognizer:self.rangePickerTapRecognizer];
     [self.view addSubview:self.rangePicker];

@@ -156,7 +156,7 @@ static NSString * const kCellReuseID = @"cell";
                         layout:(UICollectionViewLayout *)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
     
-    return UIEdgeInsetsMake(kBGDefaultPadding, kBGDefaultPadding, kBGDefaultPadding, kBGDefaultPadding);
+    return UIEdgeInsetsMake(kBGLargePadding, kBGLargePadding, kBGLargePadding, kBGLargePadding);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
@@ -170,14 +170,14 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                    layout:(UICollectionViewLayout *)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
-    return kBGDefaultPadding;
+    return kBGLargePadding;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout *)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGFloat elementWidth = collectionView.bounds.size.width - 2 * kBGDefaultPadding;
+    CGFloat elementWidth = collectionView.bounds.size.width - 2 * kBGLargePadding;
     return CGSizeMake(elementWidth, 60.0);
 }
 

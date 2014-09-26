@@ -106,6 +106,7 @@
     [toVC display:NO];
     
     BGBurstGroupRangePicker *rangePickerView = [fromVC stealRangePickerViewForBurstGroup:self.burstGroup];
+    [rangePickerView setEditable:YES animated:YES];
     rangePickerView.frame = [fromVC rectForRangePickerViewForBurstGroup:self.burstGroup];
     [containerView addSubview:rangePickerView];
     
@@ -167,7 +168,9 @@
     CGRect originatingBurstViewRect = [toVC rectForRangePickerViewForBurstGroup:self.burstGroup];
     
     BGBurstGroupRangePicker *rangePickerView = [fromVC stealRangePickerView];
+    [rangePickerView setEditable:NO animated:YES];
     rangePickerView.frame = [fromVC rectForRangePickerView];
+    [containerView addSubview:rangePickerView];
     
     [UIView animateWithDuration:duration / 2 delay:0.0 usingSpringWithDamping:0.7 initialSpringVelocity:0.0 options:0 animations:^{
         fromVC.mediaView.alpha = 0.0;

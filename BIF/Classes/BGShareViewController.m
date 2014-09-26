@@ -194,7 +194,7 @@ static NSString * kCellReuseID = @"cell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cancelCellAtIndexPath:(NSIndexPath *)indexPath {
     BGShareCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseID forIndexPath:indexPath];
-    [cell setDefaultTitle:@"Cancel" workingTitle:nil successTitle:nil imageName:nil];
+    [cell setDefaultTitle:nil workingTitle:nil successTitle:nil imageName:@"xGlyph"];
     return cell;
 }
 
@@ -296,13 +296,8 @@ static NSString * kCellReuseID = @"cell";
     CGFloat endScale = visible ? 1.0 : 0.8;
     CGFloat duration = visible ? 1.5 : 0.75;
     
-    NSArray *cells = self.collectionView.visibleCells;
-    if (!visible) {
-        cells = [cells reverseObjectEnumerator].allObjects;
-    }
-    
     CGFloat delay = 0.0;
-    for (UICollectionViewCell *cell in cells) {
+    for (UICollectionViewCell *cell in self.collectionView.visibleCells) {
         cell.transform = CGAffineTransformMakeScale(startScale, startScale);
         cell.alpha = startAlpha;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

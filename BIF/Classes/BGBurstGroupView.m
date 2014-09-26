@@ -2,7 +2,7 @@
 
 #import "BGBurstGroupView.h"
 
-#define kMaxNumberOfImages 6
+#define kMaxNumberOfImages 5
 
 @import Photos;
 
@@ -44,7 +44,6 @@
     _assets = [self evenlySpacedSubsetOfSize:kMaxNumberOfImages forArray:assets];
     
     [self fetchImages];
-    [self doLayout];
 }
 
 - (void)cancelImageFetchRequests {
@@ -55,7 +54,7 @@
 }
 
 - (CGSize)imageSize {
-    CGFloat imageViewWidth = self.bounds.size.width / self.assets.count;
+    CGFloat imageViewWidth = self.bounds.size.width / kMaxNumberOfImages;
     CGFloat imageViewHeight = self.bounds.size.height;
     return CGSizeMake(imageViewWidth, imageViewHeight);
 }
@@ -110,7 +109,7 @@
         imageView.frame = CGRectMake(roundf(x), 0.0, roundf(imageSize.width), roundf(imageSize.height));
         x += imageSize.width;
         
-        imageView.hidden = i >= self.assets.count;
+        imageView.hidden = i >= kMaxNumberOfImages;
     }
 }
 

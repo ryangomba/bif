@@ -1,14 +1,14 @@
 // Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
+#import "BGTextElement.h"
+
 @interface BGGIFMaker : NSObject
 
 + (void)makeGIFWithImages:(NSArray *)images
                  cropRect:(CGRect)cropRect
                outputSize:(CGFloat)outputSize
             frameDuration:(CGFloat)frameDuration
-                     text:(NSString *)text
-                 textRect:(CGRect)textRect
-           textAttributes:(NSDictionary *)textAttributes
+             textElements:(NSArray *)textElements
                completion:(void(^)(NSString *filePath))completion;
 
 @end

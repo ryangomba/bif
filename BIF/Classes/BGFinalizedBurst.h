@@ -6,9 +6,7 @@
                       cropRect:(CGRect)cropRect
                     outputSize:(CGFloat)outputSize
                  frameDuration:(CGFloat)frameDuration
-                          text:(NSString *)text
-                      textRect:(CGRect)textRect
-                textAttributes:(NSDictionary *)textAttributes;
+                  textElements:(NSArray *)textElements;
 
 - (void)renderWithCompletion:(void (^)(NSString *filePath))completion;
 

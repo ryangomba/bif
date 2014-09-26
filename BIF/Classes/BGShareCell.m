@@ -2,6 +2,8 @@
 
 #import "BGShareCell.h"
 
+#import "BIFHelpers.h"
+
 @interface BGShareCell ()
 
 @property (nonatomic, strong) UILabel *textLabel;
@@ -33,7 +35,6 @@
         _textLabel.textAlignment = NSTextAlignmentCenter;
         _textLabel.textColor = [UIColor whiteColor];
         
-        _textLabel.layer.borderColor = [UIColor whiteColor].CGColor;
         _textLabel.layer.borderWidth = 1.0;
     }
     return _textLabel;
@@ -41,7 +42,7 @@
 
 - (UIImageView *)imageView {
     if (!_imageView) {
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 36.0, 36.0)];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _imageView.contentMode = UIViewContentModeCenter;
     }
     return _imageView;
@@ -65,42 +66,78 @@
     self.successTitle = successTitle;
     
     self.textLabel.text = defaultTitle;
-    self.imageView.image = [UIImage imageNamed:imageName];
+    self.imageView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+    [self setNeedsLayout];
 }
 
 - (void)setShareState:(BGShareCellState)shareState {
     _shareState = shareState;
     
+    NSString *text;
+    BOOL showSpinner;
+    UIColor *color;
+    
     switch (shareState) {
         case BGShareCellStateNormal:
-            self.textLabel.text = self.defaultTitle;
-            [self.spinner removeFromSuperview];
-            [self.contentView addSubview:self.imageView];
+            text = self.defaultTitle;
+            showSpinner = NO;
+            color = [UIColor whiteColor];
             break;
             
         case BGShareCellStateSharing:
-            self.textLabel.text = self.workingTitle;
-            [self.imageView removeFromSuperview];
-            [self.contentView addSubview:self.spinner];
+            text = self.workingTitle;
+            showSpinner = YES;
+            color = HEX_COLOR(0x72daff);
             break;
             
         case BGShareCellStateShared:
-            self.textLabel.text = self.successTitle;
-            [self.spinner removeFromSuperview];
-            [self.contentView addSubview:self.imageView];
+            text = self.successTitle;
+            showSpinner = NO;
+            color = HEX_COLOR(0x73ff7c);
             break;
+    }
+    
+    self.textLabel.text = text;
+    
+    self.textLabel.textColor = color;
+    self.imageView.tintColor = color;
+    self.textLabel.layer.borderColor = color.CGColor;
+    self.imageView.layer.borderColor = color.CGColor;
+    
+    if (showSpinner) {
+        [self.imageView removeFromSuperview];
+        [self.contentView addSubview:self.spinner];
+    } else {
+        [self.spinner removeFromSuperview];
+        [self.contentView addSubview:self.imageView];
     }
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.textLabel.frame = self.contentView.bounds;
-    self.textLabel.layer.cornerRadius = self.contentView.bounds.size.height / 2.0;
-    
-    CGPoint accessoryCenter = CGPointMake(30.0, self.contentView.bounds.size.height / 2.0);
-    self.imageView.center = accessoryCenter;
-    self.spinner.center = accessoryCenter;
+    if (self.defaultTitle.length > 0) {
+        self.textLabel.frame = self.contentView.bounds;
+        self.textLabel.layer.cornerRadius = self.contentView.bounds.size.height / 2.0;
+        self.textLabel.hidden = NO;
+        
+        CGPoint accessoryCenter = CGPointMake(30.0, self.contentView.bounds.size.height / 2.0);
+        self.imageView.frame = CGRectMake(0.0, 0.0, 36.0, 36.0);
+        self.imageView.center = accessoryCenter;
+        self.spinner.center = accessoryCenter;
+        self.imageView.layer.borderWidth = 0.0;
+        
+    } else {
+        self.textLabel.hidden = YES;
+        
+        CGFloat imageViewSize = MIN(self.bounds.size.height, self.bounds.size.width);
+        CGFloat imageViewX = (self.bounds.size.width - imageViewSize) / 2.0;
+        CGFloat imageViewY = (self.bounds.size.height - imageViewSize) / 2.0;
+        self.imageView.frame = CGRectMake(imageViewX, imageViewY, imageViewSize, imageViewSize);
+        self.imageView.layer.cornerRadius = imageViewSize / 2.0;
+        self.imageView.layer.borderWidth = 1.0;
+    }
 }
 
 @end
