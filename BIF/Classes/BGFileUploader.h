@@ -2,7 +2,7 @@
 
 @interface BGFileUploader : NSObject
 
-- (void)uploadFileAtPath:(NSString *)filePath
++ (void)uploadFileAtPath:(NSString *)filePath
                 progress:(void (^)(CGFloat))progressBlock
               completion:(void(^)(NSURL *url, NSError *error))completionBlock;
 

@@ -318,11 +318,10 @@ static NSString * kCellReuseID = @"cell";
     NSIndexPath *cellIndexPath = [self indexPathForShareService:ShareServiceCopyLink];
     BGShareCell *shareCell = (id)[self.collectionView cellForItemAtIndexPath:cellIndexPath];
     shareCell.shareState = BGShareCellStateSharing;
-    shareCell.shareProgress = 0.1;
+    shareCell.shareProgress = 0.05;
     
-    BGFileUploader *fileUploader = [[BGFileUploader alloc] init];
-    [fileUploader uploadFileAtPath:filePath progress:^(CGFloat progress) {
-        shareCell.shareProgress = MAX(0.1, progress);
+    [BGFileUploader uploadFileAtPath:filePath progress:^(CGFloat progress) {
+        shareCell.shareProgress = MAX(0.05, progress);
         
     } completion:^(NSURL *url, NSError *error) {
         if (url) {

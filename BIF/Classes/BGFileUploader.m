@@ -2,29 +2,13 @@
 
 #import "BGFileUploader.h"
 
-@interface BGFileUploader ()<NSURLConnectionDataDelegate>
-
-@property (nonatomic, strong) id selfReference;
-
-@property (nonatomic, assign) unsigned long long uploadDataLength;
-
-@property (nonatomic, strong) NSMutableData *data;
-
-@property (nonatomic, strong) void (^progressBlock)(CGFloat);
-@property (nonatomic, strong) void (^completionBlock)(NSURL *, NSError *);
-
-@end
+#import <AFNetworking/AFNetworking.h>
 
 @implementation BGFileUploader
 
-- (void)uploadFileAtPath:(NSString *)filePath
++ (void)uploadFileAtPath:(NSString *)filePath
                 progress:(void (^)(CGFloat))progressBlock
               completion:(void (^)(NSURL *, NSError *))completionBlock {
-    
-    self.selfReference = self;
-    
-    self.progressBlock = progressBlock;
-    self.completionBlock = completionBlock;
     
     NSURL *url = [NSURL URLWithString:@"https://api.parse.com/1/files/GIF.gif"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -34,62 +18,20 @@
     [request setValue:@"image/gif" forHTTPHeaderField:@"Content-Type"];
     [request setHTTPBodyStream:[NSInputStream inputStreamWithFileAtPath:filePath]];
     
-    self.uploadDataLength = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileSize];
+    double fileLength = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileSize];
     
-    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
-    [connection start];
-}
-
-
-#pragma mark -
-#pragma mark NSURLConnectionDataDelegate
-
-- (void)connection:(NSURLConnection *)connection
-   didSendBodyData:(NSInteger)bytesWritten
- totalBytesWritten:(NSInteger)totalBytesWritten
-totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
-    
-    CGFloat progress = totalBytesWritten / (double)self.uploadDataLength;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.progressBlock(MIN(progress, 0.95));
-    });
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.completionBlock(nil, error);
-        
-        self.progressBlock = nil;
-        self.completionBlock = nil;
-        self.selfReference = nil;
-    });
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    self.data = self.data ?: [NSMutableData data];
-    
-    [self.data appendBytes:data.bytes length:data.length];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    NSURL *url;
-    NSError *error;
-    
-    NSError *parsingError = nil;
-    NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:&parsingError];
-    if (parsingError) {
-        error = parsingError;
-    } else {
-        url = [NSURL URLWithString:responseDict[@"url"]];
-    }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.completionBlock(url, error);
-        
-        self.progressBlock = nil;
-        self.completionBlock = nil;
-        self.selfReference = nil;
-    });
+    AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    requestOperation.responseSerializer = [[AFJSONResponseSerializer alloc] init];
+    [requestOperation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+        CGFloat progress = totalBytesWritten / fileLength;
+        progressBlock(MIN(progress, 0.95));
+    }];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        completionBlock([NSURL URLWithString:responseObject[@"url"]], nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        completionBlock(nil, error);
+    }];
+    [requestOperation start];
 }
 
 @end
