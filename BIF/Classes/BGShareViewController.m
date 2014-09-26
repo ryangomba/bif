@@ -5,6 +5,7 @@
 #import "BGProgressHUD.h"
 #import "BGFileUploader.h"
 #import "BGShareCell.h"
+#import <AFNetworking/AFNetworking.h>
 
 static CGFloat const kCellWidth = 260.0;
 static CGFloat const kCellHeight = 50.0;
@@ -439,39 +440,42 @@ static NSString * kCellReuseID = @"cell";
     NSIndexPath *cellIndexPath = [self indexPathForShareService:ShareServiceTwitter];
     BGShareCell *shareCell = (id)[self.collectionView cellForItemAtIndexPath:cellIndexPath];
     shareCell.shareState = BGShareCellStateSharing;
+    shareCell.shareProgress = 0.05;
     
-    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-        if (!error && responseData) {
-            NSError *parseError = nil;
-            id json = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&parseError];
-            if (!json) {
-                error = [NSError errorWithDomain:@"com.ryangomba.bif" code:0 userInfo:@{NSLocalizedDescriptionKey: @"Error parsing Twitter's response"}];
-                NSLog(@"Parse Error: %@", parseError);
-            } else {
-                NSArray *twitterError = [json[@"errors"] firstObject];
-                if (twitterError) {
-                    NSString *errorDescription = [NSString stringWithFormat:@"Twitter error: %@", twitterError];
-                    error = [NSError errorWithDomain:@"com.ryangomba.bif" code:0 userInfo:@{NSLocalizedDescriptionKey: errorDescription}];
-                    NSLog(@"API Error: %@", json);
-                } else {
-                    NSLog(@"Tweet sent");
-                }
-            }
+    void (^completionBlock)(NSDictionary *, NSError *) = ^(NSDictionary *response, NSError *error) {
+        NSArray *twitterError = [response[@"errors"] firstObject];
+        if (twitterError) {
+            NSString *errorDescription = [NSString stringWithFormat:@"Twitter error: %@", twitterError];
+            error = [NSError errorWithDomain:@"com.ryangomba.bif" code:0 userInfo:@{NSLocalizedDescriptionKey: errorDescription}];
+            NSLog(@"API Error: %@", response);
+        } else {
+            NSLog(@"Tweet sent");
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                shareCell.shareState = BGShareCellStateNormal;
-                [[[UIAlertView alloc] initWithTitle:@"Error Posting Tweet"
-                                            message:error.localizedDescription
-                                           delegate:nil
-                                  cancelButtonTitle:@"Dismiss"
-                                  otherButtonTitles:nil] show];
-            } else {
-                shareCell.shareState = BGShareCellStateShared;
-            }
-        });
+        if (error) {
+            shareCell.shareState = BGShareCellStateNormal;
+            [[[UIAlertView alloc] initWithTitle:@"Error Posting Tweet"
+                                        message:error.localizedDescription
+                                       delegate:nil
+                              cancelButtonTitle:@"Dismiss"
+                              otherButtonTitles:nil] show];
+        } else {
+            shareCell.shareState = BGShareCellStateShared;
+        }
+    };
+    
+    AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request.preparedURLRequest];
+    requestOperation.responseSerializer = [[AFJSONResponseSerializer alloc] init];
+    [requestOperation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+        CGFloat progress = totalBytesWritten / (double)totalBytesExpectedToWrite;
+        shareCell.shareProgress = MIN(MAX(progress, 0.05), 0.95);
     }];
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        completionBlock(responseObject, nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        completionBlock(nil, error);
+    }];
+    [requestOperation start];
 }
 
 
