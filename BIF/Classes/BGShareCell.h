@@ -9,6 +9,7 @@ typedef NS_ENUM(NSInteger, BGShareCellState) {
 @interface BGShareCell : UICollectionViewCell
 
 @property (nonatomic, assign) BGShareCellState shareState;
+@property (nonatomic, assign) CGFloat shareProgress;
 
 - (void)setDefaultTitle:(NSString *)defaultTitle
            workingTitle:(NSString *)workingTitle

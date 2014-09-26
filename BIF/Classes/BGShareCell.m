@@ -3,12 +3,14 @@
 #import "BGShareCell.h"
 
 #import "BIFHelpers.h"
+#import "BGPieProgressView.h"
 
 @interface BGShareCell ()
 
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIActivityIndicatorView *spinner;
+//@property (nonatomic, strong) UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) BGPieProgressView *progressView;
 
 @property (nonatomic, copy) NSString *defaultTitle;
 @property (nonatomic, copy) NSString *workingTitle;
@@ -48,12 +50,25 @@
     return _imageView;
 }
 
-- (UIActivityIndicatorView *)spinner {
-    if (!_spinner) {
-        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        [_spinner startAnimating];
+//- (UIActivityIndicatorView *)spinner {
+//    if (!_spinner) {
+//        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+//        [_spinner startAnimating];
+//    }
+//    return _spinner;
+//}
+
+- (BGPieProgressView *)progressView {
+    if (!_progressView) {
+        _progressView = [[BGPieProgressView alloc] initWithFrame:CGRectMake(0.0, 0.0, 16.0, 16.0)];
     }
-    return _spinner;
+    return _progressView;
+}
+
+- (void)setShareProgress:(CGFloat)shareProgress {
+    _shareProgress = shareProgress;
+    
+    self.progressView.progress = shareProgress;
 }
 
 - (void)setDefaultTitle:(NSString *)defaultTitle
@@ -101,15 +116,18 @@
     self.textLabel.text = text;
     
     self.textLabel.textColor = color;
-    self.imageView.tintColor = color;
     self.textLabel.layer.borderColor = color.CGColor;
+    self.imageView.tintColor = color;
     self.imageView.layer.borderColor = color.CGColor;
+    self.progressView.color = color;
     
     if (showSpinner) {
         [self.imageView removeFromSuperview];
-        [self.contentView addSubview:self.spinner];
+//        [self.contentView addSubview:self.spinner];
+        [self.contentView addSubview:self.progressView];
     } else {
-        [self.spinner removeFromSuperview];
+//        [self.spinner removeFromSuperview];
+        [self.progressView removeFromSuperview];
         [self.contentView addSubview:self.imageView];
     }
 }
@@ -125,7 +143,8 @@
         CGPoint accessoryCenter = CGPointMake(30.0, self.contentView.bounds.size.height / 2.0);
         self.imageView.frame = CGRectMake(0.0, 0.0, 36.0, 36.0);
         self.imageView.center = accessoryCenter;
-        self.spinner.center = accessoryCenter;
+//        self.spinner.center = accessoryCenter;
+        self.progressView.center = accessoryCenter;
         self.imageView.layer.borderWidth = 0.0;
         
     } else {

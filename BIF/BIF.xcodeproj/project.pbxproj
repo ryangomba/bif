@@ -37,6 +37,7 @@
 		94CA403F19D6180800F6C4A7 /* BGTextElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA403E19D6180800F6C4A7 /* BGTextElement.m */; };
 		94CA404219D61C2300F6C4A7 /* BGEntryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA404119D61C2300F6C4A7 /* BGEntryViewController.m */; };
 		94CA404519D61C9900F6C4A7 /* BGEntryTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA404419D61C9900F6C4A7 /* BGEntryTransition.m */; };
+		94CA404819D6202800F6C4A7 /* BGPieProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA404719D6202800F6C4A7 /* BGPieProgressView.m */; };
 		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
 		94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */; };
 		94F2DB4B1965C19D00FBCA07 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */; };
@@ -102,6 +103,8 @@
 		94CA404119D61C2300F6C4A7 /* BGEntryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGEntryViewController.m; sourceTree = "<group>"; };
 		94CA404319D61C9900F6C4A7 /* BGEntryTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGEntryTransition.h; sourceTree = "<group>"; };
 		94CA404419D61C9900F6C4A7 /* BGEntryTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGEntryTransition.m; sourceTree = "<group>"; };
+		94CA404619D6202800F6C4A7 /* BGPieProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGPieProgressView.h; sourceTree = "<group>"; };
+		94CA404719D6202800F6C4A7 /* BGPieProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGPieProgressView.m; sourceTree = "<group>"; };
 		94F2DB401964A74400FBCA07 /* BIFHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIFHelpers.h; sourceTree = "<group>"; };
 		94F2DB441964CA0000FBCA07 /* BGTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGTextView.h; sourceTree = "<group>"; };
 		94F2DB451964CA0000FBCA07 /* BGTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGTextView.m; sourceTree = "<group>"; };
@@ -261,6 +264,8 @@
 				94F2DB451964CA0000FBCA07 /* BGTextView.m */,
 				94CA402619D320A900F6C4A7 /* BGTextButton.h */,
 				94CA402719D320A900F6C4A7 /* BGTextButton.m */,
+				94CA404619D6202800F6C4A7 /* BGPieProgressView.h */,
+				94CA404719D6202800F6C4A7 /* BGPieProgressView.m */,
 			);
 			name = "Common UI";
 			sourceTree = "<group>";
@@ -378,6 +383,7 @@
 				94CA403019D3423500F6C4A7 /* BGEditTransition.m in Sources */,
 				94CA404219D61C2300F6C4A7 /* BGEntryViewController.m in Sources */,
 				94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */,
+				94CA404819D6202800F6C4A7 /* BGPieProgressView.m in Sources */,
 				94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */,
 				94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */,
 				94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */,
