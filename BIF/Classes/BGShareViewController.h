@@ -1,6 +1,7 @@
 // Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
 #import "BGBurstGroup.h"
+#import "BGFinalizedBurst.h"
 
 @class BGShareViewController;
 @protocol BGShareViewControllerDelegate <NSObject>
@@ -13,6 +14,6 @@
 
 @property (nonatomic, weak) id<BGShareViewControllerDelegate> delegate;
 
-- (instancetype)initWithBurstGroup:(BGBurstGroup *)burstGroup filePath:(NSString *)filePath;
+- (instancetype)initWithBurstGroup:(BGBurstGroup *)burstGroup finalizedBurst:(BGFinalizedBurst *)finalizedBurst;
 
 @end

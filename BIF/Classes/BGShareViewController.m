@@ -16,15 +16,22 @@ static CGFloat const kVerticalInset = 100.0;
 @import Accounts;
 @import Social;
 
+typedef NS_ENUM(NSInteger, ShareSection) {
+    ShareSectionCancel,
+    ShareSectionServices,
+    ShareSectionCount,
+};
+
 typedef NS_ENUM(NSInteger, ShareService) {
-    ShareServiceCancel,
     ShareServiceCopyLink,
     ShareServiceMessage,
     ShareServiceTwitter,
     ShareServiceCount,
     ShareServiceFacebook,
-    ShareServiceVine,
+    ShareServiceEmail,
+    ShareServiceWhatsapp,
     ShareServiceTumblr,
+    ShareServiceVine,
 };
 
 static NSString * kCellReuseID = @"cell";
@@ -35,10 +42,12 @@ static NSString * kCellReuseID = @"cell";
 }
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
+@property (nonatomic, strong) BGFinalizedBurst *finalizedBurst;
 @property (nonatomic, copy) NSString *filePath;
 
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) BGProgressHUD *progressHUD; // TEMP
+
+@property (nonatomic, assign) BOOL hasBeenMadeVisibleOnce;
 
 @end
 
@@ -47,10 +56,14 @@ static NSString * kCellReuseID = @"cell";
 #pragma mark -
 #pragma mark NSObject
 
-- (instancetype)initWithBurstGroup:(BGBurstGroup *)burstGroup filePath:(NSString *)filePath {
+- (instancetype)initWithBurstGroup:(BGBurstGroup *)burstGroup finalizedBurst:(BGFinalizedBurst *)finalizedBurst {
     if (self = [super initWithNibName:nil bundle:nil]) {
         self.burstGroup = burstGroup;
-        self.filePath = filePath;
+        self.finalizedBurst = finalizedBurst;
+        
+        [self.finalizedBurst renderWithCompletion:^(NSString *filePath) {
+            self.filePath = filePath;
+        }];
         
         self.title = @"Share";
     }
@@ -79,13 +92,10 @@ static NSString * kCellReuseID = @"cell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self animateShareOptionsVisible:YES];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    [self animateShareOptionsVisible:NO];
+    if (!self.hasBeenMadeVisibleOnce) {
+        self.hasBeenMadeVisibleOnce = YES;
+        [self animateShareOptionsVisible:YES];
+    }
 }
 
 
@@ -116,14 +126,40 @@ static NSString * kCellReuseID = @"cell";
 
 
 #pragma mark -
+#pragma mark Helpers
+
+- (CGFloat)sectionSpacing {
+    CGFloat cancelSectionHeight = kCellHeight;
+    CGFloat serviceSectionHeight = ShareServiceCount * kCellHeight + (ShareSectionCount - 1) * kCellHeight;
+    return self.view.bounds.size.height - 2 * kVerticalInset - cancelSectionHeight - serviceSectionHeight;
+}
+
+- (NSIndexPath *)indexPathForShareService:(ShareService)shareService {
+    return [NSIndexPath indexPathForItem:shareService inSection:ShareSectionServices];
+}
+
+- (void)finish {
+    [self.delegate shareViewControllerWantsDismissal:self];
+    [self animateShareOptionsVisible:NO];
+}
+
+
+#pragma mark -
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    return ShareSectionCount;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return ShareServiceCount;
+    switch (section) {
+        case ShareSectionCancel:
+            return 1;
+        case ShareSectionServices:
+            return ShareServiceCount;
+        default:
+            return 0;
+    }
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
@@ -135,6 +171,9 @@ static NSString * kCellReuseID = @"cell";
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    if (section == ShareSectionCancel) {
+        return UIEdgeInsetsMake(0.0, 0.0, [self sectionSpacing], 0.0);
+    }
     return UIEdgeInsetsZero;
 }
 
@@ -143,29 +182,49 @@ static NSString * kCellReuseID = @"cell";
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    switch (indexPath.section) {
+        case ShareSectionCancel:
+            return [self collectionView:collectionView cancelCellAtIndexPath:indexPath];
+        case ShareSectionServices:
+            return [self collectionView:collectionView cellForShareServiceAtIndexPath:indexPath];
+        default:
+            return nil;
+    }
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cancelCellAtIndexPath:(NSIndexPath *)indexPath {
+    BGShareCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseID forIndexPath:indexPath];
+    [cell setDefaultTitle:@"Cancel" workingTitle:nil successTitle:nil imageName:nil];
+    return cell;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForShareServiceAtIndexPath:(NSIndexPath *)indexPath {
     BGShareCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseID forIndexPath:indexPath];
     
     switch (indexPath.row) {
-        case ShareServiceCancel:
-            cell.textLabel.text = @"Cancel";
-            break;
         case ShareServiceCopyLink:
-            cell.textLabel.text = @"Copy Link";
+            [cell setDefaultTitle:@"Copy Link" workingTitle:@"Copying Link..." successTitle:@"Link Copied!" imageName:@"linkGlyph"];
             break;
         case ShareServiceMessage:
-            cell.textLabel.text = @"Message";
+            [cell setDefaultTitle:@"Message" workingTitle:nil successTitle:nil imageName:@"messageGlyph"];
             break;
         case ShareServiceTwitter:
-            cell.textLabel.text = @"Twitter";
+            [cell setDefaultTitle:@"Twitter" workingTitle:@"Tweeting..." successTitle:@"Tweet sent!" imageName:@"twitterGlyph"];
             break;
         case ShareServiceFacebook:
-            cell.textLabel.text = @"Facebook";
+            [cell setDefaultTitle:@"Facebook" workingTitle:nil successTitle:nil imageName:@"facebookGlyph"];
             break;
-        case ShareServiceVine:
-            cell.textLabel.text = @"Vine";
+        case ShareServiceEmail:
+            [cell setDefaultTitle:@"Email" workingTitle:nil successTitle:nil imageName:@"emailGlyph"];
+            break;
+        case ShareServiceWhatsapp:
+            [cell setDefaultTitle:@"WhatsApp" workingTitle:nil successTitle:nil imageName:@"whatsappGlyph"];
             break;
         case ShareServiceTumblr:
-            cell.textLabel.text = @"Tumblr";
+            [cell setDefaultTitle:@"Tumblr" workingTitle:nil successTitle:nil imageName:@"tumblrGlyph"];
+            break;
+        case ShareServiceVine:
+            [cell setDefaultTitle:@"Vine" workingTitle:nil successTitle:nil imageName:@"vineGlyph"];
             break;
         default:
             break;
@@ -181,11 +240,12 @@ static NSString * kCellReuseID = @"cell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:collectionView.indexPathsForSelectedItems.firstObject animated:YES];
     
+    if (indexPath.section == ShareSectionCancel) {
+        [self finish];
+        return;
+    }
+    
     switch (indexPath.row) {
-        case ShareServiceCancel: {
-            [self.delegate shareViewControllerWantsDismissal:self];
-        } break;
-            
         case ShareServiceCopyLink: {
             [self uploadGIFAtPath:self.filePath];
         } break;
@@ -197,16 +257,24 @@ static NSString * kCellReuseID = @"cell";
         case ShareServiceTwitter: {
             [self tweetGIFAtPath:self.filePath];
         } break;
+
+        case ShareServiceEmail: {
+            // TODO
+        } break;
             
         case ShareServiceFacebook: {
             // TODO
         } break;
             
-        case ShareServiceVine: {
+        case ShareServiceWhatsapp: {
             // TODO
         } break;
             
         case ShareServiceTumblr: {
+            // TODO
+        } break;
+            
+        case ShareServiceVine: {
             // TODO
         } break;
             
@@ -225,7 +293,7 @@ static NSString * kCellReuseID = @"cell";
     CGFloat startScale = visible ? 0.8 : 1.0;
     CGFloat startAlpha = visible ? 0.0 : 1.0;
     CGFloat endAlpha = visible ? 1.0 : 0.0;
-    CGFloat endScale = visible ? 1.0 : 0.05;
+    CGFloat endScale = visible ? 1.0 : 0.8;
     CGFloat duration = visible ? 1.5 : 0.75;
     
     NSArray *cells = self.collectionView.visibleCells;
@@ -252,31 +320,20 @@ static NSString * kCellReuseID = @"cell";
 #pragma mark Private
 
 - (void)uploadGIFAtPath:(NSString *)filePath {
-    self.progressHUD = [[BGProgressHUD alloc] init];
-    self.progressHUD.center = self.view.center;
-    self.progressHUD.text = @"Uploading GIF";
-    [self.view addSubview:self.progressHUD];
-    self.view.userInteractionEnabled = NO;
+    NSIndexPath *cellIndexPath = [self indexPathForShareService:ShareServiceCopyLink];
+    BGShareCell *shareCell = (id)[self.collectionView cellForItemAtIndexPath:cellIndexPath];
+    shareCell.shareState = BGShareCellStateSharing;
     
     [BGFileUploader uploadFileAtPath:filePath completion:^(NSURL *url, NSError *error) {
-        [self.progressHUD removeFromSuperview];
-        self.view.userInteractionEnabled = YES;
-        
         if (url) {
+            shareCell.shareState = BGShareCellStateShared;
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.URL = url;
             
-            [[[UIAlertView alloc] initWithTitle:@"GIF Created!"
-                                        message:@"A URL has been copied to your clipboard."
-                                       delegate:nil
-                              cancelButtonTitle:@"Sweet"
-                              otherButtonTitles:nil] show];
-            
-//            [[UIApplication sharedApplication] openURL:url];
-            
         } else {
-            [[[UIAlertView alloc] initWithTitle:@"Error"
-                                        message:error.localizedDescription
+            shareCell.shareState = BGShareCellStateNormal;
+            [[[UIAlertView alloc] initWithTitle:@"Error Uploading GIF"
+                                        message:@"Please check your internet connection and try again"
                                        delegate:nil
                               cancelButtonTitle:@"Dismiss"
                               otherButtonTitles:nil] show];
@@ -360,6 +417,10 @@ static NSString * kCellReuseID = @"cell";
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        return;
+    }
+    
     ACAccount *account = _shownAccounts[buttonIndex - 1];
     
     NSURL *URL = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/update_with_media.json"];
@@ -376,37 +437,41 @@ static NSString * kCellReuseID = @"cell";
     NSData *imageData = [[NSFileManager defaultManager] contentsAtPath:self.filePath];
     [request addMultipartData:imageData withName:@"media[]" type:@"image/gif" filename:@"image.gif"];
     
-    self.progressHUD = [[BGProgressHUD alloc] init];
-    self.progressHUD.center = self.view.center;
-    self.progressHUD.text = @"Tweeting GIF";
-    [self.view addSubview:self.progressHUD];
-    self.view.userInteractionEnabled = NO;
+    NSIndexPath *cellIndexPath = [self indexPathForShareService:ShareServiceTwitter];
+    BGShareCell *shareCell = (id)[self.collectionView cellForItemAtIndexPath:cellIndexPath];
+    shareCell.shareState = BGShareCellStateSharing;
     
     [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.progressHUD removeFromSuperview];
-            self.view.userInteractionEnabled = YES;
-        });
-        
-        if (responseData) {
+        if (!error && responseData) {
             NSError *parseError = nil;
             id json = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&parseError];
             if (!json) {
+                error = [NSError errorWithDomain:@"com.ryangomba.bif" code:0 userInfo:@{NSLocalizedDescriptionKey: @"Error parsing Twitter's response"}];
                 NSLog(@"Parse Error: %@", parseError);
             } else {
-                NSLog(@"%@", json);
+                NSArray *twitterError = [json[@"errors"] firstObject];
+                if (twitterError) {
+                    NSString *errorDescription = [NSString stringWithFormat:@"Twitter error: %@", twitterError];
+                    error = [NSError errorWithDomain:@"com.ryangomba.bif" code:0 userInfo:@{NSLocalizedDescriptionKey: errorDescription}];
+                    NSLog(@"API Error: %@", json);
+                } else {
+                    NSLog(@"Tweet sent");
+                }
             }
-            
-        } else {
-            NSLog(@"Request Error: %@", [error localizedDescription]);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[[UIAlertView alloc] initWithTitle:@"Error"
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                shareCell.shareState = BGShareCellStateNormal;
+                [[[UIAlertView alloc] initWithTitle:@"Error Posting Tweet"
                                             message:error.localizedDescription
                                            delegate:nil
-                                  cancelButtonTitle:@"Ok"
+                                  cancelButtonTitle:@"Dismiss"
                                   otherButtonTitles:nil] show];
-            });
-        }
+            } else {
+                shareCell.shareState = BGShareCellStateShared;
+            }
+        });
     }];
 }
 

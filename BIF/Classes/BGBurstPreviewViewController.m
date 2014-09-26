@@ -5,7 +5,6 @@
 #import "BGBurstGroupRangePicker.h"
 #import "BGBurstPreviewView.h"
 #import "BGGIFMaker.h"
-#import "BGProgressHUD.h"
 #import "BGBurstInfo.h"
 #import "BGDatabase.h"
 #import "BIFHelpers.h"
@@ -13,6 +12,7 @@
 #import "BGShareViewController.h"
 #import "BGTextButton.h"
 #import "BGShareTransition.h"
+#import "BGFinalizedBurst.h"
 
 static CGFloat const kButtonSize = 56.0;
 static CGFloat const kRangePickerHeight = 60.0;
@@ -40,8 +40,6 @@ static CGFloat const kPreviewPadding = 10.0;
 @property (nonatomic, strong) UISlider *speedSlider;
 @property (nonatomic, strong) BGTextButton *repeatButton;
 @property (nonatomic, strong) BGTextButton *textButton;
-
-@property (nonatomic, strong) BGProgressHUD *progressHUD;
 
 @property (nonatomic, assign) CGFloat currentKeyboardTopY;
 
@@ -508,12 +506,6 @@ static CGFloat const kPreviewPadding = 10.0;
 }
 
 - (void)onShareButtonTapped {
-    self.progressHUD = [[BGProgressHUD alloc] init];
-    self.progressHUD.center = self.view.center;
-    self.progressHUD.text = @"Generating GIF";
-    [self.view addSubview:self.progressHUD];
-    self.view.userInteractionEnabled = NO;
-    
     // HACK
     CGFloat outputSize = 320.0;
     CGRect textRect = [self.previewView convertRect:self.textView.internalTextView.frame fromView:self.textView];
@@ -532,24 +524,20 @@ static CGFloat const kPreviewPadding = 10.0;
     cropRect.size.width = imageSize.width * cropInfo.size.width;
     cropRect.size.height = imageSize.height * cropInfo.size.height;
     
-    [BGGIFMaker makeGIFWithImages:images
-                         cropRect:cropRect
-                       outputSize:outputSize
-                    frameDuration:(1.0 / self.burstGroup.burstInfo.framesPerSecond)
-                             text:self.burstGroup.burstInfo.text
-                         textRect:textRect
-                   textAttributes:self.textAttributes
-                       completion:^(NSString *filePath)
-    {
-        [self.progressHUD removeFromSuperview];
-        self.view.userInteractionEnabled = YES;
-        
-        BGShareViewController *shareVC = [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup filePath:filePath];
-        self.shareTransition = [[BGShareTransition alloc] init];
-        shareVC.transitioningDelegate = self.shareTransition;
-        [self presentViewController:shareVC animated:YES completion:nil];
-        shareVC.delegate = self;
-    }];
+    BGFinalizedBurst *finalizedBurst =
+    [[BGFinalizedBurst alloc] initWithImages:images
+                                    cropRect:cropRect
+                                  outputSize:outputSize
+                               frameDuration:(1.0 / self.burstGroup.burstInfo.framesPerSecond)
+                                        text:self.burstGroup.burstInfo.text
+                                    textRect:textRect
+                              textAttributes:self.textAttributes];
+
+    BGShareViewController *shareVC = [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup finalizedBurst:finalizedBurst];
+    self.shareTransition = [[BGShareTransition alloc] init];
+    shareVC.transitioningDelegate = self.shareTransition;
+    [self presentViewController:shareVC animated:YES completion:nil];
+    shareVC.delegate = self;
 }
 
 - (void)onRangePickerTapped:(UITapGestureRecognizer *)recognizer {

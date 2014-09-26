@@ -70,7 +70,7 @@
 #pragma mark Private
 
 - (CGFloat)animationDuration {
-    return self.isPresenting ? 0.5 : 1.0;
+    return self.isPresenting ? 0.5 : 0.8;
 }
 
 - (void)animatePresentTransition:(id <UIViewControllerContextTransitioning>)transitionContext {
