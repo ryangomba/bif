@@ -2,7 +2,7 @@
 
 #import "BGAppDelegate.h"
 
-#import "BGBurstListViewController.h"
+#import "BGEntryViewController.h"
 
 @interface BGAppDelegate ()
 
@@ -15,7 +15,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    BGBurstListViewController *vc = [[BGBurstListViewController alloc] initWithNibName:nil bundle:nil];
+    BGEntryViewController *vc = [[BGEntryViewController alloc] initWithNibName:nil bundle:nil];
     self.window.rootViewController = vc;
     
     [self.window makeKeyAndVisible];

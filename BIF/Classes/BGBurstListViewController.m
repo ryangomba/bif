@@ -75,7 +75,10 @@ static NSString * const kCellReuseID = @"cell";
         _navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectZero];
         _navigationBar.barTintColor = HEX_COLOR(0xf63440);
         _navigationBar.tintColor = [UIColor whiteColor];
-        _navigationBar.titleTextAttributes = @{ NSForegroundColorAttributeName: [UIColor whiteColor] };
+        _navigationBar.titleTextAttributes = @{
+            NSFontAttributeName: [UIFont fontWithName:@"ProximaNovaSoft-Medium" size:18.0],
+            NSForegroundColorAttributeName: [UIColor whiteColor]
+        };
         _navigationBar.translucent = NO;
     }
     return _navigationBar;
