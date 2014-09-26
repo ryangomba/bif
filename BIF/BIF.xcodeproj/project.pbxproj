@@ -30,6 +30,9 @@
 		94CA402C19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402A19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf */; };
 		94CA402D19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402B19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf */; };
 		94CA403019D3423500F6C4A7 /* BGEditTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402F19D3423500F6C4A7 /* BGEditTransition.m */; };
+		94CA403319D59E5F00F6C4A7 /* BGShareTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA403219D59E5F00F6C4A7 /* BGShareTransition.m */; };
+		94CA403619D5A25B00F6C4A7 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA403519D5A25B00F6C4A7 /* UIImage+ImageEffects.m */; };
+		94CA403919D5A61200F6C4A7 /* BGShareCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA403819D5A61200F6C4A7 /* BGShareCell.m */; };
 		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
 		94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */; };
 		94F2DB4B1965C19D00FBCA07 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */; };
@@ -81,6 +84,12 @@
 		94CA402B19D3236D00F6C4A7 /* ProximaNovaSoft-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaSoft-Medium.otf"; sourceTree = "<group>"; };
 		94CA402E19D3423500F6C4A7 /* BGEditTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGEditTransition.h; sourceTree = "<group>"; };
 		94CA402F19D3423500F6C4A7 /* BGEditTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGEditTransition.m; sourceTree = "<group>"; };
+		94CA403119D59E5F00F6C4A7 /* BGShareTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGShareTransition.h; sourceTree = "<group>"; };
+		94CA403219D59E5F00F6C4A7 /* BGShareTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGShareTransition.m; sourceTree = "<group>"; };
+		94CA403419D5A25B00F6C4A7 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		94CA403519D5A25B00F6C4A7 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		94CA403719D5A61200F6C4A7 /* BGShareCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGShareCell.h; sourceTree = "<group>"; };
+		94CA403819D5A61200F6C4A7 /* BGShareCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGShareCell.m; sourceTree = "<group>"; };
 		94F2DB401964A74400FBCA07 /* BIFHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIFHelpers.h; sourceTree = "<group>"; };
 		94F2DB441964CA0000FBCA07 /* BGTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGTextView.h; sourceTree = "<group>"; };
 		94F2DB451964CA0000FBCA07 /* BGTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGTextView.m; sourceTree = "<group>"; };
@@ -185,6 +194,8 @@
 		94F2DB55196B44A400FBCA07 /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
+				94CA403419D5A25B00F6C4A7 /* UIImage+ImageEffects.h */,
+				94CA403519D5A25B00F6C4A7 /* UIImage+ImageEffects.m */,
 				94A107AE1957D61E009E7A5F /* BGGIFMaker.h */,
 				94A107AF1957D61E009E7A5F /* BGGIFMaker.m */,
 				94A107B21957D61E009E7A5F /* UIImage+Resize.h */,
@@ -211,6 +222,10 @@
 				94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */,
 				94A107AC1957D61E009E7A5F /* BGFileUploader.h */,
 				94A107AD1957D61E009E7A5F /* BGFileUploader.m */,
+				94CA403119D59E5F00F6C4A7 /* BGShareTransition.h */,
+				94CA403219D59E5F00F6C4A7 /* BGShareTransition.m */,
+				94CA403719D5A61200F6C4A7 /* BGShareCell.h */,
+				94CA403819D5A61200F6C4A7 /* BGShareCell.m */,
 			);
 			name = Sharing;
 			sourceTree = "<group>";
@@ -334,6 +349,7 @@
 				94A107C11957D61E009E7A5F /* BGBurstPreviewViewController.m in Sources */,
 				94A107B81957D61E009E7A5F /* BGAppDelegate.m in Sources */,
 				94A107BD1957D61E009E7A5F /* BGBurstGroupView.m in Sources */,
+				94CA403319D59E5F00F6C4A7 /* BGShareTransition.m in Sources */,
 				94CA402819D320A900F6C4A7 /* BGTextButton.m in Sources */,
 				94A107B91957D61E009E7A5F /* BGBurstGroup.m in Sources */,
 				94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */,
@@ -343,8 +359,10 @@
 				94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */,
 				94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */,
 				94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */,
+				94CA403919D5A61200F6C4A7 /* BGShareCell.m in Sources */,
 				94A107C61957D61E009E7A5F /* UIImage+Resize.m in Sources */,
 				94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */,
+				94CA403619D5A25B00F6C4A7 /* UIImage+ImageEffects.m in Sources */,
 				94A107BB1957D61E009E7A5F /* BGBurstGroupFetcher.m in Sources */,
 				94A107C21957D61E009E7A5F /* BGDatabase.m in Sources */,
 				94A107C91957D61E009E7A5F /* main.m in Sources */,

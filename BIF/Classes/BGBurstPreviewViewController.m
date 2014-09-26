@@ -12,6 +12,7 @@
 #import "BGTextView.h"
 #import "BGShareViewController.h"
 #import "BGTextButton.h"
+#import "BGShareTransition.h"
 
 static CGFloat const kButtonSize = 56.0;
 static CGFloat const kRangePickerHeight = 60.0;
@@ -45,6 +46,8 @@ static CGFloat const kPreviewPadding = 10.0;
 @property (nonatomic, assign) CGFloat currentKeyboardTopY;
 
 @property (nonatomic, assign) BOOL showingText;
+
+@property (nonatomic, strong) BGShareTransition *shareTransition;
 
 @end
 
@@ -277,6 +280,7 @@ static CGFloat const kPreviewPadding = 10.0;
 - (BGBurstPreviewView *)previewView {
     if (!_previewView) {
         _previewView = [[BGBurstPreviewView alloc] initWithFrame:CGRectZero];
+        _previewView.layer.anchorPoint = CGPointMake(0.5, 1.0);
         _previewView.backgroundColor = [UIColor whiteColor];
         _previewView.delegate = self;
         
@@ -541,7 +545,9 @@ static CGFloat const kPreviewPadding = 10.0;
         self.view.userInteractionEnabled = YES;
         
         BGShareViewController *shareVC = [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup filePath:filePath];
-        [self presentViewController:shareVC animated:NO completion:nil];
+        self.shareTransition = [[BGShareTransition alloc] init];
+        shareVC.transitioningDelegate = self.shareTransition;
+        [self presentViewController:shareVC animated:YES completion:nil];
         shareVC.delegate = self;
     }];
 }
@@ -680,7 +686,7 @@ shouldChangeTextInRange:(NSRange)range
 #pragma mark BGShareViewControllerDelegate
 
 - (void)shareViewControllerWantsDismissal:(BGShareViewController *)controller {
-    [controller dismissViewControllerAnimated:NO completion:nil];
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -726,6 +732,7 @@ shouldChangeTextInRange:(NSRange)range
     [self.rangePicker setEditable:YES animated:YES];
     self.rangePicker.delegate = self;
     [self.rangePicker addGestureRecognizer:self.rangePickerTapRecognizer];
+    [self.view addSubview:self.rangePicker];
 }
 
 - (UIView *)mediaView {

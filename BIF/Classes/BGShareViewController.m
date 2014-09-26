@@ -4,6 +4,12 @@
 
 #import "BGProgressHUD.h"
 #import "BGFileUploader.h"
+#import "BGShareCell.h"
+
+static CGFloat const kCellWidth = 260.0;
+static CGFloat const kCellHeight = 50.0;
+static CGFloat const kCellSpacing = 25.0;
+static CGFloat const kVerticalInset = 100.0;
 
 // TODO move
 @import MessageUI;
@@ -23,7 +29,7 @@ typedef NS_ENUM(NSInteger, ShareService) {
 
 static NSString * kCellReuseID = @"cell";
 
-@interface BGShareViewController ()<UITableViewDataSource, UITableViewDelegate, MFMessageComposeViewControllerDelegate, UIActionSheetDelegate> {
+@interface BGShareViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, MFMessageComposeViewControllerDelegate, UIActionSheetDelegate> {
     // TEMP
     NSMutableArray *_shownAccounts;
 }
@@ -31,7 +37,7 @@ static NSString * kCellReuseID = @"cell";
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
 @property (nonatomic, copy) NSString *filePath;
 
-@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) BGProgressHUD *progressHUD; // TEMP
 
 @end
@@ -58,12 +64,28 @@ static NSString * kCellReuseID = @"cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.tableView.frame = self.view.bounds;
-    [self.view addSubview:self.tableView];
+    self.view.backgroundColor = [UIColor clearColor];
+    
+    CGFloat horizontalInset = (self.view.bounds.size.width - kCellWidth) / 2;
+    self.collectionView.contentInset = UIEdgeInsetsMake(kVerticalInset, horizontalInset, 0.0, horizontalInset);
+    self.collectionView.frame = self.view.bounds;
+    [self.view addSubview:self.collectionView];
     
     // warm it up
     MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
     NSLog(@"Warmed %@", controller.class);
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self animateShareOptionsVisible:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self animateShareOptionsVisible:NO];
 }
 
 
@@ -78,36 +100,50 @@ static NSString * kCellReuseID = @"cell";
 #pragma mark -
 #pragma mark Properties
 
-- (UITableView *)tableView {
-    if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero];
-        _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
+- (UICollectionView *)collectionView {
+    if (!_collectionView) {
+        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        _collectionView.backgroundColor = [UIColor clearColor];
+        _collectionView.dataSource = self;
+        _collectionView.delegate = self;
         
-        [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kCellReuseID];
+        [_collectionView registerClass:[BGShareCell class] forCellWithReuseIdentifier:kCellReuseID];
     }
-    return _tableView;
+    return _collectionView;
 }
 
 
 #pragma mark -
 #pragma mark UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return ShareServiceCount;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 56.0;
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+    return 0.0;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellReuseID forIndexPath:indexPath];
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return kCellSpacing;
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsZero;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return CGSizeMake(kCellWidth, kCellHeight);
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    BGShareCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseID forIndexPath:indexPath];
     
     switch (indexPath.row) {
         case ShareServiceCancel:
@@ -142,8 +178,8 @@ static NSString * kCellReuseID = @"cell";
 #pragma mark -
 #pragma mark UITableViewDelegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow animated:YES];
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [collectionView deselectItemAtIndexPath:collectionView.indexPathsForSelectedItems.firstObject animated:YES];
     
     switch (indexPath.row) {
         case ShareServiceCancel: {
@@ -176,6 +212,38 @@ static NSString * kCellReuseID = @"cell";
             
         default:
             break;
+    }
+}
+
+
+#pragma mark -
+#pragma mark Animation
+
+- (void)animateShareOptionsVisible:(BOOL)visible {
+    [self.collectionView layoutIfNeeded];
+    
+    CGFloat startScale = visible ? 0.8 : 1.0;
+    CGFloat startAlpha = visible ? 0.0 : 1.0;
+    CGFloat endAlpha = visible ? 1.0 : 0.0;
+    CGFloat endScale = visible ? 1.0 : 0.05;
+    CGFloat duration = visible ? 1.5 : 0.75;
+    
+    NSArray *cells = self.collectionView.visibleCells;
+    if (!visible) {
+        cells = [cells reverseObjectEnumerator].allObjects;
+    }
+    
+    CGFloat delay = 0.0;
+    for (UICollectionViewCell *cell in cells) {
+        cell.transform = CGAffineTransformMakeScale(startScale, startScale);
+        cell.alpha = startAlpha;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:duration delay:0.0 usingSpringWithDamping:0.8 initialSpringVelocity:0.0 options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionAllowUserInteraction animations:^{
+                cell.transform = CGAffineTransformMakeScale(endScale, endScale);
+                cell.alpha = endAlpha;
+            } completion:nil];
+        });
+        delay += 0.1;
     }
 }
 
