@@ -64,7 +64,7 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
     };
     
     if (animated) {
-        [UIView animateWithDuration:0.5 animations:animationBlock];
+        [UIView animateWithDuration:0.3 animations:animationBlock];
     } else {
         animationBlock();
     }

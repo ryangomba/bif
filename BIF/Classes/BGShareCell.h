@@ -10,6 +10,7 @@ typedef NS_ENUM(NSInteger, BGShareCellState) {
 
 @property (nonatomic, assign) BGShareCellState shareState;
 @property (nonatomic, assign) CGFloat shareProgress;
+@property (nonatomic, strong) NSURL *sharedURL;
 
 - (void)setDefaultTitle:(NSString *)defaultTitle
            workingTitle:(NSString *)workingTitle

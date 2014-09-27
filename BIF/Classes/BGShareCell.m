@@ -5,12 +5,17 @@
 #import "BIFHelpers.h"
 #import "BGPieProgressView.h"
 
+static CGFloat const kIconSize = 36.0;
+static CGFloat const kProgressPieSize = 18.0;
+static CGFloat const kIconHorizontalInset = 30.0;
+
 @interface BGShareCell ()
 
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, strong) UIImageView *imageView;
 //@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) BGPieProgressView *progressView;
+@property (nonatomic, strong) UIImageView *chevronView;
 
 @property (nonatomic, copy) NSString *defaultTitle;
 @property (nonatomic, copy) NSString *workingTitle;
@@ -50,6 +55,15 @@
     return _imageView;
 }
 
+- (UIImageView *)chevronView {
+    if (!_chevronView) {
+        _chevronView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, kIconSize, kIconSize)];
+        _chevronView.contentMode = UIViewContentModeCenter;
+        _chevronView.image = [[UIImage imageNamed:@"chevronGlyph"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    }
+    return _chevronView;
+}
+
 //- (UIActivityIndicatorView *)spinner {
 //    if (!_spinner) {
 //        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -60,7 +74,8 @@
 
 - (BGPieProgressView *)progressView {
     if (!_progressView) {
-        _progressView = [[BGPieProgressView alloc] initWithFrame:CGRectMake(0.0, 0.0, 16.0, 16.0)];
+        CGRect progressViewRect = CGRectMake(0.0, 0.0, kProgressPieSize, kProgressPieSize);
+        _progressView = [[BGPieProgressView alloc] initWithFrame:progressViewRect];
     }
     return _progressView;
 }
@@ -91,24 +106,28 @@
     
     NSString *text;
     BOOL showSpinner;
+    BOOL showChevron;
     UIColor *color;
     
     switch (shareState) {
         case BGShareCellStateNormal:
             text = self.defaultTitle;
             showSpinner = NO;
+            showChevron = NO;
             color = [UIColor whiteColor];
             break;
             
         case BGShareCellStateSharing:
             text = self.workingTitle;
             showSpinner = YES;
+            showChevron = NO;
             color = HEX_COLOR(0x72daff);
             break;
             
         case BGShareCellStateShared:
             text = self.successTitle;
             showSpinner = NO;
+            showChevron = YES;
             color = HEX_COLOR(0x73ff7c);
             break;
     }
@@ -119,7 +138,8 @@
     self.textLabel.layer.borderColor = color.CGColor;
     self.imageView.tintColor = color;
     self.imageView.layer.borderColor = color.CGColor;
-    self.progressView.color = color;
+//    self.progressView.color = color;
+    self.chevronView.tintColor = color;
     
     if (showSpinner) {
         [self.imageView removeFromSuperview];
@@ -129,6 +149,12 @@
 //        [self.spinner removeFromSuperview];
         [self.progressView removeFromSuperview];
         [self.contentView addSubview:self.imageView];
+    }
+    
+    if (showChevron) {
+        [self.contentView addSubview:self.chevronView];
+    } else {
+        [self.chevronView removeFromSuperview];
     }
 }
 
@@ -140,12 +166,17 @@
         self.textLabel.layer.cornerRadius = self.contentView.bounds.size.height / 2.0;
         self.textLabel.hidden = NO;
         
-        CGPoint accessoryCenter = CGPointMake(30.0, self.contentView.bounds.size.height / 2.0);
-        self.imageView.frame = CGRectMake(0.0, 0.0, 36.0, 36.0);
+        CGFloat accessoryY = self.contentView.bounds.size.height / 2.0;
+        CGPoint accessoryCenter = CGPointMake(kIconHorizontalInset, accessoryY);
+        self.imageView.frame = CGRectMake(0.0, 0.0, kIconSize, kIconSize);
         self.imageView.center = accessoryCenter;
 //        self.spinner.center = accessoryCenter;
         self.progressView.center = accessoryCenter;
         self.imageView.layer.borderWidth = 0.0;
+        
+        CGFloat chevronX = self.contentView.bounds.size.width - kIconHorizontalInset;
+        CGPoint chevronCenter = CGPointMake(chevronX, accessoryY);
+        self.chevronView.center = chevronCenter;
         
     } else {
         self.textLabel.hidden = YES;

@@ -31,6 +31,7 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         completionBlock(nil, error);
     }];
+    [requestOperation setShouldExecuteAsBackgroundTaskWithExpirationHandler:nil];
     [requestOperation start];
 }
 

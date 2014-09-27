@@ -46,7 +46,7 @@
 #pragma mark Private
 
 - (CGFloat)animationDuration {
-    return 1.0;
+    return 1.3;
 }
 
 - (void)animatePresentTransition:(id <UIViewControllerContextTransitioning>)transitionContext {

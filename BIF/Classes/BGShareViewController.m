@@ -204,7 +204,7 @@ static NSString * kCellReuseID = @"cell";
     
     switch (indexPath.row) {
         case ShareServiceCopyLink:
-            [cell setDefaultTitle:@"Copy Link" workingTitle:@"Copying Link..." successTitle:@"Link Copied!" imageName:@"linkGlyph"];
+            [cell setDefaultTitle:@"Copy Link" workingTitle:@"Generating Link..." successTitle:@"Link Copied!" imageName:@"linkGlyph"];
             break;
         case ShareServiceMessage:
             [cell setDefaultTitle:@"Message" workingTitle:nil successTitle:nil imageName:@"messageGlyph"];
@@ -243,6 +243,12 @@ static NSString * kCellReuseID = @"cell";
     
     if (indexPath.section == ShareSectionCancel) {
         [self finish];
+        return;
+    }
+    
+    BGShareCell *cell = (id)[self.collectionView cellForItemAtIndexPath:indexPath];
+    if (cell.sharedURL && cell.shareState == BGShareCellStateShared) {
+        [[UIApplication sharedApplication] openURL:cell.sharedURL];
         return;
     }
     
@@ -326,6 +332,7 @@ static NSString * kCellReuseID = @"cell";
         
     } completion:^(NSURL *url, NSError *error) {
         if (url) {
+            shareCell.sharedURL = url;
             shareCell.shareState = BGShareCellStateShared;
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.URL = url;
@@ -460,6 +467,10 @@ static NSString * kCellReuseID = @"cell";
                               cancelButtonTitle:@"Dismiss"
                               otherButtonTitles:nil] show];
         } else {
+            NSArray *URLs = response[@"entities"][@"urls"];
+            NSDictionary *URLInfo = URLs.firstObject;
+            NSURL *URL = [NSURL URLWithString:URLInfo[@"expanded_url"]];
+            shareCell.sharedURL = URL;
             shareCell.shareState = BGShareCellStateShared;
         }
     };
@@ -475,6 +486,7 @@ static NSString * kCellReuseID = @"cell";
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         completionBlock(nil, error);
     }];
+    [requestOperation setShouldExecuteAsBackgroundTaskWithExpirationHandler:nil];
     [requestOperation start];
 }
 
