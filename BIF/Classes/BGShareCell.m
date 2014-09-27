@@ -17,10 +17,6 @@ static CGFloat const kIconHorizontalInset = 30.0;
 @property (nonatomic, strong) BGPieProgressView *progressView;
 @property (nonatomic, strong) UIImageView *chevronView;
 
-@property (nonatomic, copy) NSString *defaultTitle;
-@property (nonatomic, copy) NSString *workingTitle;
-@property (nonatomic, copy) NSString *successTitle;
-
 @end
 
 @implementation BGShareCell

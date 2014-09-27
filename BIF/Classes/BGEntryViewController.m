@@ -8,8 +8,8 @@
 @interface BGEntryViewController ()
 
 @property (nonatomic, strong) UIImageView *launchImageView;
-
 @property (nonatomic, strong) BGEntryTransition *transition;
+@property (nonatomic, assign) BOOL didSegue;
 
 @end
 
@@ -25,10 +25,14 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    BGBurstListViewController *vc = [[BGBurstListViewController alloc] initWithNibName:nil bundle:nil];
-    self.transition = [[BGEntryTransition alloc] init];
-    vc.transitioningDelegate = self.transition;
-    [self presentViewController:vc animated:YES completion:nil];
+    if (!self.didSegue) {
+        self.didSegue = YES;
+        
+        BGBurstListViewController *vc = [[BGBurstListViewController alloc] initWithNibName:nil bundle:nil];
+        self.transition = [[BGEntryTransition alloc] init];
+        vc.transitioningDelegate = self.transition;
+        [self presentViewController:vc animated:YES completion:nil];
+    }
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {

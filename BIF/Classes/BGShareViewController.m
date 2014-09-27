@@ -252,7 +252,30 @@ static NSString * kCellReuseID = @"cell";
         return;
     }
     
-    switch (indexPath.row) {
+    [self uploadToService:indexPath.row cell:cell];
+}
+
+- (void)uploadToService:(ShareService)service cell:(BGShareCell *)cell {
+    // HACKS!!!
+    
+    if (cell.workingTitle && cell.shareState != BGShareCellStateSharing) {
+        cell.shareState = BGShareCellStateSharing;
+        cell.shareProgress = 0.05;
+    }
+    
+    if (!self.filePath) {
+        NSLog(@"Waiting for GIF to render");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self uploadToService:service cell:cell];
+        });
+
+    } else {
+        [self doUploadToService:service];
+    }
+}
+
+- (void)doUploadToService:(ShareService)service {
+    switch (service) {
         case ShareServiceCopyLink: {
             [self uploadGIFAtPath:self.filePath];
         } break;
@@ -324,8 +347,6 @@ static NSString * kCellReuseID = @"cell";
 - (void)uploadGIFAtPath:(NSString *)filePath {
     NSIndexPath *cellIndexPath = [self indexPathForShareService:ShareServiceCopyLink];
     BGShareCell *shareCell = (id)[self.collectionView cellForItemAtIndexPath:cellIndexPath];
-    shareCell.shareState = BGShareCellStateSharing;
-    shareCell.shareProgress = 0.05;
     
     [BGFileUploader uploadFileAtPath:filePath progress:^(CGFloat progress) {
         shareCell.shareProgress = MAX(0.05, progress);
@@ -446,8 +467,6 @@ static NSString * kCellReuseID = @"cell";
     
     NSIndexPath *cellIndexPath = [self indexPathForShareService:ShareServiceTwitter];
     BGShareCell *shareCell = (id)[self.collectionView cellForItemAtIndexPath:cellIndexPath];
-    shareCell.shareState = BGShareCellStateSharing;
-    shareCell.shareProgress = 0.05;
     
     void (^completionBlock)(NSDictionary *, NSError *) = ^(NSDictionary *response, NSError *error) {
         NSArray *twitterError = [response[@"errors"] firstObject];
