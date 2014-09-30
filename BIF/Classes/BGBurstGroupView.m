@@ -9,7 +9,6 @@
 @interface BGBurstGroupView ()
 
 @property (nonatomic, strong) NSMutableArray *imageViews;
-@property (nonatomic, strong) NSMutableArray *ongoingImageRequestIDs;
 
 @end
 
@@ -17,7 +16,6 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.ongoingImageRequestIDs = [NSMutableArray array];
         self.imageViews = [NSMutableArray array];
         for (NSInteger i = 0; i < kMaxNumberOfImages; i++) {
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -38,19 +36,10 @@
     [self doLayout];
 }
 
-- (void)setAssets:(NSArray *)assets {
-    [self cancelImageFetchRequests];
-    
-    _assets = [self evenlySpacedSubsetOfSize:kMaxNumberOfImages forArray:assets];
+- (void)setPhotos:(NSArray *)photos {
+    _photos = [self evenlySpacedSubsetOfSize:kMaxNumberOfImages forArray:photos];
     
     [self fetchImages];
-}
-
-- (void)cancelImageFetchRequests {
-    for (NSNumber *requestIDValue in self.ongoingImageRequestIDs) {
-        PHImageRequestID requestID = [requestIDValue intValue];
-        [[PHImageManager defaultManager] cancelImageRequest:requestID];
-    }
 }
 
 - (CGSize)imageSize {
@@ -64,24 +53,10 @@
     imageSize.width *= [UIScreen mainScreen].scale;
     imageSize.height *= [UIScreen mainScreen].scale;
     
-    for (PHAsset *asset in self.assets) {
-        PHImageRequestOptions *options = nil;
-        PHImageRequestID requestID;
-        requestID = [[PHImageManager defaultManager] requestImageForAsset:asset
-                                                               targetSize:imageSize
-                                                              contentMode:PHImageContentModeAspectFill
-                                                                  options:options
-                                                            resultHandler:^(UIImage *result, NSDictionary *info)
-                     {
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [self.ongoingImageRequestIDs removeObject:@(requestID)];
-                             
-                             NSInteger index = [self.assets indexOfObject:asset];
-                             UIImageView *imageView = self.imageViews[index];
-                             imageView.image = result;
-                         });
-                     }];
-        [self.ongoingImageRequestIDs addObject:@(requestID)];
+    for (BGBurstPhoto *photo in self.photos) {
+        NSInteger index = [self.photos indexOfObject:photo];
+        UIImageView *imageView = self.imageViews[index];
+        imageView.image = [UIImage imageWithContentsOfFile:photo.filePath];
     }
 }
 

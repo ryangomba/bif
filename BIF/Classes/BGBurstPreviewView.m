@@ -7,12 +7,9 @@
 
 #define kMaximumZoomScale 2.0
 
-@import Photos;
-
 @interface BGBurstPreviewView ()<UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *assetImages;
-@property (nonatomic, strong) NSMutableArray *ongoingImageRequestIDs;
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *contentView;
@@ -50,8 +47,6 @@
         self.staticImageView.contentMode = UIViewContentModeScaleAspectFill;
         [self.contentView addSubview:self.staticImageView];
         
-        self.ongoingImageRequestIDs = [NSMutableArray array];
-        
         // border and shadow
         
         self.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -71,13 +66,11 @@
     self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
 }
 
-- (void)setAssets:(NSArray *)assets {
-    [self cancelImageFetchRequests];
-    
-    _assets = assets;
+- (void)setPhotos:(NSArray *)photos {
+    _photos = photos;
     
     self.assetImages = [NSMutableArray array];
-    for (NSInteger i = 0; i < assets.count; i++) {
+    for (NSInteger i = 0; i < photos.count; i++) {
         [self.assetImages addObject:[NSNull null]];
     }
     
@@ -115,19 +108,11 @@
     return images;
 }
 
-- (void)cancelImageFetchRequests {
-    for (NSNumber *requestIDValue in self.ongoingImageRequestIDs) {
-        PHImageRequestID requestID = [requestIDValue intValue];
-        [[PHImageManager defaultManager] cancelImageRequest:requestID];
-    }
-}
-
 - (void)prepareImageViews {
-    NSAssert(self.assets.count > 0, @"No assets");
+    NSAssert(self.photos.count > 0, @"No photos");
     
-    PHAsset *firstAsset = self.assets.firstObject;
-    CGFloat burstAspectRatio = firstAsset.pixelWidth / (CGFloat)firstAsset.pixelHeight;
-    CGSize imageSize = RGSizeOuterSizeWithAspectRatio(self.bounds.size, burstAspectRatio);
+    BGBurstPhoto *firstPhoto = self.photos.firstObject;
+    CGSize imageSize = RGSizeOuterSizeWithAspectRatio(self.bounds.size, firstPhoto.aspectRatio);
     
     self.contentView.frame = CGRectMake(0.0, 0.0, imageSize.width, imageSize.height);
     self.scrollView.contentSize = CGSizeMake(imageSize.width, imageSize.height);
@@ -140,58 +125,12 @@
 }
 
 - (void)fetchImages {
-    NSAssert(self.assets.count > 0, @"No assets");
+    NSAssert(self.photos.count > 0, @"No photos");
     
-    // HACK
-    PHAsset *firstAsset = self.assets.firstObject;
-    BOOL isFrontFacingBurst = firstAsset.pixelWidth == 960.0 || firstAsset.pixelWidth == 1280.0;
-    
-    CGSize imageSize;
-    if (isFrontFacingBurst) {
-        imageSize = PHImageManagerMaximumSize;
-    } else {
-        imageSize = self.animatedImageView.frame.size;
-        imageSize.width *= [UIScreen mainScreen].scale;
-        imageSize.height *= [UIScreen mainScreen].scale;
-    }
-    
-    for (PHAsset *asset in self.assets) {
-        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-        options.resizeMode = PHImageRequestOptionsResizeModeExact;
-        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-        options.version = PHImageRequestOptionsVersionOriginal;
-        options.networkAccessAllowed = YES;
-        
-        PHImageRequestID requestID;
-        requestID = [[PHImageManager defaultManager] requestImageForAsset:asset
-                                                               targetSize:imageSize
-                                                              contentMode:PHImageContentModeAspectFill
-                                                                  options:options
-                                                            resultHandler:^(UIImage *result, NSDictionary *info)
-                     {
-                         if (!result) {
-                             NSLog(@"WTF, no image, no info");
-                             return;
-                         }
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [self.ongoingImageRequestIDs removeObject:@(requestID)];
-                             
-                             NSInteger index = [self.assets indexOfObject:asset];
-                             self.assetImages[index] = result;
-                             
-                             UIImageOrientation orientation;
-                             if (isFrontFacingBurst) {
-                                 orientation = firstAsset.pixelWidth == 960.0 ? UIImageOrientationLeft : UIImageOrientationDown;
-                             } else {
-                                orientation = [info[@"PHImageFileOrientationKey"] integerValue];
-                             }
-                             CGAffineTransform transform = [UIImage transformForImageOfSize:result.size orientation:orientation newSize:imageSize];
-                             self.animatedImageView.transform = transform;
-                             
-                             [self updateImages];
-                         });
-                     }];
-        [self.ongoingImageRequestIDs addObject:@(requestID)];
+    for (BGBurstPhoto *photo in self.photos) {
+        NSInteger index = [self.photos indexOfObject:photo];
+        self.assetImages[index] = [UIImage imageWithContentsOfFile:photo.filePath];
+        [self updateImages];
     }
 }
 
@@ -269,7 +208,7 @@
 #pragma mark Cropping
 
 - (void)setCropInfo:(CGRect)cropInfo {
-    NSAssert(self.assets, @"setAssets: should be called first");
+    NSAssert(self.photos, @"setPhotos: should be called first");
     
     if (CGRectEqualToRect(cropInfo, CGRectZero)) {
         return;

@@ -5,7 +5,6 @@
 #import "BGBurstGroupRangePicker.h"
 #import "BGBurstPreviewView.h"
 #import "BGGIFMaker.h"
-#import "BGBurstInfo.h"
 #import "BGDatabase.h"
 #import "BIFHelpers.h"
 #import "BGTextView.h"
@@ -59,11 +58,11 @@ static CGFloat const kSliderPadding = 36.0;
     if (self = [super initWithNibName:nil bundle:nil]) {
         self.burstGroup = burstGroup;
         
-        self.speedSlider.value = [self sliderValueForFramesPerSecond:self.burstGroup.burstInfo.framesPerSecond];
-        self.previewView.framesPerSecond = self.burstGroup.burstInfo.framesPerSecond;
+        self.speedSlider.value = [self sliderValueForFramesPerSecond:self.burstGroup.framesPerSecond];
+        self.previewView.framesPerSecond = self.burstGroup.framesPerSecond;
         
-        [self updateRepeatButtonForLoopMode:self.burstGroup.burstInfo.loopMode];
-        self.previewView.loopMode = self.burstGroup.burstInfo.loopMode;
+        [self updateRepeatButtonForLoopMode:self.burstGroup.loopMode];
+        self.previewView.loopMode = self.burstGroup.loopMode;
     }
     return self;
 }
@@ -115,8 +114,8 @@ static CGFloat const kSliderPadding = 36.0;
     // preview area
     
     self.previewView.frame = [self normalFrameForMediaView];
-    self.previewView.assets = self.burstGroup.photos;
-    self.previewView.cropInfo = self.burstGroup.burstInfo.cropInfo;
+    self.previewView.photos = self.burstGroup.photos;
+//    self.previewView.cropInfo = self.burstGroup.cropInfo; // TEMP TODO
     [self.containerView addSubview:self.previewView];
     
     [self.previewView addSubview:self.watermarkLabel];
@@ -138,9 +137,9 @@ static CGFloat const kSliderPadding = 36.0;
     
     [self updatePhotoRange];
     
-    BOOL hasText = self.burstGroup.burstInfo.text.length > 0;
-    self.textView.internalTextView.text = self.burstGroup.burstInfo.text;
-    CGFloat textPosition = hasText ? self.burstGroup.burstInfo.textPosition : 0.5;
+    BOOL hasText = self.burstGroup.text.length > 0;
+    self.textView.internalTextView.text = self.burstGroup.text;
+    CGFloat textPosition = hasText ? self.burstGroup.textPosition : 0.5;
     self.showingText = hasText;
     [self updateTextPositionWithDesiredPosition:textPosition animated:NO];
     [self updateTextVisibility];
@@ -162,7 +161,7 @@ static CGFloat const kSliderPadding = 36.0;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [BGDatabase saveBurstInfo:self.burstGroup.burstInfo];
+    [BGDatabase saveBurstGroup:self.burstGroup];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -422,14 +421,14 @@ static CGFloat const kSliderPadding = 36.0;
 
 - (void)onSpeedSliderChanged {
     CGFloat framesPerSecond = [self framesPerSecondForSliderValue:self.speedSlider.value];
-    self.burstGroup.burstInfo.framesPerSecond = framesPerSecond;
+    self.burstGroup.framesPerSecond = framesPerSecond;
     self.previewView.framesPerSecond = framesPerSecond;
 }
 
 - (void)onLoopModeChanged {
     LoopMode newLoopMode;
     
-    switch (self.burstGroup.burstInfo.loopMode) {
+    switch (self.burstGroup.loopMode) {
         case LoopModeLoop:
             newLoopMode = LoopModeReverse;
             break;
@@ -439,7 +438,7 @@ static CGFloat const kSliderPadding = 36.0;
             break;
     }
     
-    self.burstGroup.burstInfo.loopMode = newLoopMode;
+    self.burstGroup.loopMode = newLoopMode;
     self.previewView.loopMode = newLoopMode;
     
     [self updateRepeatButtonForLoopMode:newLoopMode];
@@ -533,7 +532,7 @@ static CGFloat const kSliderPadding = 36.0;
         watermarkPositionBlock();
     }
     
-    self.burstGroup.burstInfo.textPosition = textPosition;
+    self.burstGroup.textPosition = textPosition;
 }
 
 
@@ -567,7 +566,7 @@ static CGFloat const kSliderPadding = 36.0;
     textRect.size.height /= self.previewView.frame.size.height;
     
     BGTextElement *textElement = [[BGTextElement alloc] init];
-    textElement.text = self.burstGroup.burstInfo.text;
+    textElement.text = self.burstGroup.text;
     textElement.textAttributes = self.textAttributes;
     textElement.textRect = textRect;
     
@@ -588,7 +587,7 @@ static CGFloat const kSliderPadding = 36.0;
     [[BGFinalizedBurst alloc] initWithImages:images
                                     cropRect:cropRect
                                   outputSize:outputSize
-                               frameDuration:(1.0 / self.burstGroup.burstInfo.framesPerSecond)
+                               frameDuration:(1.0 / self.burstGroup.framesPerSecond)
                                 textElements:textElements];
 
     BGShareViewController *shareVC = [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup finalizedBurst:finalizedBurst];
@@ -609,7 +608,8 @@ static CGFloat const kSliderPadding = 36.0;
 #pragma mark BGBurstPreviewViewDelegate
 
 - (void)burstPreviewView:(BGBurstPreviewView *)previewView didChangeCropInfo:(CGRect)cropInfo {
-    self.burstGroup.burstInfo.cropInfo = cropInfo;
+    // TEMP TODO
+//    self.burstGroup.cropInfo = cropInfo;
 }
 
 
@@ -617,7 +617,7 @@ static CGFloat const kSliderPadding = 36.0;
 #pragma mark BGTextViewDelegate
 
 - (void)textViewDidChangeSize:(BGTextView *)textView {
-    [self updateTextPositionWithDesiredPosition:self.burstGroup.burstInfo.textPosition animated:YES];
+    [self updateTextPositionWithDesiredPosition:self.burstGroup.textPosition animated:YES];
 }
 
 
@@ -643,7 +643,7 @@ shouldChangeTextInRange:(NSRange)range
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
-    self.burstGroup.burstInfo.text = textView.text;
+    self.burstGroup.text = textView.text;
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {

@@ -53,7 +53,7 @@ static CGFloat const kCornerRadius = 4.0;
 - (void)setBurstGroup:(BGBurstGroup *)burstGroup {
     _burstGroup = burstGroup;
     
-    self.burstGroupView.assets = burstGroup.photos;
+    self.burstGroupView.photos = burstGroup.photos;
 }
 
 - (void)setEditable:(BOOL)editable animated:(BOOL)animated {
@@ -199,12 +199,12 @@ static CGFloat const kCornerRadius = 4.0;
 }
 
 - (void)updateStartHandlePosition {
-    NSString *frameID = self.burstGroup.burstInfo.startFrameIdentifier;
+    NSString *frameID = self.burstGroup.startFrameIdentifier;
     [self updatePositionForHandle:self.startHandle frameID:frameID defaultPosition:0.0];
 }
 
 - (void)updateEndHandlePosition {
-    NSString *frameID = self.burstGroup.burstInfo.endFrameIdentifier;
+    NSString *frameID = self.burstGroup.endFrameIdentifier;
     [self updatePositionForHandle:self.endHandle frameID:frameID defaultPosition:1.0];
 }
 
@@ -257,15 +257,15 @@ static CGFloat const kCornerRadius = 4.0;
         return;
     }
     
-    if (![self.burstGroup.burstInfo.startFrameIdentifier isEqualToString:newStartFrameID]) {
-        self.burstGroup.burstInfo.startFrameIdentifier = newStartFrameID;
+    if (![self.burstGroup.startFrameIdentifier isEqualToString:newStartFrameID]) {
+        self.burstGroup.startFrameIdentifier = newStartFrameID;
         [self updateStartHandlePosition];
         changedIndex = startFrameIndex;
         updated = YES;
     }
 
-    if (![self.burstGroup.burstInfo.endFrameIdentifier isEqualToString:endFrameID]) {
-        self.burstGroup.burstInfo.endFrameIdentifier = endFrameID;
+    if (![self.burstGroup.endFrameIdentifier isEqualToString:endFrameID]) {
+        self.burstGroup.endFrameIdentifier = endFrameID;
         [self updateEndHandlePosition];
         changedIndex = endFrameIndex;
         updated = YES;

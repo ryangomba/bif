@@ -4,6 +4,10 @@
 
 #import "BGDatabase.h"
 
+// HACK
+#import "UIImage+Resize.h"
+static NSInteger kMinEdgeSize = 640.0;
+
 static NSInteger kMinPhotosPerBurst = 5;
 
 @interface BGBurstGroupFetcher ()<PHPhotoLibraryChangeObserver>
@@ -47,33 +51,92 @@ static NSInteger kMinPhotosPerBurst = 5;
     PHFetchOptions *options = [[PHFetchOptions alloc] init];
     options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     options.includeAllBurstAssets = YES;
+    self.fetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:options];
+    
+    // organize photos into groups of bursts
     
     NSMutableDictionary *burstGroupsMap = [NSMutableDictionary dictionary];
-    
-    self.fetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:options];
     [self.fetchResult enumerateObjectsUsingBlock:^(PHAsset *asset, NSUInteger i, BOOL *stop) {
         NSString *burstID = asset.burstIdentifier;
         if (!burstID) {
             return;
         }
-        BGBurstGroup *burstGroup = burstGroupsMap[burstID];
-        if (!burstGroup) {
-            burstGroup = [[BGBurstGroup alloc] init];
-            burstGroupsMap[burstID] = burstGroup;
-            burstGroup.burstIdentifier = burstID;
-            
-            BGBurstInfo *savedInfo = [BGDatabase burstInfoForBurstIdentifier:burstID];
-            burstGroup.burstInfo = savedInfo ?: [[BGBurstInfo alloc] initWithBurstIdentifier:burstID];
+        NSMutableArray *burstGroupAssets = burstGroupsMap[burstID];
+        if (!burstGroupAssets) {
+            burstGroupAssets = [NSMutableArray array];
+            burstGroupsMap[burstID] = burstGroupAssets;
         }
-        [burstGroup.photos addObject:asset];
-        burstGroup.creationDate = [asset.creationDate earlierDate:burstGroup.creationDate];
+        [burstGroupAssets addObject:asset];
     }];
-    NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"photos.@count >= %d", kMinPhotosPerBurst];
-    NSArray *burstGroups = [burstGroupsMap.allValues filteredArrayUsingPredicate:filterPredicate];
-    burstGroups = [burstGroups sortedArrayUsingComparator:^NSComparisonResult(BGBurstGroup *group1, BGBurstGroup *group2) {
+    
+    // filter burst groups for ones that are too short
+    
+    NSMutableArray *unsatisfactoryBurstIdentifiers = [NSMutableArray array];
+    [burstGroupsMap enumerateKeysAndObjectsUsingBlock:^(NSString *burstIdentifier, NSArray *assets, BOOL *stop) {
+        if (assets.count < kMinPhotosPerBurst) {
+            [unsatisfactoryBurstIdentifiers addObject:burstIdentifier];
+        }
+    }];
+    [burstGroupsMap removeObjectsForKeys:unsatisfactoryBurstIdentifiers];
+    
+    // fetch or create burst groups
+    
+    [BGDatabase wipeDatabase]; // TEMP
+    
+    NSMutableArray *burstGroups = [NSMutableArray array];
+    [burstGroupsMap enumerateKeysAndObjectsUsingBlock:^(NSString *burstIdentifier, NSArray *assets, BOOL *stop) {
+        BGBurstGroup *burstGroup = [BGDatabase burstGroupForBurstIdentifier:burstIdentifier];
+        if (!burstGroup) {
+            NSLog(@"Creating new burst group");
+            burstGroup = [[BGBurstGroup alloc] init];
+            burstGroup.burstIdentifier = burstIdentifier;
+            burstGroup.creationDate = ((PHAsset *)assets.firstObject).creationDate;
+            burstGroup.startFrameIdentifier = ((PHAsset *)assets.firstObject).localIdentifier;
+            burstGroup.endFrameIdentifier = ((PHAsset *)assets.lastObject).localIdentifier;
+            burstGroup.text = @"";
+            
+            NSMutableArray *photos = [NSMutableArray array];
+            for (PHAsset *asset in assets) {
+                NSLog(@"Importing photo %@", asset.localIdentifier);
+                BGBurstPhoto *photo = [[BGBurstPhoto alloc] init];
+                photo.aspectRatio = 1.0; // TEMP
+                photo.localIdentifier = asset.localIdentifier;
+                
+                @autoreleasepool {
+                    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+                    options.version = PHImageRequestOptionsVersionOriginal;
+                    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+                    options.resizeMode = PHImageRequestOptionsResizeModeExact;
+                    options.synchronous = YES;
+                    [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(120.0, 120.0)/*PHImageManagerMaximumSize*/ contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage *result, NSDictionary *info) {
+                        photo.filePath = [self savePhoto:result forAsset:asset];
+                    }];
+                }
+                
+                [photos addObject:photo];
+            }
+            burstGroup.photos = photos;
+            [BGDatabase saveBurstGroup:burstGroup];
+        }
+        [burstGroups addObject:burstGroup];
+    }];
+    
+    // fetch burst groups
+    
+    [burstGroups sortUsingComparator:^NSComparisonResult(BGBurstGroup *group1, BGBurstGroup *group2) {
         return [group2.creationDate compare:group1.creationDate];
     }];
+    
     completion(burstGroups);
+}
+
+- (NSString *)savePhoto:(UIImage *)image forAsset:(PHAsset *)asset {
+    UIImage *resizedImage = image;// [image resizedImageWithBounds:CGSizeMake(kMinEdgeSize, kMinEdgeSize)];
+    NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+    NSString *filename = [NSString stringWithFormat:@"%@.jpg", [asset.localIdentifier stringByReplacingOccurrencesOfString:@"/" withString:@"-"]];
+    NSURL *fileURL = [documentsDirectoryURL URLByAppendingPathComponent:filename];
+    [UIImageJPEGRepresentation(resizedImage, 0.9) writeToURL:fileURL atomically:YES];
+    return fileURL.path;
 }
 
 @end

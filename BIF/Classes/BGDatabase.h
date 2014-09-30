@@ -1,10 +1,12 @@
 // Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
-#import "BGBurstInfo.h"
+#import "BGBurstGroup.h"
 
 @interface BGDatabase : NSObject
 
-+ (BGBurstInfo *)burstInfoForBurstIdentifier:(NSString *)burstIdentifier;
-+ (void)saveBurstInfo:(BGBurstInfo *)burstInfo;
++ (void)wipeDatabase;
+
++ (BGBurstGroup *)burstGroupForBurstIdentifier:(NSString *)burstIdentifier;
++ (void)saveBurstGroup:(BGBurstGroup *)burstGroup;
 
 @end

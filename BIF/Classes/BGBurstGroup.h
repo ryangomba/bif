@@ -1,15 +1,23 @@
 // Copyright 2014-present Ryan Gomba. All Rights Reserved.
 
-#import "BGBurstInfo.h"
+#import "BGLoopMode.h"
+#import "BGBurstPhoto.h"
 
-@interface BGBurstGroup : NSObject
+@interface BGBurstGroup : NSObject<NSCoding>
 
-@property (nonatomic, strong) NSString *burstIdentifier;
-@property (nonatomic, strong) NSDate *creationDate;
-@property (nonatomic, strong) NSMutableArray *photos;
+@property NSString *burstIdentifier;
+@property NSDate *creationDate;
 
-@property (nonatomic, readonly) NSRange range;
+@property CGFloat framesPerSecond;
+@property NSString *startFrameIdentifier;
+@property NSString *endFrameIdentifier;
+@property LoopMode loopMode;
+@property NSString *text;
+@property CGFloat textPosition;
+@property CGRect cropInfo;
 
-@property (nonatomic, strong) BGBurstInfo *burstInfo;
+@property NSArray *photos;
+
+- (NSRange)range; // TODO make this better
 
 @end

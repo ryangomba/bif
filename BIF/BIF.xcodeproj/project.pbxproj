@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9470078819DB4C13006FD624 /* BGBurstGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 9470078719DB4C13006FD624 /* BGBurstGroup.m */; };
+		9470078B19DB4CE7006FD624 /* BGBurstPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 9470078A19DB4CE7006FD624 /* BGBurstPhoto.m */; };
 		94A107B81957D61E009E7A5F /* BGAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107971957D61E009E7A5F /* BGAppDelegate.m */; };
-		94A107B91957D61E009E7A5F /* BGBurstGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107991957D61E009E7A5F /* BGBurstGroup.m */; };
 		94A107BA1957D61E009E7A5F /* BGBurstGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A1079B1957D61E009E7A5F /* BGBurstGroupCell.m */; };
 		94A107BB1957D61E009E7A5F /* BGBurstGroupFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A1079D1957D61E009E7A5F /* BGBurstGroupFetcher.m */; };
 		94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */; };
 		94A107BD1957D61E009E7A5F /* BGBurstGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A11957D61E009E7A5F /* BGBurstGroupView.m */; };
-		94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A31957D61E009E7A5F /* BGBurstInfo.m */; };
 		94A107BF1957D61E009E7A5F /* BGBurstListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A51957D61E009E7A5F /* BGBurstListViewController.m */; };
 		94A107C01957D61E009E7A5F /* BGBurstPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A71957D61E009E7A5F /* BGBurstPreviewView.m */; };
 		94A107C11957D61E009E7A5F /* BGBurstPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */; };
@@ -48,11 +48,14 @@
 
 /* Begin PBXFileReference section */
 		7D1EE48FDCBE72E1AA97379E /* Pods-BIF.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BIF.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BIF/Pods-BIF.debug.xcconfig"; sourceTree = "<group>"; };
+		9470078619DB4C13006FD624 /* BGBurstGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroup.h; sourceTree = "<group>"; };
+		9470078719DB4C13006FD624 /* BGBurstGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroup.m; sourceTree = "<group>"; };
+		9470078919DB4CE7006FD624 /* BGBurstPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstPhoto.h; sourceTree = "<group>"; };
+		9470078A19DB4CE7006FD624 /* BGBurstPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstPhoto.m; sourceTree = "<group>"; };
+		9470078C19DB4EF9006FD624 /* BGLoopMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BGLoopMode.h; sourceTree = "<group>"; };
 		94A107751957D5F8009E7A5F /* BIF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BIF.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94A107961957D61E009E7A5F /* BGAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGAppDelegate.h; sourceTree = "<group>"; };
 		94A107971957D61E009E7A5F /* BGAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGAppDelegate.m; sourceTree = "<group>"; };
-		94A107981957D61E009E7A5F /* BGBurstGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroup.h; sourceTree = "<group>"; };
-		94A107991957D61E009E7A5F /* BGBurstGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroup.m; sourceTree = "<group>"; };
 		94A1079A1957D61E009E7A5F /* BGBurstGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroupCell.h; sourceTree = "<group>"; };
 		94A1079B1957D61E009E7A5F /* BGBurstGroupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroupCell.m; sourceTree = "<group>"; };
 		94A1079C1957D61E009E7A5F /* BGBurstGroupFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroupFetcher.h; sourceTree = "<group>"; };
@@ -61,8 +64,6 @@
 		94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroupRangePicker.m; sourceTree = "<group>"; };
 		94A107A01957D61E009E7A5F /* BGBurstGroupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstGroupView.h; sourceTree = "<group>"; };
 		94A107A11957D61E009E7A5F /* BGBurstGroupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstGroupView.m; sourceTree = "<group>"; };
-		94A107A21957D61E009E7A5F /* BGBurstInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstInfo.h; sourceTree = "<group>"; };
-		94A107A31957D61E009E7A5F /* BGBurstInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstInfo.m; sourceTree = "<group>"; };
 		94A107A41957D61E009E7A5F /* BGBurstListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstListViewController.h; sourceTree = "<group>"; };
 		94A107A51957D61E009E7A5F /* BGBurstListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstListViewController.m; sourceTree = "<group>"; };
 		94A107A61957D61E009E7A5F /* BGBurstPreviewView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBurstPreviewView.h; sourceTree = "<group>"; };
@@ -306,12 +307,13 @@
 		94F2DB5A196B451E00FBCA07 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				94A107981957D61E009E7A5F /* BGBurstGroup.h */,
-				94A107991957D61E009E7A5F /* BGBurstGroup.m */,
+				9470078C19DB4EF9006FD624 /* BGLoopMode.h */,
+				9470078919DB4CE7006FD624 /* BGBurstPhoto.h */,
+				9470078A19DB4CE7006FD624 /* BGBurstPhoto.m */,
+				9470078619DB4C13006FD624 /* BGBurstGroup.h */,
+				9470078719DB4C13006FD624 /* BGBurstGroup.m */,
 				94A1079C1957D61E009E7A5F /* BGBurstGroupFetcher.h */,
 				94A1079D1957D61E009E7A5F /* BGBurstGroupFetcher.m */,
-				94A107A21957D61E009E7A5F /* BGBurstInfo.h */,
-				94A107A31957D61E009E7A5F /* BGBurstInfo.m */,
 				94A107AA1957D61E009E7A5F /* BGDatabase.h */,
 				94A107AB1957D61E009E7A5F /* BGDatabase.m */,
 				94CA403A19D5B36500F6C4A7 /* BGFinalizedBurst.h */,
@@ -445,7 +447,6 @@
 				94A107BD1957D61E009E7A5F /* BGBurstGroupView.m in Sources */,
 				94CA403319D59E5F00F6C4A7 /* BGShareTransition.m in Sources */,
 				94CA402819D320A900F6C4A7 /* BGTextButton.m in Sources */,
-				94A107B91957D61E009E7A5F /* BGBurstGroup.m in Sources */,
 				94A107BC1957D61E009E7A5F /* BGBurstGroupRangePicker.m in Sources */,
 				94CA403C19D5B36500F6C4A7 /* BGFinalizedBurst.m in Sources */,
 				94A107BF1957D61E009E7A5F /* BGBurstListViewController.m in Sources */,
@@ -453,14 +454,15 @@
 				94CA404219D61C2300F6C4A7 /* BGEntryViewController.m in Sources */,
 				94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */,
 				94CA404819D6202800F6C4A7 /* BGPieProgressView.m in Sources */,
-				94A107BE1957D61E009E7A5F /* BGBurstInfo.m in Sources */,
 				94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */,
+				9470078B19DB4CE7006FD624 /* BGBurstPhoto.m in Sources */,
 				94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */,
 				94CA403919D5A61200F6C4A7 /* BGShareCell.m in Sources */,
 				94CA404519D61C9900F6C4A7 /* BGEntryTransition.m in Sources */,
 				94A107C61957D61E009E7A5F /* UIImage+Resize.m in Sources */,
 				94CA403F19D6180800F6C4A7 /* BGTextElement.m in Sources */,
 				94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */,
+				9470078819DB4C13006FD624 /* BGBurstGroup.m in Sources */,
 				94CA403619D5A25B00F6C4A7 /* UIImage+ImageEffects.m in Sources */,
 				94A107BB1957D61E009E7A5F /* BGBurstGroupFetcher.m in Sources */,
 				94A107C21957D61E009E7A5F /* BGDatabase.m in Sources */,

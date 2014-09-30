@@ -2,25 +2,45 @@
 
 #import "BGDatabase.h"
 
+#import <YapDatabase/YapDatabase.h>
+
+static NSString * const kBurstGroupsKey = @"burstGroups";
+
 @implementation BGDatabase
 
-+ (NSString *)keyForBurstIdentifier:(NSString *)burstIdentifier {
-    return [NSString stringWithFormat:@"burstInfo-%@", burstIdentifier];
-    
++ (YapDatabase *)database {
+    static YapDatabase *database;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+        NSString *applicationSupportDirectory = [paths firstObject];
+        NSString *databasePath = [applicationSupportDirectory stringByAppendingString:@"database.sqlite"];
+        database = [[YapDatabase alloc] initWithPath:databasePath];
+    });
+    return database;
 }
 
-+ (BGBurstInfo *)burstInfoForBurstIdentifier:(NSString *)burstIdentifier {
-    NSString *key = [self keyForBurstIdentifier:burstIdentifier];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *dictionary = [defaults objectForKey:key];
-    return dictionary ? [[BGBurstInfo alloc] initWithDictionary:dictionary] : nil;
++ (void)wipeDatabase {
+    YapDatabaseConnection *connection = [self.database newConnection];
+    [connection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+        [transaction removeAllObjectsInAllCollections];
+    }];
 }
 
-+ (void)saveBurstInfo:(BGBurstInfo *)burstInfo {
-    NSString *key = [self keyForBurstIdentifier:burstInfo.burstIdentifier];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:burstInfo.dictionaryRepresentation forKey:key];
-    [defaults synchronize];
++ (BGBurstGroup *)burstGroupForBurstIdentifier:(NSString *)burstIdentifier {
+    __block BGBurstGroup *burstGroup;
+    YapDatabaseConnection *connection = [self.database newConnection];
+    [connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+         burstGroup = [transaction objectForKey:burstIdentifier inCollection:kBurstGroupsKey];
+    }];
+    return burstGroup;
+}
+
++ (void)saveBurstGroup:(BGBurstGroup *)burstGroup {
+    YapDatabaseConnection *connection = [self.database newConnection];
+    [connection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+        [transaction setObject:burstGroup forKey:burstGroup.burstIdentifier inCollection:kBurstGroupsKey];
+    }];
 }
 
 @end
