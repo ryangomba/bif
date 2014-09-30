@@ -142,14 +142,23 @@
 - (void)fetchImages {
     NSAssert(self.assets.count > 0, @"No assets");
     
-    CGSize imageSize = self.animatedImageView.frame.size;
-    imageSize.width *= [UIScreen mainScreen].scale;
-    imageSize.height *= [UIScreen mainScreen].scale;
+    // HACK
+    PHAsset *firstAsset = self.assets.firstObject;
+    BOOL isFrontFacingBurst = firstAsset.pixelWidth == 960.0 || firstAsset.pixelWidth == 1280.0;
+    
+    CGSize imageSize;
+    if (isFrontFacingBurst) {
+        imageSize = PHImageManagerMaximumSize;
+    } else {
+        imageSize = self.animatedImageView.frame.size;
+        imageSize.width *= [UIScreen mainScreen].scale;
+        imageSize.height *= [UIScreen mainScreen].scale;
+    }
     
     for (PHAsset *asset in self.assets) {
         PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
         options.resizeMode = PHImageRequestOptionsResizeModeExact;
-        options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
         options.version = PHImageRequestOptionsVersionOriginal;
         options.networkAccessAllowed = YES;
         
@@ -170,7 +179,12 @@
                              NSInteger index = [self.assets indexOfObject:asset];
                              self.assetImages[index] = result;
                              
-                             UIImageOrientation orientation = [info[@"PHImageFileOrientationKey"] integerValue];
+                             UIImageOrientation orientation;
+                             if (isFrontFacingBurst) {
+                                 orientation = firstAsset.pixelWidth == 960.0 ? UIImageOrientationLeft : UIImageOrientationDown;
+                             } else {
+                                orientation = [info[@"PHImageFileOrientationKey"] integerValue];
+                             }
                              CGAffineTransform transform = [UIImage transformForImageOfSize:result.size orientation:orientation newSize:imageSize];
                              self.animatedImageView.transform = transform;
                              
@@ -208,9 +222,19 @@
     
     if (animated) {
         self.staticIndex = self.range.location;
-        if (self.isLoaded) {
+        if (self.isLoaded && !self.paused) {
             [self startAnimating];
         }
+    } else {
+        [self stopAnimating];
+    }
+}
+
+- (void)setPaused:(BOOL)paused {
+    _paused = paused;
+    
+    if (self.isLoaded && !paused) {
+        [self startAnimating];
     } else {
         [self stopAnimating];
     }

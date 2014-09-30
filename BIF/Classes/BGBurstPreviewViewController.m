@@ -17,6 +17,7 @@
 static CGFloat const kButtonSize = 56.0;
 static CGFloat const kRangePickerHeight = 60.0;
 static CGFloat const kPreviewPadding = 10.0;
+static CGFloat const kSliderPadding = 36.0;
 
 @interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate, BGBurstPreviewViewDelegate, BGShareViewControllerDelegate, UIScrollViewDelegate>
 
@@ -31,7 +32,7 @@ static CGFloat const kPreviewPadding = 10.0;
 @property (nonatomic, strong) BGTextButton *shareButton;
 
 @property (nonatomic, strong) BGTextView *textView;
-@property (nonatomic, strong) UIButton *dismissKeyboardButton;
+@property (nonatomic, strong) UILabel *textHintLabel;
 @property (nonatomic, strong) UIPanGestureRecognizer *textPanRecognizer;
 @property (nonatomic, strong) UILabel *watermarkLabel;
 
@@ -41,8 +42,6 @@ static CGFloat const kPreviewPadding = 10.0;
 @property (nonatomic, strong) UISlider *speedSlider;
 @property (nonatomic, strong) BGTextButton *repeatButton;
 @property (nonatomic, strong) BGTextButton *textButton;
-
-@property (nonatomic, assign) CGFloat currentKeyboardTopY;
 
 @property (nonatomic, assign) BOOL showingText;
 
@@ -120,23 +119,13 @@ static CGFloat const kPreviewPadding = 10.0;
     self.previewView.cropInfo = self.burstGroup.burstInfo.cropInfo;
     [self.containerView addSubview:self.previewView];
     
-    CGRect watermarkRect = self.watermarkLabel.frame;
-    watermarkRect.origin.x = 6.0;
-    watermarkRect.origin.y = self.previewView.bounds.size.height - watermarkRect.size.height - 3.0;
-    self.watermarkLabel.frame = watermarkRect;
     [self.previewView addSubview:self.watermarkLabel];
     
     self.textView.frame = self.previewView.bounds;
     [self.previewView addSubview:self.textView];
     
-    CGFloat dismissKeyboardButtonWidth = 44.0; // HACK hardcoded
-    CGFloat dismissKeyboardButtonHeight = 44.0; // HACK hardcoded
-    CGFloat dismissButtonX = (self.view.bounds.size.width - dismissKeyboardButtonWidth) / 2;
-    CGFloat dismissButtonY = self.view.bounds.size.height - dismissKeyboardButtonHeight;
-    CGRect dismissButtonRect = CGRectMake(dismissButtonX, dismissButtonY, dismissKeyboardButtonWidth, dismissKeyboardButtonHeight);
-    self.dismissKeyboardButton.frame = dismissButtonRect;
-    [self.view addSubview:self.dismissKeyboardButton];
-    self.dismissKeyboardButton.alpha = 0.0;
+    self.textHintLabel.alpha = 0.0;
+    [self.view addSubview:self.textHintLabel];
 
     // bottom bar
     
@@ -149,9 +138,11 @@ static CGFloat const kPreviewPadding = 10.0;
     
     [self updatePhotoRange];
     
+    BOOL hasText = self.burstGroup.burstInfo.text.length > 0;
     self.textView.internalTextView.text = self.burstGroup.burstInfo.text;
-    self.showingText = self.burstGroup.burstInfo.text.length > 0;
-    [self updateTextPositionWithDesiredPosition:self.burstGroup.burstInfo.textPosition ?: 0.5];
+    CGFloat textPosition = hasText ? self.burstGroup.burstInfo.textPosition : 0.5;
+    self.showingText = hasText;
+    [self updateTextPositionWithDesiredPosition:textPosition animated:NO];
     [self updateTextVisibility];
     
     self.previewView.animated = YES;
@@ -159,6 +150,8 @@ static CGFloat const kPreviewPadding = 10.0;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    self.previewView.paused = NO;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillChangeFrame:)
@@ -223,10 +216,9 @@ static CGFloat const kPreviewPadding = 10.0;
     self.textButton.frame = textButtonRect;
     [self.bottomBar addSubview:self.textButton];
     
-    CGFloat sliderPadding = 32.0; // HACK hardcoded
     CGFloat speedSliderY = buttonY;
-    CGFloat speedSliderX = CGRectGetMaxX(textButtonRect) + sliderPadding;
-    CGFloat speedSliderWidth = self.view.bounds.size.width - (textButtonRect.size.width + sliderPadding + buttonPadding) * 2;
+    CGFloat speedSliderX = CGRectGetMaxX(textButtonRect) + kSliderPadding;
+    CGFloat speedSliderWidth = self.view.bounds.size.width - (textButtonRect.size.width + kSliderPadding + buttonPadding) * 2;
     CGRect speedSliderRect = CGRectMake(speedSliderX, speedSliderY, speedSliderWidth, kButtonSize);
     self.speedSlider.frame = speedSliderRect;
     [self.bottomBar addSubview:self.speedSlider];
@@ -318,6 +310,8 @@ static CGFloat const kPreviewPadding = 10.0;
         
         [_textView addGestureRecognizer:self.textPanRecognizer];
         
+        _textView.internalTextView.textContainer.maximumNumberOfLines = 4;
+        _textView.internalTextView.returnKeyType = UIReturnKeyDone;
         _textView.internalTextView.delegate = self;
         _textView.delegate = self;
     }
@@ -353,16 +347,17 @@ static CGFloat const kPreviewPadding = 10.0;
     return _watermarkLabel;
 }
 
-- (UIButton *)dismissKeyboardButton {
-    if (!_dismissKeyboardButton) {
-        _dismissKeyboardButton = [[UIButton alloc] initWithFrame:CGRectZero];
-        [_dismissKeyboardButton setImage:[UIImage imageNamed:@"dismissKeyboardGlyph"] forState:UIControlStateNormal];
-        _dismissKeyboardButton.imageView.contentMode = UIViewContentModeCenter;
-        [_dismissKeyboardButton addTarget:self
-                                   action:@selector(onDismissKeyboardButtonTapped)
-                         forControlEvents:UIControlEventTouchUpInside];
+- (UILabel *)textHintLabel {
+    if (!_textHintLabel) {
+        _textHintLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _textHintLabel.font = [UIFont fontWithName:@"ProximaNovaSoft-Medium" size:14.0];
+        _textHintLabel.textAlignment = NSTextAlignmentCenter;
+        _textHintLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+        _textHintLabel.text = @"Drag text to move";
+        
+        [_textHintLabel sizeToFit];
     }
-    return _dismissKeyboardButton;
+    return _textHintLabel;
 }
 
 - (UIView *)bottomBar {
@@ -383,6 +378,7 @@ static CGFloat const kPreviewPadding = 10.0;
 - (UISlider *)speedSlider {
     if (!_speedSlider) {
         _speedSlider = [[UISlider alloc] initWithFrame:CGRectZero];
+        [_speedSlider setThumbImage:[UIImage imageNamed:@"sliderHandle"] forState:UIControlStateNormal];
         [_speedSlider addTarget:self
                          action:@selector(onSpeedSliderChanged)
                forControlEvents:UIControlEventValueChanged];
@@ -453,12 +449,12 @@ static CGFloat const kPreviewPadding = 10.0;
     switch (loopMode) {
         case LoopModeLoop:
             [self.repeatButton setImageNamed:@"loopGlyph"];
-            [self.repeatButton setTitle:@"Looped"];
+            [self.repeatButton setTitle:@"Loop"];
             break;
             
         case LoopModeReverse:
             [self.repeatButton setImageNamed:@"reverseGlyph"];
-            [self.repeatButton setTitle:@"Reversed"];
+            [self.repeatButton setTitle:@"Reverse"];
             break;
     }
 }
@@ -494,7 +490,7 @@ static CGFloat const kPreviewPadding = 10.0;
             CGFloat absoluteY = [recognizer locationInView:self.previewView].y;
             CGFloat adjustedY = absoluteY - relativeY;
             CGFloat normalizedY = adjustedY / self.previewView.bounds.size.height;
-            [self updateTextPositionWithDesiredPosition:normalizedY];
+            [self updateTextPositionWithDesiredPosition:normalizedY animated:YES];
         } break;
             
         case UIGestureRecognizerStateCancelled:
@@ -507,18 +503,37 @@ static CGFloat const kPreviewPadding = 10.0;
     }
 }
 
-- (void)updateTextPositionWithDesiredPosition:(CGFloat)textPosition {
+- (void)updateTextPositionWithDesiredPosition:(CGFloat)textPosition animated:(BOOL)animated {
     textPosition = MAX(MIN(textPosition, self.textView.maxPosition), self.textView.minPosition);
     
     CGPoint center = self.textView.center;
     center.y = self.previewView.bounds.size.height * textPosition;
     self.textView.center = center;
     
+    void(^watermarkPositionBlock)(void) = ^{
+        CGRect watermarkRect = self.watermarkLabel.frame;
+        watermarkRect.origin.x = 10.0;
+        if (self.textView.center.y > self.previewView.bounds.size.height / 2.0) {
+            watermarkRect.origin.y = 10.0;
+        } else {
+            watermarkRect.origin.y = self.previewView.bounds.size.height - watermarkRect.size.height - 7.0;
+        }
+        self.watermarkLabel.frame = watermarkRect;
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.75
+                              delay:0.0
+             usingSpringWithDamping:0.85
+              initialSpringVelocity:0.0
+                            options:UIViewAnimationOptionBeginFromCurrentState
+                         animations:watermarkPositionBlock
+                         completion:nil];
+    } else {
+        watermarkPositionBlock();
+    }
+    
     self.burstGroup.burstInfo.textPosition = textPosition;
-}
-
-- (void)onDismissKeyboardButtonTapped {
-    [self.textView resignFirstResponder];
 }
 
 
@@ -530,6 +545,8 @@ static CGFloat const kPreviewPadding = 10.0;
 }
 
 - (void)onShareButtonTapped {
+    self.previewView.paused = YES;
+    
     // HACK
     CGFloat outputSize = 320.0;
     
@@ -600,7 +617,7 @@ static CGFloat const kPreviewPadding = 10.0;
 #pragma mark BGTextViewDelegate
 
 - (void)textViewDidChangeSize:(BGTextView *)textView {
-    [self updateTextPositionWithDesiredPosition:self.burstGroup.burstInfo.textPosition];
+    [self updateTextPositionWithDesiredPosition:self.burstGroup.burstInfo.textPosition animated:YES];
 }
 
 
@@ -614,6 +631,11 @@ static CGFloat const kPreviewPadding = 10.0;
 - (BOOL)textView:(UITextView *)textView
 shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text {
+    
+    if ([text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+        return NO;
+    }
     
     textView.text = [textView.text stringByReplacingCharactersInRange:range withString:[text uppercaseString]];
     [self textViewDidChange:textView];
@@ -637,19 +659,24 @@ shouldChangeTextInRange:(NSRange)range
 #pragma mark Keyboard
 
 - (void)onKeyboardWillChangeFrame:(NSNotification *)notification {
+    [CATransaction commit];
+
+    [UIView setAnimationsEnabled:NO];
+    CGRect oldFrame = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    [self updateTextHintLabelPositionWithKeyboardTopY:oldFrame.origin.y];
+    [UIView setAnimationsEnabled:YES];
+    
     CGRect newFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGFloat animationDuration = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] floatValue];
     UIViewAnimationCurve animationCurve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     
-    self.currentKeyboardTopY = newFrame.origin.y;
-    
     [UIView animateWithDuration:animationDuration animations:^{
         [UIView setAnimationCurve:animationCurve];
         
-        [self updateDismissKeyboardButtonPosition];
+        [self updateTextHintLabelPositionWithKeyboardTopY:newFrame.origin.y];
         
         BOOL isDismissing = ABS(newFrame.origin.y - self.view.bounds.size.height) < 10.0;
-        self.dismissKeyboardButton.alpha = isDismissing ? 0.0 : 1.0;
+        self.textHintLabel.alpha = isDismissing ? 0.0 : 1.0;
         
         CGFloat newContainerY = isDismissing ? 0.0 : -(self.topBar.bounds.size.height - kPreviewPadding);
         CGPoint containerCenter = self.containerView.center;
@@ -730,11 +757,12 @@ shouldChangeTextInRange:(NSRange)range
 #pragma mark -
 #pragma mark Dismiss Keybord Button
 
-- (void)updateDismissKeyboardButtonPosition {
-    CGPoint dismissButtonCenter = self.dismissKeyboardButton.center;
-    dismissButtonCenter.y = self.currentKeyboardTopY - (self.currentKeyboardTopY - (kPreviewPadding + [self previewSize])) / 2;
-    dismissButtonCenter.y -= self.containerView.contentOffset.y;
-    self.dismissKeyboardButton.center = dismissButtonCenter;
+- (void)updateTextHintLabelPositionWithKeyboardTopY:(CGFloat)keyboardTopY {
+    CGPoint textHintButtonCenter = self.textHintLabel.center;
+    textHintButtonCenter.x = self.containerView.bounds.size.width / 2;
+    textHintButtonCenter.y = keyboardTopY - (keyboardTopY - (kPreviewPadding + [self previewSize])) / 2;
+    textHintButtonCenter.y -= self.containerView.contentOffset.y;
+    self.textHintLabel.center = textHintButtonCenter;
 }
 
 

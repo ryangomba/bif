@@ -11,6 +11,7 @@ static CGFloat const kHandleTouchHeight = 88.0;
 static CGFloat const kHandleWidth = 22.0;
 static CGFloat const kHandleHeight = 60.0;
 static CGFloat const kMinimumRelativeBurstLength = 0.2;
+static CGFloat const kCornerRadius = 4.0;
 
 @interface BGBurstGroupRangePicker ()
 
@@ -29,6 +30,12 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        self.layer.cornerRadius = kCornerRadius;
+        self.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.layer.shadowOpacity = 0.5;
+        self.layer.shadowOffset = CGSizeZero;
+        self.layer.shadowRadius = 1.0;
+        
         [self addSubview:self.burstGroupView];
         
         [self.burstGroupView addSubview:self.leftTrimOverlayView];
@@ -100,13 +107,8 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
         _burstGroupView = [[BGBurstGroupView alloc] initWithFrame:self.bounds];
         _burstGroupView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         
-        _burstGroupView.layer.cornerRadius = 4.0;
+        _burstGroupView.layer.cornerRadius = kCornerRadius;
         _burstGroupView.layer.masksToBounds = YES;
-        
-        _burstGroupView.layer.shadowColor = [UIColor blackColor].CGColor;
-        _burstGroupView.layer.shadowOpacity = 0.5;
-        _burstGroupView.layer.shadowOffset = CGSizeZero;
-        _burstGroupView.layer.shadowRadius = 1.0;
         
         _burstGroupView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.1].CGColor;
         _burstGroupView.layer.borderWidth = 1.0 / [UIScreen mainScreen].scale;
@@ -277,7 +279,7 @@ static CGFloat const kMinimumRelativeBurstLength = 0.2;
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.burstGroupView.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.burstGroupView.bounds].CGPath;
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:kCornerRadius].CGPath;
 }
 
 @end

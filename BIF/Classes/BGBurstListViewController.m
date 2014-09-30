@@ -23,6 +23,8 @@ static NSString * const kCellReuseID = @"cell";
 
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 
+@property (nonatomic, strong) NSArray *burstGroupsAwaitingReload;
+
 @end
 
 
@@ -56,6 +58,16 @@ static NSString * const kCellReuseID = @"cell";
     [self.view addSubview:self.collectionView];
 
     [self.burstFetcher fetchBurstGroups];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (self.burstGroupsAwaitingReload) {
+        self.burstGroups = self.burstGroupsAwaitingReload;
+        self.burstGroupsAwaitingReload = nil;
+        [self.collectionView reloadData];
+    }
 }
 
 
@@ -111,9 +123,12 @@ static NSString * const kCellReuseID = @"cell";
 #pragma mark BGBurstGroupFetcherDelegate
 
 - (void)burstGroupFetcher:(BGBurstGroupFetcher *)fetcher didFetchBurstGroups:(NSArray *)burstGroups {
-    self.burstGroups = burstGroups;
-    
-    [self.collectionView reloadData];
+    if (self.presentedViewController) {
+        self.burstGroupsAwaitingReload = burstGroups;
+    } else {
+        self.burstGroups = burstGroups;
+        [self.collectionView reloadData];
+    }
 }
 
 

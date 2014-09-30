@@ -2,6 +2,8 @@
 
 #import "BGTextView.h"
 
+static CGFloat const kExpectedWhitespace = 20.0;
+
 @interface BGTextView ()
 
 @property (nonatomic, readwrite) UITextView *internalTextView;
@@ -62,7 +64,7 @@
 }
 
 - (CGFloat)minPosition {
-    CGFloat neededY = self.internalTextView.contentSize.height / 2.0;
+    CGFloat neededY = (self.internalTextView.contentSize.height - kExpectedWhitespace) / 2.0;
     return neededY / self.bounds.size.height;
 }
 

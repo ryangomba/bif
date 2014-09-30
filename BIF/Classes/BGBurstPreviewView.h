@@ -18,6 +18,7 @@
 
 @property (nonatomic, assign) NSUInteger staticIndex;
 @property (nonatomic, assign) BOOL animated;
+@property (nonatomic, assign) BOOL paused;
 
 @property (nonatomic, assign) CGRect cropInfo;
 
