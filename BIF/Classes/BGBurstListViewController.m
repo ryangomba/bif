@@ -5,11 +5,16 @@
 #import "BIFHelpers.h"
 #import "BGBurstGroup.h"
 #import "BGBurstGroupRangePicker.h"
+#import "BGCollectionView.h"
 #import "BGBurstGroupCell.h"
 #import "BGBurstGroupImporter.h"
 #import "BGBurstGroupDataSource.h"
+#import "BGDataSourceUpdate.h"
+#import "BGLoadingInfoView.h"
 #import "BGBurstPreviewViewController.h"
 #import "BGEditTransition.h"
+
+static CGFloat const kCellHeight = 60.0;
 
 static NSString * const kCellReuseID = @"cell";
 
@@ -18,14 +23,15 @@ static NSString * const kCellReuseID = @"cell";
 @property (nonatomic, strong) BGBurstGroupImporter *burstImporter;
 @property (nonatomic, strong) BGBurstGroupDataSource *dataSource;
 
-@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) BGCollectionView *collectionView;
+@property (nonatomic, strong) BGLoadingInfoView *footerView;
 @property (nonatomic, strong) NSArray *burstGroups;
 
 @property (nonatomic, strong) BGEditTransition *editTransition;
 
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 
-@property (nonatomic, strong) NSArray *burstGroupsAwaitingReload;
+@property (nonatomic, strong) NSArray *pendingBurstGroups;
 
 @end
 
@@ -41,6 +47,8 @@ static NSString * const kCellReuseID = @"cell";
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        self.navigationItem.title = @"Choose a Burst";
+        
         self.burstImporter = [[BGBurstGroupImporter alloc] init];
         [self.burstImporter.importQueue addObserver:self forKeyPath:@"operationCount" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew context:nil];
         [self.burstImporter importCameraBursts];
@@ -64,11 +72,12 @@ static NSString * const kCellReuseID = @"cell";
 }
 
 - (void)updateTitleWithImportCount:(NSInteger)importCount {
-    NSString *title = @"Choose a Burst";
     if (importCount > 0) {
-        title = [NSString stringWithFormat:@"Importing %lu Bursts", importCount];
+        self.footerView.text = [NSString stringWithFormat:@"Importing %lu Bursts", importCount];
+        self.collectionView.footerView = self.footerView;
+    } else {
+        self.collectionView.footerView = nil;
     }
-    self.navigationItem.title = title;
 }
 
 
@@ -95,10 +104,8 @@ static NSString * const kCellReuseID = @"cell";
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if (self.burstGroupsAwaitingReload) {
-        self.burstGroups = self.burstGroupsAwaitingReload;
-        self.burstGroupsAwaitingReload = nil;
-        [self.collectionView reloadData];
+    if (self.pendingBurstGroups) {
+        [self updateCollectionView];
     }
 }
 
@@ -128,10 +135,10 @@ static NSString * const kCellReuseID = @"cell";
     return _navigationBar;
 }
 
-- (UICollectionView *)collectionView {
+- (BGCollectionView *)collectionView {
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        _collectionView = [[BGCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         _collectionView.backgroundColor = [UIColor clearColor];
         _collectionView.dataSource = self;
@@ -142,17 +149,54 @@ static NSString * const kCellReuseID = @"cell";
     return _collectionView;
 }
 
+- (BGLoadingInfoView *)footerView {
+    if (!_footerView) {
+        _footerView = [[BGLoadingInfoView alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, kCellHeight)];
+        _footerView.bottomInset = kBGLargePadding;
+    }
+    return _footerView;
+}
+
 
 #pragma mark -
 #pragma mark BGBurstGroupFetcherDelegate
 
-- (void)burstGroupDataSource:(BGBurstGroupDataSource *)dataSource didFetchBurstGroups:(NSArray *)burstGroups {
-    if (self.presentedViewController) {
-        self.burstGroupsAwaitingReload = burstGroups;
-    } else {
-        self.burstGroups = burstGroups;
-        [self.collectionView reloadData];
+- (void)burstGroupDataSource:(BGBurstGroupDataSource *)dataSource didUpdateBurstGroups:(NSArray *)burstGroups {
+    self.pendingBurstGroups = burstGroups;
+    
+    if (!self.presentedViewController) {
+        [self updateCollectionView];
     }
+}
+
+- (void)updateCollectionView {
+    if (!self.pendingBurstGroups) {
+        return;
+    }
+    
+    BGDataSourceUpdate *update = [BGDataSourceUpdate updateFromObjects:self.burstGroups toObjects:self.pendingBurstGroups];
+    
+    NSMutableArray *deletedIndexPaths = [NSMutableArray array];
+    [update.deletedIndexes enumerateIndexesUsingBlock:^(NSUInteger i, BOOL *stop) {
+        [deletedIndexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+    }];
+    
+    NSMutableArray *insertedIndexPaths = [NSMutableArray array];
+    [update.insertedIndexes enumerateIndexesUsingBlock:^(NSUInteger i, BOOL *stop) {
+        [insertedIndexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+    }];
+    
+    [UIView setAnimationsEnabled:NO];
+    [self.collectionView performBatchUpdates:^{
+        self.burstGroups = update.objects;
+        [self.collectionView deleteItemsAtIndexPaths:deletedIndexPaths];
+        [self.collectionView insertItemsAtIndexPaths:insertedIndexPaths];
+        
+    } completion:^(BOOL finished) {
+        [UIView setAnimationsEnabled:YES];
+    }];
+    
+    self.pendingBurstGroups = nil;
 }
 
 
@@ -220,7 +264,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CGFloat elementWidth = collectionView.bounds.size.width - 2 * kBGLargePadding;
-    return CGSizeMake(elementWidth, 60.0);
+    return CGSizeMake(elementWidth, kCellHeight);
 }
 
 

@@ -5,7 +5,7 @@
 @class BGBurstGroupDataSource;
 @protocol BGBurstGroupDataSourceDelegate <NSObject>
 
-- (void)burstGroupDataSource:(BGBurstGroupDataSource *)dataSource didFetchBurstGroups:(NSArray *)burstGroups;
+- (void)burstGroupDataSource:(BGBurstGroupDataSource *)dataSource didUpdateBurstGroups:(NSArray *)burstGroups;
 
 @end
 

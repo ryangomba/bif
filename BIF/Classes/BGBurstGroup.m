@@ -89,4 +89,24 @@ static CGFloat const kDefaultFramesPerSecond = 12.0;
     return NSMakeRange(startIndex, endIndex - startIndex);
 }
 
+
+#pragma mark -
+#pragma mark Equality
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+    if ([object isKindOfClass:self.class]) {
+        if ([((BGBurstGroup *)object).burstIdentifier isEqualToString:self.burstIdentifier]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (NSUInteger)hash {
+    return [self.burstIdentifier hash];
+}
+
 @end

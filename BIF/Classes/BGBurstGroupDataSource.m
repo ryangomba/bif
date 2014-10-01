@@ -38,7 +38,7 @@
     _delegate = delegate;
 
     if (self.burstGroups) {
-        [self.delegate burstGroupDataSource:self didFetchBurstGroups:self.burstGroups];
+        [self.delegate burstGroupDataSource:self didUpdateBurstGroups:self.burstGroups];
     }
 }
 
@@ -63,7 +63,7 @@
         }];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.burstGroups = burstGroups;
-            [self.delegate burstGroupDataSource:self didFetchBurstGroups:self.burstGroups];
+            [self.delegate burstGroupDataSource:self didUpdateBurstGroups:self.burstGroups];
         });
     }];
 }
