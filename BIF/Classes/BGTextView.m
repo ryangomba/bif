@@ -39,6 +39,7 @@ static CGFloat const kExpectedWhitespace = 20.0;
     if (!_internalTextView) {
         _internalTextView = [[UITextView alloc] initWithFrame:CGRectZero];
         _internalTextView.backgroundColor = [UIColor clearColor];
+        // TODO simplify
         [_internalTextView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew context:nil];
     }
     return _internalTextView;

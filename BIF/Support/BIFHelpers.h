@@ -12,3 +12,11 @@ alpha:alphaValue]
 
 #define kBGDefaultPadding 15.0
 #define kBGLargePadding 20.0
+
+static CGFloat const kBGMinimumFPS = 6.0;
+static CGFloat const kBGMaximumFPS = 20.0;
+
+static NSInteger const kBGOutputSize = 320;
+static NSInteger const kBGThumbnailImageSize = 120;
+static NSInteger const kBGFullscreenImageMinEdgeSize = 640;
+static NSInteger const kBGMinPhotosPerBurst = 5;

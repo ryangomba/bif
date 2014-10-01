@@ -6,6 +6,7 @@
 @class BGBurstPreviewView;
 @protocol BGBurstPreviewViewDelegate <NSObject>
 
+- (void)burstPreviewView:(BGBurstPreviewView *)previewView didShowPhoto:(BGBurstPhoto *)photo;
 - (void)burstPreviewView:(BGBurstPreviewView *)previewView didChangeCropInfo:(CGRect)cropInfo;
 
 @end
@@ -17,9 +18,7 @@
 @property (nonatomic, assign) CGFloat framesPerSecond;
 @property (nonatomic, assign) LoopMode loopMode;
 
-@property (nonatomic, assign) NSUInteger staticIndex;
 @property (nonatomic, assign) BOOL animated;
-@property (nonatomic, assign) BOOL paused;
 
 @property (nonatomic, assign) CGRect cropInfo;
 

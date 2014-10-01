@@ -29,6 +29,7 @@
 		94AD4DA519DC5EB900D82168 /* BGLoadingInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DA419DC5EB900D82168 /* BGLoadingInfoView.m */; };
 		94AD4DA819DC692300D82168 /* BGDataSourceUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DA719DC692300D82168 /* BGDataSourceUpdate.m */; };
 		94AD4DAB19DC6A4800D82168 /* BGAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DAA19DC6A4800D82168 /* BGAnimatedImageView.m */; };
+		94AD4DAF19DC759F00D82168 /* NSObject+KVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DAE19DC759F00D82168 /* NSObject+KVO.m */; };
 		94CA402219D1BE7F00F6C4A7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */; };
 		94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */; };
 		94CA402819D320A900F6C4A7 /* BGTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402719D320A900F6C4A7 /* BGTextButton.m */; };
@@ -98,6 +99,11 @@
 		94AD4DA719DC692300D82168 /* BGDataSourceUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGDataSourceUpdate.m; sourceTree = "<group>"; };
 		94AD4DA919DC6A4800D82168 /* BGAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGAnimatedImageView.h; sourceTree = "<group>"; };
 		94AD4DAA19DC6A4800D82168 /* BGAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGAnimatedImageView.m; sourceTree = "<group>"; };
+		94AD4DAD19DC759F00D82168 /* NSObject+KVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+KVO.h"; sourceTree = "<group>"; };
+		94AD4DAE19DC759F00D82168 /* NSObject+KVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+KVO.m"; sourceTree = "<group>"; };
+		94AD4DB019DC766300D82168 /* RGMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGMacros.h; sourceTree = "<group>"; };
+		94AD4DB119DC782400D82168 /* RGLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGLog.h; sourceTree = "<group>"; };
+		94AD4DB219DC783400D82168 /* RGAssert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGAssert.h; sourceTree = "<group>"; };
 		94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		94CA402319D1CC1C00F6C4A7 /* RGGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGGeometry.h; sourceTree = "<group>"; };
 		94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGGeometry.m; sourceTree = "<group>"; };
@@ -186,6 +192,7 @@
 		94A107951957D61E009E7A5F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				94AD4DAC19DC758F00D82168 /* Foundation */,
 				94F2DB5A196B451E00FBCA07 /* Model */,
 				94F2DB55196B44A400FBCA07 /* Rendering */,
 				94F2DB58196B44DA00FBCA07 /* Common UI */,
@@ -209,6 +216,24 @@
 				94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */,
 			);
 			path = Support;
+			sourceTree = "<group>";
+		};
+		94AD4DAC19DC758F00D82168 /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+				94AD4DB219DC783400D82168 /* RGAssert.h */,
+				94AD4DB119DC782400D82168 /* RGLog.h */,
+				94AD4DB019DC766300D82168 /* RGMacros.h */,
+				94AD4DAD19DC759F00D82168 /* NSObject+KVO.h */,
+				94AD4DAE19DC759F00D82168 /* NSObject+KVO.m */,
+				94CA403419D5A25B00F6C4A7 /* UIImage+ImageEffects.h */,
+				94CA403519D5A25B00F6C4A7 /* UIImage+ImageEffects.m */,
+				94A107B21957D61E009E7A5F /* UIImage+Resize.h */,
+				94A107B31957D61E009E7A5F /* UIImage+Resize.m */,
+				94CA402319D1CC1C00F6C4A7 /* RGGeometry.h */,
+				94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */,
+			);
+			name = Foundation;
 			sourceTree = "<group>";
 		};
 		94CA402919D3236D00F6C4A7 /* Fonts */ = {
@@ -247,14 +272,8 @@
 		94F2DB55196B44A400FBCA07 /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
-				94CA403419D5A25B00F6C4A7 /* UIImage+ImageEffects.h */,
-				94CA403519D5A25B00F6C4A7 /* UIImage+ImageEffects.m */,
 				94A107AE1957D61E009E7A5F /* BGGIFMaker.h */,
 				94A107AF1957D61E009E7A5F /* BGGIFMaker.m */,
-				94A107B21957D61E009E7A5F /* UIImage+Resize.h */,
-				94A107B31957D61E009E7A5F /* UIImage+Resize.m */,
-				94CA402319D1CC1C00F6C4A7 /* RGGeometry.h */,
-				94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */,
 				94CA403D19D6180800F6C4A7 /* BGTextElement.h */,
 				94CA403E19D6180800F6C4A7 /* BGTextElement.m */,
 			);
@@ -489,6 +508,7 @@
 				94CA403919D5A61200F6C4A7 /* BGShareCell.m in Sources */,
 				94CA404519D61C9900F6C4A7 /* BGEntryTransition.m in Sources */,
 				94A107C61957D61E009E7A5F /* UIImage+Resize.m in Sources */,
+				94AD4DAF19DC759F00D82168 /* NSObject+KVO.m in Sources */,
 				94CA403F19D6180800F6C4A7 /* BGTextElement.m in Sources */,
 				94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */,
 				9470078819DB4C13006FD624 /* BGBurstGroup.m in Sources */,

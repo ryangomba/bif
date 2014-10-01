@@ -13,6 +13,7 @@
 #import "BGLoadingInfoView.h"
 #import "BGBurstPreviewViewController.h"
 #import "BGEditTransition.h"
+#import "NSObject+KVO.h"
 
 static CGFloat const kCellHeight = 60.0;
 
@@ -33,6 +34,8 @@ static NSString * const kCellReuseID = @"cell";
 
 @property (nonatomic, strong) NSArray *pendingBurstGroups;
 
+@property (nonatomic, strong) RGKVOHandle *operationCountObserver;
+
 @end
 
 
@@ -42,7 +45,7 @@ static NSString * const kCellReuseID = @"cell";
 #pragma mark NSObject
 
 - (void)dealloc {
-    [self.burstImporter.importQueue removeObserver:self forKeyPath:@"operationCount"];
+    [self.operationCountObserver stopObserving];
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -50,7 +53,10 @@ static NSString * const kCellReuseID = @"cell";
         self.navigationItem.title = @"Choose a Burst";
         
         self.burstImporter = [[BGBurstGroupImporter alloc] init];
-        [self.burstImporter.importQueue addObserver:self forKeyPath:@"operationCount" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew context:nil];
+        self.operationCountObserver = [RGObserver(self.burstImporter.importQueue, operationCount) observeOnMain:^(NSDictionary *change) {
+            NSInteger operationCount = [change[NSKeyValueChangeNewKey] integerValue];
+            [self updateTitleWithImportCount:operationCount];
+        } options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew];
         [self.burstImporter importCameraBursts];
     }
     return self;
@@ -59,17 +65,6 @@ static NSString * const kCellReuseID = @"cell";
 
 #pragma mark -
 #pragma mark KVO
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context {
-
-    NSInteger importCount = [change[NSKeyValueChangeNewKey] integerValue];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateTitleWithImportCount:importCount];
-    });
-}
 
 - (void)updateTitleWithImportCount:(NSInteger)importCount {
     if (importCount > 0) {

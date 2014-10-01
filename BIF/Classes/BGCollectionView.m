@@ -11,6 +11,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(UICollectionViewLayout *)layout {
     if (self = [super initWithFrame:frame collectionViewLayout:layout]) {
+        // TODO simplify
         [self addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
         [self addObserver:self forKeyPath:@"contentInset" options:NSKeyValueObservingOptionNew context:nil];
     }

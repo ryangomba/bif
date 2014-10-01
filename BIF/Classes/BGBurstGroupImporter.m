@@ -5,14 +5,8 @@
 @import Photos;
 
 #import "BGDatabase.h"
-
-// HACK
 #import "UIImage+Resize.h"
-static NSInteger kThumbnailImageSize = 120.0;
-static NSInteger kFullscreenImageMinEdgeSize = 640.0;
-
-static NSInteger kMinPhotosPerBurst = 5;
-
+#import "BIFHelpers.h"
 
 @interface BGBurstAssetsGroup : NSObject
 
@@ -107,7 +101,7 @@ static NSInteger kMinPhotosPerBurst = 5;
     // filter burst groups for ones that are too short
     
     NSMutableArray *assetGroups = [burstGroupsMap.allValues mutableCopy];
-    NSPredicate *minLengthPredicate = [NSPredicate predicateWithFormat:@"assets.@count >= %d", kMinPhotosPerBurst];
+    NSPredicate *minLengthPredicate = [NSPredicate predicateWithFormat:@"assets.@count >= %d", kBGMinPhotosPerBurst];
     [assetGroups filterUsingPredicate:minLengthPredicate];
     
     // order by recency
@@ -153,8 +147,8 @@ static NSInteger kMinPhotosPerBurst = 5;
         options.synchronous = YES;
         
         CGFloat aspectRatio = asset.pixelWidth / (CGFloat)asset.pixelHeight;
-        NSInteger targetWidth = roundf(MAX(aspectRatio, 1.0) * kFullscreenImageMinEdgeSize);
-        NSInteger targetHeight = roundf(MAX(1.0 / aspectRatio, 1.0) * kFullscreenImageMinEdgeSize);
+        NSInteger targetWidth = roundf(MAX(aspectRatio, 1.0) * kBGFullscreenImageMinEdgeSize);
+        NSInteger targetHeight = roundf(MAX(1.0 / aspectRatio, 1.0) * kBGFullscreenImageMinEdgeSize);
         CGSize targetSize = CGSizeMake(targetWidth, targetHeight);
         
         BOOL (^quickImportBlock)(void) = ^{
@@ -210,10 +204,10 @@ static NSInteger kMinPhotosPerBurst = 5;
     NSError *error = nil;
     
     UIImage *fullscreenImage;
-    if (MIN(image.size.width, image.size.height) == kFullscreenImageMinEdgeSize) {
+    if (MIN(image.size.width, image.size.height) == kBGFullscreenImageMinEdgeSize) {
         fullscreenImage = image;
     } else {
-        fullscreenImage = [image resizedImageWithBounds:CGSizeMake(kFullscreenImageMinEdgeSize, kFullscreenImageMinEdgeSize)];
+        fullscreenImage = [image resizedImageWithBounds:CGSizeMake(kBGFullscreenImageMinEdgeSize, kBGFullscreenImageMinEdgeSize)];
     }
     NSString *fullscreenImageFilename = [NSString stringWithFormat:@"%@_%lux%lu.jpg", assetName, (NSInteger)fullscreenImage.size.width, (NSInteger)fullscreenImage.size.height];
     NSURL *fullscreenImageFileURL = [documentsDirectoryURL URLByAppendingPathComponent:fullscreenImageFilename];
@@ -224,7 +218,7 @@ static NSInteger kMinPhotosPerBurst = 5;
         NSAssert(NO, error.localizedDescription);
     }
     
-    UIImage *thumbnailImage = [fullscreenImage squareThumbnailImageOfSize:kThumbnailImageSize];
+    UIImage *thumbnailImage = [fullscreenImage squareThumbnailImageOfSize:kBGThumbnailImageSize];
     NSString *thumbnailImageFilename = [NSString stringWithFormat:@"%@_%lux%lu.jpg", assetName, (NSInteger)thumbnailImage.size.width, (NSInteger)thumbnailImage.size.height];
     NSURL *thumbnailImageFileURL = [documentsDirectoryURL URLByAppendingPathComponent:thumbnailImageFilename];
     if ([UIImageJPEGRepresentation(thumbnailImage, 0.9) writeToURL:thumbnailImageFileURL options:NSDataWritingAtomic error:&error]) {

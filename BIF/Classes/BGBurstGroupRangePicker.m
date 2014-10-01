@@ -10,6 +10,7 @@ static CGFloat const kHandleTouchWidth = 44.0;
 static CGFloat const kHandleTouchHeight = 88.0;
 static CGFloat const kHandleWidth = 22.0;
 static CGFloat const kHandleHeight = 60.0;
+static CGFloat const kPlayheadWidth = 2.0;
 static CGFloat const kMinimumRelativeBurstLength = 0.2;
 static CGFloat const kCornerRadius = 4.0;
 
@@ -17,12 +18,14 @@ static CGFloat const kCornerRadius = 4.0;
 
 @property (nonatomic, strong) BGBurstGroupView *burstGroupView;
 
-@property (nonatomic, strong) UIView *startHandle;
-@property (nonatomic, strong) UIView *endHandle;
+@property (nonatomic, strong) UIView *playhead;
 
 @property (nonatomic, strong) UIView *leftTrimOverlayView;
 @property (nonatomic, strong) UIView *rightTrimOverlayView;
 @property (nonatomic, strong) UIView *centerTrimOverlayView;
+
+@property (nonatomic, strong) UIView *startHandle;
+@property (nonatomic, strong) UIView *endHandle;
 
 @end
 
@@ -38,10 +41,13 @@ static CGFloat const kCornerRadius = 4.0;
         
         [self addSubview:self.burstGroupView];
         
+        [self addSubview:self.playhead];
+        [self updatePlayheadPositionAnimated:NO];
+        
         [self.burstGroupView addSubview:self.leftTrimOverlayView];
         [self.burstGroupView addSubview:self.rightTrimOverlayView];
         [self.burstGroupView addSubview:self.centerTrimOverlayView];
-        
+
         [self addSubview:self.startHandle];
         [self addSubview:self.endHandle];
         
@@ -51,14 +57,26 @@ static CGFloat const kCornerRadius = 4.0;
 }
 
 - (void)setBurstGroup:(BGBurstGroup *)burstGroup {
+    BOOL newGroup = ![burstGroup isEqual:_burstGroup];
+    
     _burstGroup = burstGroup;
     
-    self.burstGroupView.photos = burstGroup.photos;
+    if (newGroup) {
+        self.burstGroupView.photos = burstGroup.photos;
+    }
+}
+
+- (void)setCurrentPhoto:(BGBurstPhoto *)currentPhoto {
+    _currentPhoto = currentPhoto;
+    
+    [self updatePlayheadPositionAnimated:YES];
 }
 
 - (void)setEditable:(BOOL)editable animated:(BOOL)animated {
     [self updateStartHandlePosition];
     [self updateEndHandlePosition];
+    
+    self.playhead.hidden = !editable;
     
     BOOL editViewAlpha = editable ? 1.0 : 0.0;
     
@@ -114,6 +132,15 @@ static CGFloat const kCornerRadius = 4.0;
         _burstGroupView.layer.borderWidth = 1.0 / [UIScreen mainScreen].scale;
     }
     return _burstGroupView;
+}
+
+- (UIView *)playhead {
+    if (!_playhead) {
+        CGRect playheadRect = CGRectMake(0.0, 0.0, kPlayheadWidth, kHandleHeight);
+        _playhead = [[UIView alloc] initWithFrame:playheadRect];
+        _playhead.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.75];
+    }
+    return _playhead;
 }
 
 - (UIView *)startHandle {
@@ -185,7 +212,7 @@ static CGFloat const kCornerRadius = 4.0;
     [self.burstGroup.photos enumerateObjectsUsingBlock:
      ^(PHAsset *asset, NSUInteger i, BOOL *stop) {
          if ([asset.localIdentifier isEqualToString:frameID]) {
-             relativePosition = i / (CGFloat)MAX(self.burstGroup.photos.count - 1, 1);
+             relativePosition = i / (CGFloat)(self.burstGroup.photos.count - 1);
              *stop = YES;
          }
      }];
@@ -206,6 +233,21 @@ static CGFloat const kCornerRadius = 4.0;
 - (void)updateEndHandlePosition {
     NSString *frameID = self.burstGroup.endFrameIdentifier;
     [self updatePositionForHandle:self.endHandle frameID:frameID defaultPosition:1.0];
+}
+
+- (void)updatePlayheadPositionAnimated:(BOOL)animated {
+    CGFloat defaultPosition = kHandleWidth / self.bounds.size.width;
+    CGFloat position = [self relativePositionForFrameID:self.currentPhoto.localIdentifier defaultValue:defaultPosition];
+    CGFloat x = kHandleWidth + kPlayheadWidth / 2.0 + (self.bounds.size.width - 2 * kHandleWidth - kPlayheadWidth) * position;
+    CGPoint center = CGPointMake(x, self.bounds.size.height / 2.0);
+    
+    BOOL willSkip = ABS(self.playhead.center.x - center.x) > 20.0;
+    animated = animated && !willSkip;
+    
+    CGFloat duration = (1.0 / self.burstGroup.framesPerSecond) * animated;
+    [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveLinear animations:^{
+        self.playhead.center = center;
+    } completion:nil];
 }
 
 - (void)updatePositionForHandle:(UIView *)handle

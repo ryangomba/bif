@@ -15,7 +15,8 @@
 
 - (CGRect)rectForRangePickerView;
 - (BGBurstGroupRangePicker *)stealRangePickerView;
-- (void)setRangePickerView:(BGBurstGroupRangePicker *)rangePickerView;
+- (void)prepareRangePickerView:(BGBurstGroupRangePicker *)rangePickerView;
+- (void)placeRangePickerView:(BGBurstGroupRangePicker *)rangePickerView;
 
 - (UIView *)mediaView;
 - (void)display:(BOOL)display;

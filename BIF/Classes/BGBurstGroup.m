@@ -86,7 +86,7 @@ static CGFloat const kDefaultFramesPerSecond = 12.0;
         endIndex = self.photos.count - 1;
     }
     
-    return NSMakeRange(startIndex, endIndex - startIndex);
+    return NSMakeRange(startIndex, endIndex - startIndex + 1);
 }
 
 

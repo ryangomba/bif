@@ -15,6 +15,7 @@
 @interface BGBurstGroupRangePicker : UIView
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
+@property (nonatomic, assign) BGBurstPhoto *currentPhoto;
 
 @property (nonatomic, weak) id<BGBurstGroupRangePickerDelegate> delegate;
 

@@ -6,7 +6,8 @@
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) CADisplayLink *displayLink;
-@property (nonatomic, assign) NSInteger frameIndex;
+
+@property (nonatomic, assign, readwrite) NSInteger frameIndex;
 
 @end
 
@@ -45,17 +46,22 @@
 - (void)setImagePaths:(NSArray *)imagePaths {
     _imagePaths = imagePaths;
     
+    [self showImageAtIndex:0];
     [self updatePlayState];
 }
 
 - (void)onDisplayLinkFired:(CADisplayLink *)displayLink {
     NSAssert(self.imagePaths.count > 0, @"No images");
     
-    self.frameIndex++;
-    if (self.frameIndex >= self.imagePaths.count) {
-        self.frameIndex = 0;
-    }
+    NSInteger nextFrameIndex = self.frameIndex + 1;
+    if (nextFrameIndex >= self.imagePaths.count) {
+        nextFrameIndex = 0;
+    };
+    [self showImageAtIndex:nextFrameIndex];
+}
 
+- (void)showImageAtIndex:(NSInteger)frameIndex {
+    self.frameIndex = frameIndex;
     NSString *imagePath = self.imagePaths[self.frameIndex];
     self.imageView.image = [UIImage imageWithContentsOfFile:imagePath];
 }
@@ -67,7 +73,8 @@
 }
 
 - (void)updatePlayState {
-    self.displayLink.paused = !self.animated || self.imagePaths.count == 0;
+    BOOL play = self.animated && self.imagePaths.count > 0;
+    self.displayLink.paused = !play;
 }
 
 - (void)layoutSubviews {

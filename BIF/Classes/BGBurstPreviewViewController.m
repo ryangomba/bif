@@ -18,11 +18,6 @@ static CGFloat const kRangePickerHeight = 60.0;
 static CGFloat const kPreviewPadding = 10.0;
 static CGFloat const kSliderPadding = 36.0;
 
-// TODO move
-static CGFloat const kMinimumFPS = 6.0;
-static CGFloat const kMaximumFPS = 20.0;
-static CGFloat const kOutputSize = 320.0;
-
 @interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate, BGBurstPreviewViewDelegate, BGShareViewControllerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
@@ -62,12 +57,6 @@ static CGFloat const kOutputSize = 320.0;
 - (instancetype)initWithBurstGroup:(BGBurstGroup *)burstGroup {
     if (self = [super initWithNibName:nil bundle:nil]) {
         self.burstGroup = burstGroup;
-        
-        self.speedSlider.value = [self sliderValueForFramesPerSecond:self.burstGroup.framesPerSecond];
-        self.previewView.framesPerSecond = self.burstGroup.framesPerSecond;
-        
-        [self updateRepeatButtonForLoopMode:self.burstGroup.loopMode];
-        self.previewView.loopMode = self.burstGroup.loopMode;
     }
     return self;
 }
@@ -119,8 +108,6 @@ static CGFloat const kOutputSize = 320.0;
     // preview area
     
     self.previewView.frame = [self normalFrameForMediaView];
-    self.previewView.photos = self.burstGroup.photos;
-    self.previewView.cropInfo = self.burstGroup.cropInfo;
     [self.containerView addSubview:self.previewView];
     
     [self.previewView addSubview:self.watermarkLabel];
@@ -140,6 +127,14 @@ static CGFloat const kOutputSize = 320.0;
     
     // setup
     
+    self.speedSlider.value = [self sliderValueForFramesPerSecond:self.burstGroup.framesPerSecond];
+    [self updateRepeatButtonForLoopMode:self.burstGroup.loopMode];
+    
+    self.previewView.photos = self.burstGroup.photos;
+    self.previewView.framesPerSecond = self.burstGroup.framesPerSecond;
+    self.previewView.loopMode = self.burstGroup.loopMode;
+    self.previewView.cropInfo = self.burstGroup.cropInfo;
+    
     [self updatePhotoRange];
     
     BOOL hasText = self.burstGroup.text.length > 0;
@@ -155,7 +150,7 @@ static CGFloat const kOutputSize = 320.0;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.previewView.paused = NO;
+    self.previewView.animated = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillChangeFrame:)
@@ -413,11 +408,11 @@ static CGFloat const kOutputSize = 320.0;
 }
 
 - (CGFloat)framesPerSecondForSliderValue:(CGFloat)sliderValue {
-    return kMinimumFPS + (kMaximumFPS - kMinimumFPS) * sliderValue;
+    return kBGMinimumFPS + (kBGMaximumFPS - kBGMinimumFPS) * sliderValue;
 }
 
 - (CGFloat)sliderValueForFramesPerSecond:(CGFloat)framesPerSecond {
-    return (framesPerSecond - kMinimumFPS) / (kMaximumFPS - kMinimumFPS);
+    return (framesPerSecond - kBGMinimumFPS) / (kBGMaximumFPS - kBGMinimumFPS);
 }
 
 - (void)onSpeedSliderChanged {
@@ -545,7 +540,7 @@ static CGFloat const kOutputSize = 320.0;
 }
 
 - (void)onShareButtonTapped {
-    self.previewView.paused = YES;
+    self.previewView.animated = NO;
 
     NSArray *photos = self.previewView.allPhotosInRangeWithLoopModeApplied;
     
@@ -576,7 +571,7 @@ static CGFloat const kOutputSize = 320.0;
     BGFinalizedBurst *finalizedBurst =
     [[BGFinalizedBurst alloc] initWithPhotos:photos
                                     cropRect:self.previewView.cropInfo
-                                  outputSize:kOutputSize
+                                  outputSize:kBGOutputSize
                                frameDuration:(1.0 / self.burstGroup.framesPerSecond)
                                 textElements:textElements];
 
@@ -596,6 +591,10 @@ static CGFloat const kOutputSize = 320.0;
 
 #pragma mark -
 #pragma mark BGBurstPreviewViewDelegate
+
+- (void)burstPreviewView:(BGBurstPreviewView *)previewView didShowPhoto:(BGBurstPhoto *)photo {
+    self.rangePicker.currentPhoto = photo;
+}
 
 - (void)burstPreviewView:(BGBurstPreviewView *)previewView didChangeCropInfo:(CGRect)cropInfo {
     self.burstGroup.cropInfo = cropInfo;
@@ -714,7 +713,6 @@ shouldChangeTextInRange:(NSRange)range
 }
 
 - (void)burstGroupRangePickerDidUpdateRange:(BGBurstGroupRangePicker *)picker frameIndex:(NSUInteger)frameIndex {
-    self.previewView.staticIndex = frameIndex;
     [self updatePhotoRange];
 }
 
@@ -772,9 +770,13 @@ shouldChangeTextInRange:(NSRange)range
     return rangePicker;
 }
 
-- (void)setRangePickerView:(BGBurstGroupRangePicker *)rangePickerView {
+- (void)prepareRangePickerView:(BGBurstGroupRangePicker *)rangePickerView {
     self.rangePicker = rangePickerView;
+    self.rangePicker.burstGroup = self.burstGroup;
     self.rangePicker.delegate = self;
+}
+
+- (void)placeRangePickerView:(BGBurstGroupRangePicker *)rangePickerView {
     [self.rangePicker addGestureRecognizer:self.rangePickerTapRecognizer];
     [self.view addSubview:self.rangePicker];
 }

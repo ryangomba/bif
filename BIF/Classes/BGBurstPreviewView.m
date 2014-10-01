@@ -5,6 +5,7 @@
 #import "UIImage+Resize.h"
 #import "RGGeometry.h"
 #import "BGAnimatedImageView.h"
+#import "NSObject+KVO.h"
 
 #define kMaximumZoomScale 2.0
 
@@ -15,12 +16,17 @@
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) BGAnimatedImageView *animatedImageView;
-@property (nonatomic, strong) UIImageView *staticImageView;
+
+@property (nonatomic, strong) RGKVOHandle *frameIndexObserver;
 
 @end
 
 
 @implementation BGBurstPreviewView
+
+- (void)dealloc {
+    [self.frameIndexObserver stopObserving];
+}
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -41,11 +47,9 @@
         self.animatedImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.animatedImageView.contentMode = UIViewContentModeScaleAspectFill;
         [self.contentView addSubview:self.animatedImageView];
-        
-        self.staticImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        self.staticImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        self.staticImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [self.contentView addSubview:self.staticImageView];
+        self.frameIndexObserver = [RGObserver(self.animatedImageView, frameIndex) observeOnMain:^(NSNumber *frameIndexNumber) {
+            [self updateFrameIndex:frameIndexNumber.integerValue];
+        }];
         
         // border and shadow
         
@@ -120,10 +124,12 @@
     self.scrollView.maximumZoomScale = kMaximumZoomScale;
 }
 
+- (CGFloat)framesPerSecond {
+    return self.animatedImageView.framesPerSecond;
+}
+
 - (void)setFramesPerSecond:(CGFloat)framesPerSecond {
-    _framesPerSecond = framesPerSecond;
-    
-    [self updateImages];
+    self.animatedImageView.framesPerSecond = framesPerSecond;
 }
 
 - (void)setLoopMode:(LoopMode)loopMode {
@@ -141,47 +147,17 @@
 - (void)setAnimated:(BOOL)animated {
     _animated = animated;
     
-    if (animated) {
-        self.staticIndex = self.range.location;
-        if (!self.paused) {
-            [self startAnimating];
-        }
-    } else {
-        [self stopAnimating];
-    }
-}
-
-- (void)setPaused:(BOOL)paused {
-    _paused = paused;
-    
-    if (!paused) {
-        [self startAnimating];
-    } else {
-        [self stopAnimating];
-    }
+    self.animatedImageView.animated = animated;
 }
 
 - (void)updateImages {
-    BGBurstPhoto *staticPhoto = self.photos[self.staticIndex];
-    NSString *staticPhotoPath = staticPhoto.fullscreenFilePath;
-    self.staticImageView.image = [UIImage imageWithContentsOfFile:staticPhotoPath];
-    
     self.animatedImageView.imagePaths = [self allImagePathsInRangeWithLoopModeApplied];
-    self.animatedImageView.framesPerSecond = self.framesPerSecond;
-    
-    if (self.animated) {
-        [self startAnimating];
-    }
 }
 
-- (void)startAnimating {
-    self.staticImageView.hidden = YES;
-    self.animatedImageView.animated = YES;
-}
-
-- (void)stopAnimating {
-    self.staticImageView.hidden = NO;
-    self.animatedImageView.animated = NO;
+- (void)updateFrameIndex:(NSInteger)frameIndex {
+    NSArray *photos = self.allPhotosInRangeWithLoopModeApplied;
+    BGBurstPhoto *photo = photos[frameIndex];
+    [self.delegate burstPreviewView:self didShowPhoto:photo];
 }
 
 

@@ -111,6 +111,7 @@
     [containerView addSubview:rangePickerView];
     
     toVC.view.backgroundColor = [UIColor clearColor];
+    [toVC prepareRangePickerView:rangePickerView];
     
     UIView *mediaView = [toVC mediaView];
     
@@ -148,7 +149,7 @@
 
         toVC.view.backgroundColor = kBGBackgroundColor;
         
-        [toVC setRangePickerView:rangePickerView];
+        [toVC placeRangePickerView:rangePickerView];
         
         [transitionContext completeTransition:YES];
     }];
