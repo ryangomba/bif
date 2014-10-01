@@ -4,16 +4,17 @@
 
 #import "UIImage+Resize.h"
 #import "RGGeometry.h"
+#import "BGAnimatedImageView.h"
 
 #define kMaximumZoomScale 2.0
 
 @interface BGBurstPreviewView ()<UIScrollViewDelegate>
 
-@property (nonatomic, strong) NSMutableArray *assetImages;
+@property (nonatomic, strong) NSMutableArray *assetImagePaths;
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *contentView;
-@property (nonatomic, strong) UIImageView *animatedImageView;
+@property (nonatomic, strong) BGAnimatedImageView *animatedImageView;
 @property (nonatomic, strong) UIImageView *staticImageView;
 
 @end
@@ -36,10 +37,9 @@
         self.contentView.clipsToBounds = YES;
         [self.scrollView addSubview:self.contentView];
         
-        self.animatedImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        self.animatedImageView = [[BGAnimatedImageView alloc] initWithFrame:CGRectZero];
         self.animatedImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.animatedImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.animatedImageView.animationRepeatCount = 0;
         [self.contentView addSubview:self.animatedImageView];
         
         self.staticImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -69,43 +69,39 @@
 - (void)setPhotos:(NSArray *)photos {
     _photos = photos;
     
-    self.assetImages = [NSMutableArray array];
-    for (NSInteger i = 0; i < photos.count; i++) {
-        [self.assetImages addObject:[NSNull null]];
-    }
-    
     [self prepareImageViews];
-    
-    [self fetchImages];
+    [self updateImages];
 }
 
-- (NSArray *)allImagesInRange {
+- (NSArray *)allPhotosInRange {
     if (NSEqualRanges(self.range, NSMakeRange(0, 0))) {
-        return self.assetImages;
+        return self.photos;
     }
-    return [self.assetImages subarrayWithRange:self.range];
+    return [self.photos subarrayWithRange:self.range];
 }
 
-- (NSArray *)allImagesInRangeWithLoopModeApplied {
-    NSMutableArray *images = [[NSMutableArray alloc] init];
-    
+- (NSArray *)allPhotosInRangeWithLoopModeApplied {
     switch (self.loopMode) {
         case LoopModeLoop: {
-            [images addObjectsFromArray:self.allImagesInRange];
+            return self.allPhotosInRange;
         } break;
             
         case LoopModeReverse: {
-            [images addObjectsFromArray:self.allImagesInRange];
-            NSArray *imagesReversed = [self.allImagesInRange reverseObjectEnumerator].allObjects;
-            if (imagesReversed.count > 2) {
-                for (NSInteger i = 1; i < imagesReversed.count - 1; i++) {
-                    [images addObject:imagesReversed[i]];
+            NSMutableArray *photos = [[NSMutableArray alloc] init];
+            [photos addObjectsFromArray:self.allPhotosInRange];
+            NSArray *photosReversed = [self.allPhotosInRange reverseObjectEnumerator].allObjects;
+            if (photosReversed.count > 2) {
+                for (NSInteger i = 1; i < photosReversed.count - 1; i++) {
+                    [photos addObject:photosReversed[i]];
                 }
             }
+            return photos;
         } break;
     }
-    
-    return images;
+}
+
+- (NSArray *)allImagePathsInRangeWithLoopModeApplied {
+    return [self.allPhotosInRangeWithLoopModeApplied valueForKey:@"fullscreenFilePath"];
 }
 
 - (void)prepareImageViews {
@@ -122,20 +118,6 @@
     self.scrollView.contentOffset = CGPointMake(imageViewX, imageViewY);
     
     self.scrollView.maximumZoomScale = kMaximumZoomScale;
-}
-
-- (void)fetchImages {
-    NSAssert(self.photos.count > 0, @"No photos");
-    
-    for (BGBurstPhoto *photo in self.photos) {
-        NSInteger index = [self.photos indexOfObject:photo];
-        self.assetImages[index] = [UIImage imageWithContentsOfFile:photo.fullscreenFilePath];
-        [self updateImages];
-    }
-}
-
-- (BOOL)isLoaded {
-    return ![self.assetImages containsObject:[NSNull null]];
 }
 
 - (void)setFramesPerSecond:(CGFloat)framesPerSecond {
@@ -161,7 +143,7 @@
     
     if (animated) {
         self.staticIndex = self.range.location;
-        if (self.isLoaded && !self.paused) {
+        if (!self.paused) {
             [self startAnimating];
         }
     } else {
@@ -172,7 +154,7 @@
 - (void)setPaused:(BOOL)paused {
     _paused = paused;
     
-    if (self.isLoaded && !paused) {
+    if (!paused) {
         [self startAnimating];
     } else {
         [self stopAnimating];
@@ -180,27 +162,26 @@
 }
 
 - (void)updateImages {
-    if (self.isLoaded) {
-        self.staticImageView.image = self.assetImages[self.staticIndex];
-        
-        NSArray *animationImages = [self allImagesInRangeWithLoopModeApplied];
-        self.animatedImageView.animationImages = animationImages;
-        
-        self.animatedImageView.animationDuration = animationImages.count * (1.0 / self.framesPerSecond);
-        if (self.animated) {
-            [self startAnimating];
-        }
+    BGBurstPhoto *staticPhoto = self.photos[self.staticIndex];
+    NSString *staticPhotoPath = staticPhoto.fullscreenFilePath;
+    self.staticImageView.image = [UIImage imageWithContentsOfFile:staticPhotoPath];
+    
+    self.animatedImageView.imagePaths = [self allImagePathsInRangeWithLoopModeApplied];
+    self.animatedImageView.framesPerSecond = self.framesPerSecond;
+    
+    if (self.animated) {
+        [self startAnimating];
     }
 }
 
 - (void)startAnimating {
     self.staticImageView.hidden = YES;
-    [self.animatedImageView startAnimating];
+    self.animatedImageView.animated = YES;
 }
 
 - (void)stopAnimating {
     self.staticImageView.hidden = NO;
-    [self.animatedImageView stopAnimating];
+    self.animatedImageView.animated = NO;
 }
 
 

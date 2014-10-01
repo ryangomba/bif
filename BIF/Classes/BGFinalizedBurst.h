@@ -2,7 +2,7 @@
 
 @interface BGFinalizedBurst : NSObject
 
-- (instancetype)initWithImages:(NSArray *)images
+- (instancetype)initWithPhotos:(NSArray *)photos
                       cropRect:(CGRect)cropRect
                     outputSize:(CGFloat)outputSize
                  frameDuration:(CGFloat)frameDuration

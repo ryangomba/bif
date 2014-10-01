@@ -28,6 +28,7 @@
 		94AD4DA219DC5C8800D82168 /* BGCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DA119DC5C8800D82168 /* BGCollectionView.m */; };
 		94AD4DA519DC5EB900D82168 /* BGLoadingInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DA419DC5EB900D82168 /* BGLoadingInfoView.m */; };
 		94AD4DA819DC692300D82168 /* BGDataSourceUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DA719DC692300D82168 /* BGDataSourceUpdate.m */; };
+		94AD4DAB19DC6A4800D82168 /* BGAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DAA19DC6A4800D82168 /* BGAnimatedImageView.m */; };
 		94CA402219D1BE7F00F6C4A7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */; };
 		94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */; };
 		94CA402819D320A900F6C4A7 /* BGTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402719D320A900F6C4A7 /* BGTextButton.m */; };
@@ -95,6 +96,8 @@
 		94AD4DA419DC5EB900D82168 /* BGLoadingInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGLoadingInfoView.m; sourceTree = "<group>"; };
 		94AD4DA619DC692300D82168 /* BGDataSourceUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGDataSourceUpdate.h; sourceTree = "<group>"; };
 		94AD4DA719DC692300D82168 /* BGDataSourceUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGDataSourceUpdate.m; sourceTree = "<group>"; };
+		94AD4DA919DC6A4800D82168 /* BGAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGAnimatedImageView.h; sourceTree = "<group>"; };
+		94AD4DAA19DC6A4800D82168 /* BGAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGAnimatedImageView.m; sourceTree = "<group>"; };
 		94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		94CA402319D1CC1C00F6C4A7 /* RGGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGGeometry.h; sourceTree = "<group>"; };
 		94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGGeometry.m; sourceTree = "<group>"; };
@@ -316,6 +319,8 @@
 				94A1079F1957D61E009E7A5F /* BGBurstGroupRangePicker.m */,
 				94CA402E19D3423500F6C4A7 /* BGEditTransition.h */,
 				94CA402F19D3423500F6C4A7 /* BGEditTransition.m */,
+				94AD4DA919DC6A4800D82168 /* BGAnimatedImageView.h */,
+				94AD4DAA19DC6A4800D82168 /* BGAnimatedImageView.m */,
 			);
 			name = Editing;
 			sourceTree = "<group>";
@@ -474,6 +479,7 @@
 				94A107BF1957D61E009E7A5F /* BGBurstListViewController.m in Sources */,
 				94CA403019D3423500F6C4A7 /* BGEditTransition.m in Sources */,
 				94CA404219D61C2300F6C4A7 /* BGEntryViewController.m in Sources */,
+				94AD4DAB19DC6A4800D82168 /* BGAnimatedImageView.m in Sources */,
 				94CA402519D1CC1C00F6C4A7 /* RGGeometry.m in Sources */,
 				94CA404819D6202800F6C4A7 /* BGPieProgressView.m in Sources */,
 				94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */,

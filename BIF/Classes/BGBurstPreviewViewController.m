@@ -18,6 +18,11 @@ static CGFloat const kRangePickerHeight = 60.0;
 static CGFloat const kPreviewPadding = 10.0;
 static CGFloat const kSliderPadding = 36.0;
 
+// TODO move
+static CGFloat const kMinimumFPS = 6.0;
+static CGFloat const kMaximumFPS = 20.0;
+static CGFloat const kOutputSize = 320.0;
+
 @interface BGBurstPreviewViewController ()<BGBurstGroupRangePickerDelegate, UITextViewDelegate, BGTextViewDelegate, BGBurstPreviewViewDelegate, BGShareViewControllerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
@@ -407,10 +412,6 @@ static CGFloat const kSliderPadding = 36.0;
     return _textButton;
 }
 
-
-#define kMinimumFPS 4.0
-#define kMaximumFPS 20.0
-
 - (CGFloat)framesPerSecondForSliderValue:(CGFloat)sliderValue {
     return kMinimumFPS + (kMaximumFPS - kMinimumFPS) * sliderValue;
 }
@@ -545,19 +546,8 @@ static CGFloat const kSliderPadding = 36.0;
 
 - (void)onShareButtonTapped {
     self.previewView.paused = YES;
-    
-    // HACK
-    CGFloat outputSize = 320.0;
-    
-    NSArray *images = self.previewView.allImagesInRangeWithLoopModeApplied;
-    CGSize imageSize = [images.firstObject size];
-    
-    CGRect cropInfo = self.previewView.cropInfo;
-    CGRect cropRect = CGRectZero;
-    cropRect.origin.x = imageSize.width * cropInfo.origin.x;
-    cropRect.origin.y = imageSize.height * cropInfo.origin.y;
-    cropRect.size.width = imageSize.width * cropInfo.size.width;
-    cropRect.size.height = imageSize.height * cropInfo.size.height;
+
+    NSArray *photos = self.previewView.allPhotosInRangeWithLoopModeApplied;
     
     CGRect textRect = [self.previewView convertRect:self.textView.internalTextView.frame fromView:self.textView];
     textRect.origin.x /= self.previewView.frame.size.width;
@@ -584,9 +574,9 @@ static CGFloat const kSliderPadding = 36.0;
     NSArray *textElements = @[textElement, watermarkElement];
     
     BGFinalizedBurst *finalizedBurst =
-    [[BGFinalizedBurst alloc] initWithImages:images
-                                    cropRect:cropRect
-                                  outputSize:outputSize
+    [[BGFinalizedBurst alloc] initWithPhotos:photos
+                                    cropRect:self.previewView.cropInfo
+                                  outputSize:kOutputSize
                                frameDuration:(1.0 / self.burstGroup.framesPerSecond)
                                 textElements:textElements];
 

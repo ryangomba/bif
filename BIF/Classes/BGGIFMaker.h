@@ -4,7 +4,7 @@
 
 @interface BGGIFMaker : NSObject
 
-+ (void)makeGIFWithImages:(NSArray *)images
++ (void)makeGIFWithPhotos:(NSArray *)photos
                  cropRect:(CGRect)cropRect
                outputSize:(CGFloat)outputSize
             frameDuration:(CGFloat)frameDuration

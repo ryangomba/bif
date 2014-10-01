@@ -58,7 +58,7 @@ static CGFloat const kSpinnerPadding = 12.0;
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat contentWidth = self.label.bounds.size.width + self.spinner.bounds.size.width + kSpinnerPadding;
+    CGFloat contentWidth = self.label.bounds.size.width + self.spinner.bounds.size.width + kSpinnerPadding + 20.0; // dat weighting tho
     CGFloat contentX = (self.bounds.size.width - contentWidth) / 2;
     
     CGFloat spinnerY = (self.bounds.size.height - self.bottomInset - self.spinner.bounds.size.height) / 2;

@@ -73,7 +73,13 @@ static NSString * const kCellReuseID = @"cell";
 
 - (void)updateTitleWithImportCount:(NSInteger)importCount {
     if (importCount > 0) {
-        self.footerView.text = [NSString stringWithFormat:@"Importing %lu Bursts", importCount];
+        NSString *title;
+        if (importCount == 1) {
+            title = @"Importing 1 Burst";
+        } else {
+            title = [NSString stringWithFormat:@"Importing %lu Bursts", importCount];
+        }
+        self.footerView.text = title;
         self.collectionView.footerView = self.footerView;
     } else {
         self.collectionView.footerView = nil;

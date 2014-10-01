@@ -25,6 +25,6 @@
 
 @property (nonatomic, weak) id<BGBurstPreviewViewDelegate> delegate;
 
-- (NSArray *)allImagesInRangeWithLoopModeApplied;
+- (NSArray *)allPhotosInRangeWithLoopModeApplied;
 
 @end

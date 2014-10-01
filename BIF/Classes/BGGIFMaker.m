@@ -5,11 +5,12 @@
 @import ImageIO;
 @import MobileCoreServices;
 
+#import "BGBurstPhoto.h"
 #import "UIImage+Resize.h"
 
 @implementation BGGIFMaker
 
-+ (void)makeGIFWithImages:(NSArray *)images
++ (void)makeGIFWithPhotos:(NSArray *)photos
                  cropRect:(CGRect)cropRect
                outputSize:(CGFloat)outputSize
             frameDuration:(CGFloat)frameDuration
@@ -17,7 +18,7 @@
                completion:(void (^)(NSString *))completion {
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSString *filePath = [self doMakeGIFWithImages:images
+        NSString *filePath = [self doMakeGIFWithPhotos:photos
                                               cropRect:cropRect
                                             outputSize:outputSize
                                          frameDuration:frameDuration
@@ -29,7 +30,7 @@
     });
 }
 
-+ (NSString *)doMakeGIFWithImages:(NSArray *)images
++ (NSString *)doMakeGIFWithPhotos:(NSArray *)photos
                          cropRect:(CGRect)cropRect
                        outputSize:(CGFloat)outputSize
                     frameDuration:(CGFloat)frameDuration
@@ -56,28 +57,32 @@
     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
     NSURL *fileURL = [documentsDirectoryURL URLByAppendingPathComponent:@"animated.gif"];
     
-    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)fileURL, kUTTypeGIF, images.count, NULL);
+    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)fileURL, kUTTypeGIF, photos.count, NULL);
     CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)fileProperties);
     
-    for (UIImage *image in images) {
+    for (BGBurstPhoto *photo in photos) {
         @autoreleasepool {
             CGSize contextSize = CGSizeMake(outputSize, outputSize);
             UIGraphicsBeginImageContextWithOptions(contextSize, NO, 1.0);
 
+            UIImage *image = [UIImage imageWithContentsOfFile:photo.fullscreenFilePath];
+            
             // draw image
-            UIImage *croppedImage = [image croppedImage:cropRect];
-            UIImage *resizedImage = [croppedImage squareThumbnailImageOfSize:outputSize];
-            [resizedImage drawAtPoint:CGPointZero];
+            CGRect denormalizedCropRect = CGRectZero;
+            denormalizedCropRect.origin.x = image.size.width * cropRect.origin.x;
+            denormalizedCropRect.origin.y = image.size.height * cropRect.origin.y;
+            denormalizedCropRect.size.width = image.size.width * cropRect.size.width;
+            denormalizedCropRect.size.height = image.size.height * cropRect.size.height;
+            UIImage *croppedImage = [image croppedImage:denormalizedCropRect];
+            [croppedImage drawInRect:CGRectMake(0.0, 0.0, outputSize, outputSize)];
             
             // draw text
             for (BGTextElement *textElement in textElements) {
-                // TEMP weak
                 CGRect textRect = textElement.textRect;
                 textRect.origin.x = ceilf(textRect.origin.x * outputSize);
                 textRect.origin.y = ceilf(textRect.origin.y * outputSize);
                 textRect.size.width = ceilf(textRect.size.width * outputSize);
                 textRect.size.height = ceilf(textRect.size.height * outputSize);
-                
                 [textElement.text drawInRect:textRect withAttributes:textElement.textAttributes];
             }
             
