@@ -186,4 +186,64 @@ static CGFloat const kIconHorizontalInset = 30.0;
     }
 }
 
+//#pragma mark -
+//#pragma mark UIControl
+//
+//- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+//    [self scaleUp:NO withVelocity:NO];
+//    
+//    return [super beginTrackingWithTouch:touch withEvent:event];
+//}
+//
+//- (void)cancelTrackingWithEvent:(UIEvent *)event {
+//    [super cancelTrackingWithEvent:event];
+//    
+//    [self scaleUp:YES withVelocity:NO];
+//}
+//
+//- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+//    [super endTrackingWithTouch:touch withEvent:event];
+//    
+//    if (CGRectContainsPoint(self.bounds, [touch locationInView:self])) {
+//        [self scaleUp:YES withVelocity:YES];
+//    } else {
+//        [self scaleUp:YES withVelocity:NO];
+//    }
+//}
+//
+//
+//#pragma mark -
+//#pragma mark Animation
+//
+//- (void)scaleUp:(BOOL)up withVelocity:(BOOL)withVelocity {
+//    CGFloat scaleDiff = 0.1;
+//    CGFloat toValue = up ? 1.0 : 1.0 - scaleDiff;
+//    CGFloat normalizedScale = (1.0 - self.currentScale) / scaleDiff;
+//    CGFloat velocity = withVelocity * (1.0 - normalizedScale) * -2.0;
+//    
+//    if (self.spring) {
+//        [self.spring setTargetValue:toValue];
+//        [self.spring setVelocity:velocity];
+//        
+//    } else {
+//        IGDynamicsProperties *properties = [IGDynamicsProperties bouncy1DProperties];
+//        [properties setDamping:0.188];
+//        
+//        weakify(self);
+//        IGDynamics1D *spring =
+//        [IGDynamics springFromValue:self.currentScale
+//                            toValue:toValue
+//                 dynamicsProperties:properties
+//                    initialVelocity:velocity
+//                      withStepBlock:^(CGFloat value, BOOL *stop)
+//         {
+//             strongify(self);
+//             [self setCurrentScale:value];
+//             [self.springContentView setTransform:CGAffineTransformMakeScale(value, value)];
+//         }
+//                         completion:nil];
+//        [self setSpring:spring];
+//    }
+//}
+
 @end

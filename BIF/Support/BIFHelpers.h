@@ -18,5 +18,5 @@ static CGFloat const kBGMaximumFPS = 20.0;
 
 static NSInteger const kBGOutputSize = 320;
 static NSInteger const kBGThumbnailImageSize = 120;
-static NSInteger const kBGFullscreenImageMinEdgeSize = 640;
+static NSInteger const kBGFullscreenImageMinEdgeSize = 480;
 static NSInteger const kBGMinPhotosPerBurst = 5;
