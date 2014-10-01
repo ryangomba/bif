@@ -5,7 +5,8 @@
 static NSString * const kLocalIdentifierKey = @"localIdentifier";
 static NSString * const kCreationDateKey = @"creationDate";
 static NSString * const kAspectRatioKey = @"aspectRatio";
-static NSString * const kFilePathKey = @"filePath";
+static NSString * const kThumbnailFilePathKey = @"thumbnailFilePath";
+static NSString * const kFullscreenFilePathKey = @"fullscreenFilePath";
 
 @implementation BGBurstPhoto
 
@@ -17,7 +18,8 @@ static NSString * const kFilePathKey = @"filePath";
         self.localIdentifier = [aDecoder decodeObjectForKey:kLocalIdentifierKey];
         self.creationDate = [aDecoder decodeObjectForKey:kCreationDateKey];
         self.aspectRatio = [[aDecoder decodeObjectForKey:kAspectRatioKey] floatValue];
-        self.filePath = [aDecoder decodeObjectForKey:kFilePathKey];
+        self.thumbnailFilePath = [aDecoder decodeObjectForKey:kThumbnailFilePathKey];
+        self.fullscreenFilePath = [aDecoder decodeObjectForKey:kFullscreenFilePathKey];
     }
     return self;
 }
@@ -26,7 +28,8 @@ static NSString * const kFilePathKey = @"filePath";
     [aCoder encodeObject:self.localIdentifier forKey:kLocalIdentifierKey];
     [aCoder encodeObject:self.creationDate forKey:kCreationDateKey];
     [aCoder encodeObject:@(self.aspectRatio) forKey:kAspectRatioKey];
-    [aCoder encodeObject:self.filePath forKey:kFilePathKey];
+    [aCoder encodeObject:self.thumbnailFilePath forKey:kThumbnailFilePathKey];
+    [aCoder encodeObject:self.fullscreenFilePath forKey:kFullscreenFilePathKey];
 }
 
 @end

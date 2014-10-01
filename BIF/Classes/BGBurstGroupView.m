@@ -56,7 +56,7 @@
     for (BGBurstPhoto *photo in self.photos) {
         NSInteger index = [self.photos indexOfObject:photo];
         UIImageView *imageView = self.imageViews[index];
-        imageView.image = [UIImage imageWithContentsOfFile:photo.filePath];
+        imageView.image = [UIImage imageWithContentsOfFile:photo.thumbnailFilePath];
     }
 }
 

@@ -13,6 +13,8 @@ static NSString * const kTextKey = @"textKey";
 static NSString * const kTextPositionKey = @"textPositionKey";
 static NSString * const kCropInfoKey = @"cropInfoKey";
 
+static NSString * const kPhotosKey = @"photos";
+
 static CGFloat const kDefaultFramesPerSecond = 12.0;
 
 @implementation BGBurstGroup
@@ -42,6 +44,10 @@ static CGFloat const kDefaultFramesPerSecond = 12.0;
         self.text = [aDecoder decodeObjectForKey:kTextKey];
         self.textPosition = [[aDecoder decodeObjectForKey:kTextPositionKey] floatValue];
         self.cropInfo = [[aDecoder decodeObjectForKey:kCropInfoKey] CGRectValue];
+        
+        self.photos = [aDecoder decodeObjectForKey:kPhotosKey];
+        
+        NSAssert(self.photos.count > 0, @"No photos");
     }
     return self;
 }
@@ -56,7 +62,9 @@ static CGFloat const kDefaultFramesPerSecond = 12.0;
     [aCoder encodeObject:@(self.loopMode) forKey:kLoopModeKey];
     [aCoder encodeObject:self.text forKey:kTextKey];
     [aCoder encodeObject:@(self.textPosition) forKey:kTextPositionKey];
-    [aCoder encodeObject:[NSValue valueWithCGRect:self.cropInfo] forKey:kTextPositionKey];
+    [aCoder encodeObject:[NSValue valueWithCGRect:self.cropInfo] forKey:kCropInfoKey];
+    
+    [aCoder encodeObject:self.photos forKey:kPhotosKey];
 }
 
 

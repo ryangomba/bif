@@ -115,7 +115,7 @@ static CGFloat const kSliderPadding = 36.0;
     
     self.previewView.frame = [self normalFrameForMediaView];
     self.previewView.photos = self.burstGroup.photos;
-//    self.previewView.cropInfo = self.burstGroup.cropInfo; // TEMP TODO
+    self.previewView.cropInfo = self.burstGroup.cropInfo;
     [self.containerView addSubview:self.previewView];
     
     [self.previewView addSubview:self.watermarkLabel];
@@ -608,8 +608,7 @@ static CGFloat const kSliderPadding = 36.0;
 #pragma mark BGBurstPreviewViewDelegate
 
 - (void)burstPreviewView:(BGBurstPreviewView *)previewView didChangeCropInfo:(CGRect)cropInfo {
-    // TEMP TODO
-//    self.burstGroup.cropInfo = cropInfo;
+    self.burstGroup.cropInfo = cropInfo;
 }
 
 

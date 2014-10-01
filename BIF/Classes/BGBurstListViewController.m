@@ -6,15 +6,17 @@
 #import "BGBurstGroup.h"
 #import "BGBurstGroupRangePicker.h"
 #import "BGBurstGroupCell.h"
-#import "BGBurstGroupFetcher.h"
+#import "BGBurstGroupImporter.h"
+#import "BGBurstGroupDataSource.h"
 #import "BGBurstPreviewViewController.h"
 #import "BGEditTransition.h"
 
 static NSString * const kCellReuseID = @"cell";
 
-@interface BGBurstListViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BGBurstGroupFetcherDelegate, BGBurstPreviewViewControllerDelegate>
+@interface BGBurstListViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BGBurstGroupDataSourceDelegate, BGBurstPreviewViewControllerDelegate>
 
-@property (nonatomic, strong) BGBurstGroupFetcher *burstFetcher;
+@property (nonatomic, strong) BGBurstGroupImporter *burstImporter;
+@property (nonatomic, strong) BGBurstGroupDataSource *dataSource;
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSArray *burstGroups;
@@ -33,11 +35,40 @@ static NSString * const kCellReuseID = @"cell";
 #pragma mark -
 #pragma mark NSObject
 
+- (void)dealloc {
+    [self.burstImporter.importQueue removeObserver:self forKeyPath:@"operationCount"];
+}
+
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        self.navigationItem.title = @"Choose a Burst";
+        self.burstImporter = [[BGBurstGroupImporter alloc] init];
+        [self.burstImporter.importQueue addObserver:self forKeyPath:@"operationCount" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew context:nil];
+        [self.burstImporter importCameraBursts];
     }
     return self;
+}
+
+
+#pragma mark -
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+
+    NSInteger importCount = [change[NSKeyValueChangeNewKey] integerValue];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateTitleWithImportCount:importCount];
+    });
+}
+
+- (void)updateTitleWithImportCount:(NSInteger)importCount {
+    NSString *title = @"Choose a Burst";
+    if (importCount > 0) {
+        title = [NSString stringWithFormat:@"Importing %lu Bursts", importCount];
+    }
+    self.navigationItem.title = title;
 }
 
 
@@ -56,8 +87,9 @@ static NSString * const kCellReuseID = @"cell";
     UIEdgeInsets collectionViewInsets = UIEdgeInsetsMake(self.navigationBar.bounds.size.height, 0.0, 0.0, 0.0);
     self.collectionView.frame = UIEdgeInsetsInsetRect(self.view.bounds, collectionViewInsets);
     [self.view addSubview:self.collectionView];
-
-    [self.burstFetcher fetchBurstGroups];
+    
+    self.dataSource = [[BGBurstGroupDataSource alloc] init];
+    self.dataSource.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -96,14 +128,6 @@ static NSString * const kCellReuseID = @"cell";
     return _navigationBar;
 }
 
-- (BGBurstGroupFetcher *)burstFetcher {
-    if (!_burstFetcher) {
-        _burstFetcher = [[BGBurstGroupFetcher alloc] init];
-        _burstFetcher.delegate = self;
-    }
-    return _burstFetcher;
-}
-
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -122,7 +146,7 @@ static NSString * const kCellReuseID = @"cell";
 #pragma mark -
 #pragma mark BGBurstGroupFetcherDelegate
 
-- (void)burstGroupFetcher:(BGBurstGroupFetcher *)fetcher didFetchBurstGroups:(NSArray *)burstGroups {
+- (void)burstGroupDataSource:(BGBurstGroupDataSource *)dataSource didFetchBurstGroups:(NSArray *)burstGroups {
     if (self.presentedViewController) {
         self.burstGroupsAwaitingReload = burstGroups;
     } else {

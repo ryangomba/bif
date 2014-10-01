@@ -2,7 +2,13 @@
 
 #import "BGBurstGroup.h"
 
+@class YapDatabase;
+
+static NSString * const kBurstGroupsKey = @"burstGroups";
+
 @interface BGDatabase : NSObject
+
++ (YapDatabase *)database;
 
 + (void)wipeDatabase;
 

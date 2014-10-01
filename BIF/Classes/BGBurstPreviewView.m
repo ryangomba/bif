@@ -129,7 +129,7 @@
     
     for (BGBurstPhoto *photo in self.photos) {
         NSInteger index = [self.photos indexOfObject:photo];
-        self.assetImages[index] = [UIImage imageWithContentsOfFile:photo.filePath];
+        self.assetImages[index] = [UIImage imageWithContentsOfFile:photo.fullscreenFilePath];
         [self updateImages];
     }
 }

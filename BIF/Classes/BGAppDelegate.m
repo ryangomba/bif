@@ -2,6 +2,7 @@
 
 #import "BGAppDelegate.h"
 
+#import "BGDatabase.h"
 #import "BGEntryViewController.h"
 
 @interface BGAppDelegate ()
@@ -13,6 +14,8 @@
             
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [BGDatabase wipeDatabase];
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     BGEntryViewController *vc = [[BGEntryViewController alloc] initWithNibName:nil bundle:nil];

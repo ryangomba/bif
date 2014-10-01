@@ -5,6 +5,7 @@
 @property NSString *localIdentifier;
 @property NSDate *creationDate;
 @property CGFloat aspectRatio;
-@property NSString *filePath;
+@property NSString *thumbnailFilePath;
+@property NSString *fullscreenFilePath;
 
 @end

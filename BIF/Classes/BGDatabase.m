@@ -4,8 +4,6 @@
 
 #import <YapDatabase/YapDatabase.h>
 
-static NSString * const kBurstGroupsKey = @"burstGroups";
-
 @implementation BGDatabase
 
 + (YapDatabase *)database {
