@@ -4,7 +4,7 @@
 
 @import Photos;
 
-#import <RGImageEffects/UIImage+Resize.h>
+#import <RGImage/UIImage+Resize.h>
 
 #import "BGDatabase.h"
 #import "BIFHelpers.h"
