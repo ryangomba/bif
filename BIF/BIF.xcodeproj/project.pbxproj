@@ -214,7 +214,6 @@
 				<string>94CA403019D3423500F6C4A7</string>
 				<string>94CA404219D61C2300F6C4A7</string>
 				<string>94AD4DAB19DC6A4800D82168</string>
-				<string>94CA402519D1CC1C00F6C4A7</string>
 				<string>94CA404819D6202800F6C4A7</string>
 				<string>94F2DB461964CA0000FBCA07</string>
 				<string>9470078B19DB4CE7006FD624</string>
@@ -222,7 +221,6 @@
 				<string>94A107C51957D61E009E7A5F</string>
 				<string>94CA403919D5A61200F6C4A7</string>
 				<string>94CA404519D61C9900F6C4A7</string>
-				<string>94AD4DAF19DC759F00D82168</string>
 				<string>94CA403F19D6180800F6C4A7</string>
 				<string>94F2DB491965BB8B00FBCA07</string>
 				<string>9470078819DB4C13006FD624</string>
@@ -537,7 +535,6 @@
 		<dict>
 			<key>children</key>
 			<array>
-				<string>94AD4DAC19DC758F00D82168</string>
 				<string>94F2DB5A196B451E00FBCA07</string>
 				<string>94F2DB55196B44A400FBCA07</string>
 				<string>94F2DB58196B44DA00FBCA07</string>
@@ -1182,55 +1179,6 @@
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>94AD4DAC19DC758F00D82168</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>94AD4DAD19DC759F00D82168</string>
-				<string>94AD4DAE19DC759F00D82168</string>
-				<string>94CA402319D1CC1C00F6C4A7</string>
-				<string>94CA402419D1CC1C00F6C4A7</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Foundation</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>94AD4DAD19DC759F00D82168</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NSObject+KVO.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>94AD4DAE19DC759F00D82168</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>NSObject+KVO.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>94AD4DAF19DC759F00D82168</key>
-		<dict>
-			<key>fileRef</key>
-			<string>94AD4DAE19DC759F00D82168</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
 		<key>94CA402119D1BE7F00F6C4A7</key>
 		<dict>
 			<key>fileEncoding</key>
@@ -1248,39 +1196,6 @@
 		<dict>
 			<key>fileRef</key>
 			<string>94CA402119D1BE7F00F6C4A7</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>94CA402319D1CC1C00F6C4A7</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>RGGeometry.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>94CA402419D1CC1C00F6C4A7</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>RGGeometry.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>94CA402519D1CC1C00F6C4A7</key>
-		<dict>
-			<key>fileRef</key>
-			<string>94CA402419D1CC1C00F6C4A7</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>

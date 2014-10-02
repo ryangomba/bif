@@ -2,7 +2,8 @@
 
 #import "BGEditTransition.h"
 
-#import "RGGeometry.h"
+#import <RGFoundation/RGGeometry.h>
+
 #import "BIFHelpers.h"
 
 #define kVCMinScale 1.0
