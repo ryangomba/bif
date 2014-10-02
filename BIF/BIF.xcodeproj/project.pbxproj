@@ -101,9 +101,6 @@
 		94AD4DAA19DC6A4800D82168 /* BGAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGAnimatedImageView.m; sourceTree = "<group>"; };
 		94AD4DAD19DC759F00D82168 /* NSObject+KVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+KVO.h"; sourceTree = "<group>"; };
 		94AD4DAE19DC759F00D82168 /* NSObject+KVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+KVO.m"; sourceTree = "<group>"; };
-		94AD4DB019DC766300D82168 /* RGMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGMacros.h; sourceTree = "<group>"; };
-		94AD4DB119DC782400D82168 /* RGLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGLog.h; sourceTree = "<group>"; };
-		94AD4DB219DC783400D82168 /* RGAssert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGAssert.h; sourceTree = "<group>"; };
 		94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		94CA402319D1CC1C00F6C4A7 /* RGGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGGeometry.h; sourceTree = "<group>"; };
 		94CA402419D1CC1C00F6C4A7 /* RGGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGGeometry.m; sourceTree = "<group>"; };
@@ -221,9 +218,6 @@
 		94AD4DAC19DC758F00D82168 /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				94AD4DB219DC783400D82168 /* RGAssert.h */,
-				94AD4DB119DC782400D82168 /* RGLog.h */,
-				94AD4DB019DC766300D82168 /* RGMacros.h */,
 				94AD4DAD19DC759F00D82168 /* NSObject+KVO.h */,
 				94AD4DAE19DC759F00D82168 /* NSObject+KVO.m */,
 				94CA403419D5A25B00F6C4A7 /* UIImage+ImageEffects.h */,

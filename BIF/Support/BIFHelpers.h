@@ -15,6 +15,7 @@ alpha:alphaValue]
 
 static CGFloat const kBGMinimumFPS = 6.0;
 static CGFloat const kBGMaximumFPS = 20.0;
+static CGFloat const kBGJPEGCompressionQuality = 0.75;
 
 static NSInteger const kBGOutputSize = 320;
 static NSInteger const kBGThumbnailImageSize = 120;

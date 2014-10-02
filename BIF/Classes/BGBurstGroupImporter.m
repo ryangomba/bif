@@ -209,9 +209,9 @@
     } else {
         fullscreenImage = [image resizedImageWithBounds:CGSizeMake(kBGFullscreenImageMinEdgeSize, kBGFullscreenImageMinEdgeSize)];
     }
-    NSString *fullscreenImageFilename = [NSString stringWithFormat:@"%@_%lux%lu.jpg", assetName, (NSInteger)fullscreenImage.size.width, (NSInteger)fullscreenImage.size.height];
+    NSString *fullscreenImageFilename = [NSString stringWithFormat:@"%@_%lux%lu.jpg", assetName, (long)fullscreenImage.size.width, (long)fullscreenImage.size.height];
     NSURL *fullscreenImageFileURL = [documentsDirectoryURL URLByAppendingPathComponent:fullscreenImageFilename];
-    if ([UIImageJPEGRepresentation(fullscreenImage, 0.9) writeToURL:fullscreenImageFileURL options:NSDataWritingAtomic error:&error]) {
+    if ([UIImageJPEGRepresentation(fullscreenImage, kBGJPEGCompressionQuality) writeToURL:fullscreenImageFileURL options:NSDataWritingAtomic error:&error]) {
         photo.fullscreenFilePath = fullscreenImageFileURL.path;
         photo.aspectRatio = fullscreenImage.size.width / fullscreenImage.size.height;
     } else {
@@ -219,9 +219,9 @@
     }
     
     UIImage *thumbnailImage = [fullscreenImage squareThumbnailImageOfSize:kBGThumbnailImageSize];
-    NSString *thumbnailImageFilename = [NSString stringWithFormat:@"%@_%lux%lu.jpg", assetName, (NSInteger)thumbnailImage.size.width, (NSInteger)thumbnailImage.size.height];
+    NSString *thumbnailImageFilename = [NSString stringWithFormat:@"%@_%lux%lu.jpg", assetName, (long)thumbnailImage.size.width, (long)thumbnailImage.size.height];
     NSURL *thumbnailImageFileURL = [documentsDirectoryURL URLByAppendingPathComponent:thumbnailImageFilename];
-    if ([UIImageJPEGRepresentation(thumbnailImage, 0.9) writeToURL:thumbnailImageFileURL options:NSDataWritingAtomic error:&error]) {
+    if ([UIImageJPEGRepresentation(thumbnailImage, kBGJPEGCompressionQuality) writeToURL:thumbnailImageFileURL options:NSDataWritingAtomic error:&error]) {
         photo.thumbnailFilePath = thumbnailImageFileURL.path;
     } else {
         NSAssert(NO, error.localizedDescription);

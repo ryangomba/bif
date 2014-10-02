@@ -56,7 +56,13 @@
     for (BGBurstPhoto *photo in self.photos) {
         NSInteger index = [self.photos indexOfObject:photo];
         UIImageView *imageView = self.imageViews[index];
-        imageView.image = [UIImage imageWithContentsOfFile:photo.thumbnailFilePath];
+        imageView.image = nil;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            UIImage *image = [UIImage imageWithContentsOfFile:photo.thumbnailFilePath];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                imageView.image = image;
+            });
+        });
     }
 }
 
