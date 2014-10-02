@@ -4,8 +4,9 @@
 
 @import Photos;
 
+#import <RGImageEffects/UIImage+Resize.h>
+
 #import "BGDatabase.h"
-#import "UIImage+Resize.h"
 #import "BIFHelpers.h"
 
 @interface BGBurstAssetsGroup : NSObject

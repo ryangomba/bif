@@ -5,8 +5,9 @@
 @import ImageIO;
 @import MobileCoreServices;
 
+#import <RGImageEffects/UIImage+Resize.h>
+
 #import "BGBurstPhoto.h"
-#import "UIImage+Resize.h"
 
 @implementation BGGIFMaker
 
