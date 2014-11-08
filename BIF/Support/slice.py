@@ -40,7 +40,7 @@ os.makedirs(OUTPUT_DIR)
 
 sketchtool_executable = find_executable("sketchtool")
 if sketchtool_executable is None:
-    # Xcode overrides $PATH no matter how you’ve configured it
+    # Xcode overrides $PATH no matter how you've configured it
     # sketchtool is by default installed into /usr/local/bin, so let's check there
     supposed_executable = '/usr/local/bin/sketchtool'
     if os.path.exists(supposed_executable):

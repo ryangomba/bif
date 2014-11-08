@@ -208,7 +208,7 @@
     if (MIN(image.size.width, image.size.height) == kBGFullscreenImageMinEdgeSize) {
         fullscreenImage = image;
     } else {
-        fullscreenImage = [image resizedImageWithBounds:CGSizeMake(kBGFullscreenImageMinEdgeSize, kBGFullscreenImageMinEdgeSize)];
+        fullscreenImage = [image resizedImageThatFillsBounds:CGSizeMake(kBGFullscreenImageMinEdgeSize, kBGFullscreenImageMinEdgeSize)];
     }
     NSString *fullscreenImageFilename = [NSString stringWithFormat:@"%@_%lux%lu.jpg", assetName, (long)fullscreenImage.size.width, (long)fullscreenImage.size.height];
     NSURL *fullscreenImageFileURL = [documentsDirectoryURL URLByAppendingPathComponent:fullscreenImageFilename];
