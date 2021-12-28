@@ -39,6 +39,7 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
     self.rangePickerView.burstGroup = nil;
 }
 
