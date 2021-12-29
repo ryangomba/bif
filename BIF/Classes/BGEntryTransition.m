@@ -60,7 +60,6 @@
     [containerView addSubview:toVC.view];
     
     [UIView animateWithDuration:[self animationDuration] - 0.3 delay:0.3 usingSpringWithDamping:1.0 initialSpringVelocity:0.0 options:0 animations:^{
-//    [UIView animateWithDuration:[self animationDuration] delay:0.3 options:0 animations:^{
         CGRect toVCViewRect = toVC.view.frame;
         toVCViewRect.origin.y = 0.0;
         toVC.view.frame = toVCViewRect;

@@ -202,7 +202,7 @@
 
     } completion:^(BOOL finished) {
         [containerView addSubview:toVC.view];
-        
+
         [toVC.view setTransform:CGAffineTransformIdentity];
         [toVC returnRangePickerView:rangePickerView forBurstGroup:self.burstGroup];
 

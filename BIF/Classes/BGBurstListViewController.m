@@ -279,6 +279,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     vc.delegate = self;
     
     self.editTransition = [[BGEditTransition alloc] initWithBurstGroup:burstGroup fromController:self toController:vc];
+    vc.modalPresentationStyle = UIModalPresentationCustom;
     vc.transitioningDelegate = self.editTransition;
     
     [self presentViewController:vc animated:YES completion:nil];
