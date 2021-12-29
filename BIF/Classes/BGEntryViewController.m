@@ -29,9 +29,9 @@
         self.didSegue = YES;
         
         BGBurstListViewController *vc = [[BGBurstListViewController alloc] initWithNibName:nil bundle:nil];
-        self.transition = [[BGEntryTransition alloc] init];
-        vc.modalPresentationStyle = UIModalPresentationCustom;
-        vc.transitioningDelegate = self.transition;
+//        self.transition = [[BGEntryTransition alloc] init];
+//        vc.modalPresentationStyle = UIModalPresentationCustom;
+//        vc.transitioningDelegate = self.transition;
         [self presentViewController:vc animated:YES completion:nil];
     }
 }

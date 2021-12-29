@@ -576,9 +576,9 @@ static CGFloat const kSliderPadding = 36.0;
                                 textElements:textElements];
 
     BGShareViewController *shareVC = [[BGShareViewController alloc] initWithBurstGroup:self.burstGroup finalizedBurst:finalizedBurst];
-    self.shareTransition = [[BGShareTransition alloc] init];
-    shareVC.modalPresentationStyle = UIModalPresentationCustom;
-    shareVC.transitioningDelegate = self.shareTransition;
+//    self.shareTransition = [[BGShareTransition alloc] init];
+//    shareVC.modalPresentationStyle = UIModalPresentationCustom;
+//    shareVC.transitioningDelegate = self.shareTransition;
     [self presentViewController:shareVC animated:YES completion:nil];
     shareVC.delegate = self;
 }
