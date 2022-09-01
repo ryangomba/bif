@@ -4,7 +4,6 @@
 
 #import "BGProgressHUD.h"
 #import "BGShareCell.h"
-#import <AFNetworking/AFNetworking.h>
 
 static CGFloat const kCellWidth = 260.0;
 static CGFloat const kCellHeight = 50.0;
@@ -13,8 +12,6 @@ static CGFloat const kVerticalInset = 100.0;
 
 // TODO move
 @import MessageUI;
-@import Accounts;
-@import Social;
 
 typedef NS_ENUM(NSInteger, ShareSection) {
     ShareSectionCancel,
@@ -29,10 +26,7 @@ typedef NS_ENUM(NSInteger, ShareService) {
 
 static NSString * kCellReuseID = @"cell";
 
-@interface BGShareViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIActionSheetDelegate> {
-    // TEMP
-    NSMutableArray *_shownAccounts;
-}
+@interface BGShareViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIActionSheetDelegate> {}
 
 @property (nonatomic, strong) BGBurstGroup *burstGroup;
 @property (nonatomic, strong) BGFinalizedBurst *finalizedBurst;

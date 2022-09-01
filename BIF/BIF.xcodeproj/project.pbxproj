@@ -27,6 +27,7 @@
 		94AD4DA519DC5EB900D82168 /* BGLoadingInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DA419DC5EB900D82168 /* BGLoadingInfoView.m */; };
 		94AD4DA819DC692300D82168 /* BGDataSourceUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DA719DC692300D82168 /* BGDataSourceUpdate.m */; };
 		94AD4DAB19DC6A4800D82168 /* BGAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AD4DAA19DC6A4800D82168 /* BGAnimatedImageView.m */; };
+		94BB9EFB28C062CA00D6FCCF /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */; };
 		94CA402219D1BE7F00F6C4A7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402119D1BE7F00F6C4A7 /* Launch Screen.xib */; };
 		94CA402819D320A900F6C4A7 /* BGTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA402719D320A900F6C4A7 /* BGTextButton.m */; };
 		94CA402C19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94CA402A19D3236D00F6C4A7 /* ProximaNovaSoft-Bold.otf */; };
@@ -41,9 +42,6 @@
 		94CA404819D6202800F6C4A7 /* BGPieProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CA404719D6202800F6C4A7 /* BGPieProgressView.m */; };
 		94F2DB461964CA0000FBCA07 /* BGTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB451964CA0000FBCA07 /* BGTextView.m */; };
 		94F2DB491965BB8B00FBCA07 /* BGShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */; };
-		94F2DB4B1965C19D00FBCA07 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */; };
-		94F2DB4D1966F9DF00FBCA07 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB4C1966F9DF00FBCA07 /* Accounts.framework */; };
-		94F2DB511966FAED00FBCA07 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F2DB501966FAED00FBCA07 /* Social.framework */; };
 		A74C6879809807A16AF5E93E /* libPods-BIF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8D4A3F8C7106AC55FD0564B /* libPods-BIF.a */; };
 /* End PBXBuildFile section */
 
@@ -131,9 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94F2DB511966FAED00FBCA07 /* Social.framework in Frameworks */,
-				94F2DB4D1966F9DF00FBCA07 /* Accounts.framework in Frameworks */,
-				94F2DB4B1965C19D00FBCA07 /* MessageUI.framework in Frameworks */,
+				94BB9EFB28C062CA00D6FCCF /* MessageUI.framework in Frameworks */,
 				A74C6879809807A16AF5E93E /* libPods-BIF.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
