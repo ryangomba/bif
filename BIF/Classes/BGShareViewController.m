@@ -3,7 +3,6 @@
 #import "BGShareViewController.h"
 
 #import "BGProgressHUD.h"
-#import "BGFileUploader.h"
 #import "BGShareCell.h"
 #import <AFNetworking/AFNetworking.h>
 
@@ -24,20 +23,13 @@ typedef NS_ENUM(NSInteger, ShareSection) {
 };
 
 typedef NS_ENUM(NSInteger, ShareService) {
-    ShareServiceCopyLink,
     ShareServiceMessage,
-    ShareServiceTwitter,
     ShareServiceCount,
-    ShareServiceFacebook,
-    ShareServiceEmail,
-    ShareServiceWhatsapp,
-    ShareServiceTumblr,
-    ShareServiceVine,
 };
 
 static NSString * kCellReuseID = @"cell";
 
-@interface BGShareViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, MFMessageComposeViewControllerDelegate, UIActionSheetDelegate> {
+@interface BGShareViewController ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIActionSheetDelegate> {
     // TEMP
     NSMutableArray *_shownAccounts;
 }
@@ -203,29 +195,8 @@ static NSString * kCellReuseID = @"cell";
     BGShareCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellReuseID forIndexPath:indexPath];
     
     switch (indexPath.row) {
-        case ShareServiceCopyLink:
-            [cell setDefaultTitle:@"Copy Link" workingTitle:@"Generating Link..." successTitle:@"Link Copied!" imageName:@"linkGlyph"];
-            break;
         case ShareServiceMessage:
             [cell setDefaultTitle:@"Message" workingTitle:nil successTitle:nil imageName:@"messageGlyph"];
-            break;
-        case ShareServiceTwitter:
-            [cell setDefaultTitle:@"Twitter" workingTitle:@"Tweeting..." successTitle:@"Tweet sent!" imageName:@"twitterGlyph"];
-            break;
-        case ShareServiceFacebook:
-            [cell setDefaultTitle:@"Facebook" workingTitle:nil successTitle:nil imageName:@"facebookGlyph"];
-            break;
-        case ShareServiceEmail:
-            [cell setDefaultTitle:@"Email" workingTitle:nil successTitle:nil imageName:@"emailGlyph"];
-            break;
-        case ShareServiceWhatsapp:
-            [cell setDefaultTitle:@"WhatsApp" workingTitle:nil successTitle:nil imageName:@"whatsappGlyph"];
-            break;
-        case ShareServiceTumblr:
-            [cell setDefaultTitle:@"Tumblr" workingTitle:nil successTitle:nil imageName:@"tumblrGlyph"];
-            break;
-        case ShareServiceVine:
-            [cell setDefaultTitle:@"Vine" workingTitle:nil successTitle:nil imageName:@"vineGlyph"];
             break;
         default:
             break;
@@ -276,36 +247,8 @@ static NSString * kCellReuseID = @"cell";
 
 - (void)doUploadToService:(ShareService)service {
     switch (service) {
-        case ShareServiceCopyLink: {
-            [self uploadGIFAtPath:self.filePath];
-        } break;
-            
         case ShareServiceMessage: {
             [self messageGIFAtPath:self.filePath];
-        } break;
-            
-        case ShareServiceTwitter: {
-            [self tweetGIFAtPath:self.filePath];
-        } break;
-
-        case ShareServiceEmail: {
-            // TODO
-        } break;
-            
-        case ShareServiceFacebook: {
-            // TODO
-        } break;
-            
-        case ShareServiceWhatsapp: {
-            // TODO
-        } break;
-            
-        case ShareServiceTumblr: {
-            // TODO
-        } break;
-            
-        case ShareServiceVine: {
-            // TODO
         } break;
             
         default:
@@ -344,31 +287,6 @@ static NSString * kCellReuseID = @"cell";
 #pragma mark -
 #pragma mark Private
 
-- (void)uploadGIFAtPath:(NSString *)filePath {
-    NSIndexPath *cellIndexPath = [self indexPathForShareService:ShareServiceCopyLink];
-    BGShareCell *shareCell = (id)[self.collectionView cellForItemAtIndexPath:cellIndexPath];
-    
-    [BGFileUploader uploadFileAtPath:filePath progress:^(CGFloat progress) {
-        shareCell.shareProgress = MAX(0.05, progress);
-        
-    } completion:^(NSURL *url, NSError *error) {
-        if (url) {
-            shareCell.sharedURL = url;
-            shareCell.shareState = BGShareCellStateShared;
-            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-            pasteboard.URL = url;
-            
-        } else {
-            shareCell.shareState = BGShareCellStateNormal;
-            [[[UIAlertView alloc] initWithTitle:@"Error Uploading GIF"
-                                        message:@"Please check your internet connection and try again"
-                                       delegate:nil
-                              cancelButtonTitle:@"Dismiss"
-                              otherButtonTitles:nil] show];
-        }
-    }];
-}
-
 - (void)messageGIFAtPath:(NSString *)filePath {
     if ([MFMessageComposeViewController canSendAttachments] && [MFMessageComposeViewController isSupportedAttachmentUTI:@"image/gif"]) {
         MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
@@ -389,140 +307,6 @@ static NSString * kCellReuseID = @"cell";
         // TODO handle error? don't show in list? use link?
         [[[UIAlertView alloc] initWithTitle:@"Error"
                                     message:@"Message attachments not supported"
-                                   delegate:nil
-                          cancelButtonTitle:@"Dismiss"
-                          otherButtonTitles:nil] show];
-    }
-}
-
-- (void)tweetGIFAtPath:(NSString *)filePath {
-    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
-    ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    
-    if ([accountType accessGranted]) {
-        [self showListOfTwitterAccountsFromStore:accountStore];
-        
-    } else {
-        [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error) {
-            if (granted) {
-                [self showListOfTwitterAccountsFromStore:accountStore];
-                
-            } else {
-                [[[UIAlertView alloc] initWithTitle:@"Error"
-                                            message:@"Cannot link account without permission"
-                                           delegate:nil
-                                  cancelButtonTitle:@"Ok"
-                                  otherButtonTitles:nil] show];
-            }
-        }];
-    }
-}
-
-
-#pragma mark -
-#pragma mark Twitter
-
-- (void)showListOfTwitterAccountsFromStore:(ACAccountStore *)accountStore {
-    ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    NSArray *twitterAccounts = [accountStore accountsWithAccountType:accountType];
-    
-    UIActionSheet *actions = [[UIActionSheet alloc] initWithTitle:@"Choose Account to Use"
-                                                         delegate:self
-                                                cancelButtonTitle:@"Cancel"
-                                           destructiveButtonTitle:nil
-                                                otherButtonTitles:nil];
-    
-    NSMutableArray *shownAccounts = [NSMutableArray array];
-    
-    for (ACAccount *oneAccount in twitterAccounts) {
-        [actions addButtonWithTitle:oneAccount.username];
-        [shownAccounts addObject:oneAccount];
-    }
-    
-    _shownAccounts = [shownAccounts copy];
-    
-    [actions showInView:self.view];
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == actionSheet.cancelButtonIndex) {
-        return;
-    }
-    
-    ACAccount *account = _shownAccounts[buttonIndex - 1];
-    
-    NSURL *URL = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/update_with_media.json"];
-    
-    NSDictionary *parameters = @{@"status": @"Testing 123"};
-    
-    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
-                                            requestMethod:SLRequestMethodPOST
-                                                      URL:URL
-                                               parameters:parameters];
-    
-    request.account = account;
-    
-    NSData *imageData = [[NSFileManager defaultManager] contentsAtPath:self.filePath];
-    [request addMultipartData:imageData withName:@"media[]" type:@"image/gif" filename:@"image.gif"];
-    
-    NSIndexPath *cellIndexPath = [self indexPathForShareService:ShareServiceTwitter];
-    BGShareCell *shareCell = (id)[self.collectionView cellForItemAtIndexPath:cellIndexPath];
-    
-    void (^completionBlock)(NSDictionary *, NSError *) = ^(NSDictionary *response, NSError *error) {
-        NSArray *twitterError = [response[@"errors"] firstObject];
-        if (twitterError) {
-            NSString *errorDescription = [NSString stringWithFormat:@"Twitter error: %@", twitterError];
-            error = [NSError errorWithDomain:@"com.ryangomba.bif" code:0 userInfo:@{NSLocalizedDescriptionKey: errorDescription}];
-            NSLog(@"API Error: %@", response);
-        } else {
-            NSLog(@"Tweet sent");
-        }
-        
-        if (error) {
-            shareCell.shareState = BGShareCellStateNormal;
-            [[[UIAlertView alloc] initWithTitle:@"Error Posting Tweet"
-                                        message:error.localizedDescription
-                                       delegate:nil
-                              cancelButtonTitle:@"Dismiss"
-                              otherButtonTitles:nil] show];
-        } else {
-            NSArray *URLs = response[@"entities"][@"urls"];
-            NSDictionary *URLInfo = URLs.firstObject;
-            NSURL *URL = [NSURL URLWithString:URLInfo[@"expanded_url"]];
-            shareCell.sharedURL = URL;
-            shareCell.shareState = BGShareCellStateShared;
-        }
-    };
-    
-    AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request.preparedURLRequest];
-    requestOperation.responseSerializer = [[AFJSONResponseSerializer alloc] init];
-    [requestOperation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
-        CGFloat progress = totalBytesWritten / (double)totalBytesExpectedToWrite;
-        shareCell.shareProgress = MIN(MAX(progress, 0.05), 0.95);
-    }];
-    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        completionBlock(responseObject, nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        completionBlock(nil, error);
-    }];
-    [requestOperation setShouldExecuteAsBackgroundTaskWithExpirationHandler:nil];
-    [requestOperation start];
-}
-
-
-#pragma mark -
-#pragma mark MFMailComposeViewControllerDelegate
-
-- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
-                 didFinishWithResult:(MessageComposeResult)result {
-
-    // TODO do something with controller.recipients for easy re-sending?
-    
-    [controller dismissViewControllerAnimated:YES completion:nil];
-    
-    if (result == MessageComposeResultFailed) {
-        [[[UIAlertView alloc] initWithTitle:@"Error"
-                                    message:@"Couldn't send message"
                                    delegate:nil
                           cancelButtonTitle:@"Dismiss"
                           otherButtonTitles:nil] show];

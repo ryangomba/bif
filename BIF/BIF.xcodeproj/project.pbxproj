@@ -18,7 +18,6 @@
 		94A107C01957D61E009E7A5F /* BGBurstPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A71957D61E009E7A5F /* BGBurstPreviewView.m */; };
 		94A107C11957D61E009E7A5F /* BGBurstPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */; };
 		94A107C21957D61E009E7A5F /* BGDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107AB1957D61E009E7A5F /* BGDatabase.m */; };
-		94A107C31957D61E009E7A5F /* BGFileUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107AD1957D61E009E7A5F /* BGFileUploader.m */; };
 		94A107C41957D61E009E7A5F /* BGGIFMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107AF1957D61E009E7A5F /* BGGIFMaker.m */; };
 		94A107C51957D61E009E7A5F /* BGProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A107B11957D61E009E7A5F /* BGProgressHUD.m */; };
 		94A107C71957D61E009E7A5F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94A107B51957D61E009E7A5F /* Images.xcassets */; };
@@ -74,8 +73,6 @@
 		94A107A91957D61E009E7A5F /* BGBurstPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBurstPreviewViewController.m; sourceTree = "<group>"; };
 		94A107AA1957D61E009E7A5F /* BGDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGDatabase.h; sourceTree = "<group>"; };
 		94A107AB1957D61E009E7A5F /* BGDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGDatabase.m; sourceTree = "<group>"; };
-		94A107AC1957D61E009E7A5F /* BGFileUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGFileUploader.h; sourceTree = "<group>"; };
-		94A107AD1957D61E009E7A5F /* BGFileUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGFileUploader.m; sourceTree = "<group>"; };
 		94A107AE1957D61E009E7A5F /* BGGIFMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGGIFMaker.h; sourceTree = "<group>"; };
 		94A107AF1957D61E009E7A5F /* BGGIFMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGGIFMaker.m; sourceTree = "<group>"; };
 		94A107B01957D61E009E7A5F /* BGProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGProgressHUD.h; sourceTree = "<group>"; };
@@ -264,8 +261,6 @@
 			children = (
 				94F2DB471965BB8B00FBCA07 /* BGShareViewController.h */,
 				94F2DB481965BB8B00FBCA07 /* BGShareViewController.m */,
-				94A107AC1957D61E009E7A5F /* BGFileUploader.h */,
-				94A107AD1957D61E009E7A5F /* BGFileUploader.m */,
 				94CA403119D59E5F00F6C4A7 /* BGShareTransition.h */,
 				94CA403219D59E5F00F6C4A7 /* BGShareTransition.m */,
 				94CA403719D5A61200F6C4A7 /* BGShareCell.h */,
@@ -360,7 +355,7 @@
 		94A1076D1957D5F8009E7A5F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = "Ryan Gomba";
 				TargetAttributes = {
 					94A107741957D5F8009E7A5F = {
@@ -371,11 +366,11 @@
 			};
 			buildConfigurationList = 94A107701957D5F8009E7A5F /* Build configuration list for PBXProject "BIF" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 94A1076C1957D5F8009E7A5F;
 			productRefGroup = 94A107761957D5F8009E7A5F /* Products */;
@@ -476,7 +471,6 @@
 				94AD4DA519DC5EB900D82168 /* BGLoadingInfoView.m in Sources */,
 				94A107BA1957D61E009E7A5F /* BGBurstGroupCell.m in Sources */,
 				94A107C01957D61E009E7A5F /* BGBurstPreviewView.m in Sources */,
-				94A107C31957D61E009E7A5F /* BGFileUploader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,20 +485,33 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -517,7 +524,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				METAL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -532,13 +539,24 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -546,13 +564,14 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				METAL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -568,6 +587,7 @@
 				GCC_PREFIX_HEADER = "Support/BIF-Prefix.pch";
 				INFOPLIST_FILE = "Support/BIF-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.appthat.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -581,6 +601,7 @@
 				GCC_PREFIX_HEADER = "Support/BIF-Prefix.pch";
 				INFOPLIST_FILE = "Support/BIF-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.appthat.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

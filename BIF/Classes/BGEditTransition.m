@@ -97,13 +97,16 @@
     [containerView addSubview:topSnapshotView];
     [containerView addSubview:bottomSnapshotView];
     
-    [fromVC.view removeFromSuperview];
+//    [fromVC.view removeFromSuperview];
+    [containerView addSubview:toVC.view];
+
+    [transitionContext completeTransition:YES];
+    return;
     
     CGRect toVCRect = toVC.view.frame;
     toVCRect.origin.y = originatingBurstViewRect.origin.y - 500.0;
     toVC.view.frame = toVCRect;
 
-    [containerView addSubview:toVC.view];
     [toVC display:NO];
     
     BGBurstGroupRangePicker *rangePickerView = [fromVC stealRangePickerViewForBurstGroup:self.burstGroup];
@@ -160,6 +163,10 @@
     UIViewController<BGEditTransitionPreviewController> *fromVC = (id)[transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController<BGEditTransitionListController> *toVC = (id)[transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIView *containerView = [transitionContext containerView];
+    [fromVC.view removeFromSuperview];
+
+    [transitionContext completeTransition:YES];
+    return;
 
     [toVC.view setTransform:CGAffineTransformMakeScale(kVCMinScale, kVCMinScale)];
 

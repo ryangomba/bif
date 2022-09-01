@@ -40,7 +40,7 @@
     _framesPerSecond = framesPerSecond;
     
     NSInteger frameInterval = 60 / framesPerSecond;
-    self.displayLink.frameInterval = frameInterval;
+    self.displayLink.preferredFramesPerSecond = frameInterval;
 }
 
 - (void)setImagePaths:(NSArray *)imagePaths {
