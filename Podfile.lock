@@ -1,0 +1,111 @@
+PODS:
+  - CocoaLumberjack (3.6.2):
+    - CocoaLumberjack/Core (= 3.6.2)
+  - CocoaLumberjack/Core (3.6.2)
+  - RGCore (1.0.4)
+  - RGFoundation (2.0.1)
+  - RGImage (2.0.5)
+  - YapDatabase (3.1.1):
+    - YapDatabase/Standard (= 3.1.1)
+  - YapDatabase/Standard (3.1.1):
+    - YapDatabase/Standard/Core (= 3.1.1)
+    - YapDatabase/Standard/Extensions (= 3.1.1)
+  - YapDatabase/Standard/Core (3.1.1):
+    - CocoaLumberjack
+  - YapDatabase/Standard/Extensions (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/ActionManager (= 3.1.1)
+    - YapDatabase/Standard/Extensions/AutoView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CloudCore (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CloudKit (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ConnectionPool (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ConnectionProxy (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 3.1.1)
+    - YapDatabase/Standard/Extensions/FilteredView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/FullTextSearch (= 3.1.1)
+    - YapDatabase/Standard/Extensions/Hooks (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ManualView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/Relationships (= 3.1.1)
+    - YapDatabase/Standard/Extensions/RTreeIndex (= 3.1.1)
+    - YapDatabase/Standard/Extensions/SearchResultsView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/SecondaryIndex (= 3.1.1)
+    - YapDatabase/Standard/Extensions/View (= 3.1.1)
+  - YapDatabase/Standard/Extensions/ActionManager (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/AutoView
+  - YapDatabase/Standard/Extensions/AutoView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/CloudCore (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/CloudKit (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ConnectionPool (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ConnectionProxy (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/CrossProcessNotification (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/FilteredView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/FullTextSearch (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/Hooks (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ManualView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/Relationships (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/RTreeIndex (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/SearchResultsView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/AutoView
+    - YapDatabase/Standard/Extensions/FullTextSearch
+  - YapDatabase/Standard/Extensions/SecondaryIndex (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/View (3.1.1):
+    - YapDatabase/Standard/Core
+
+DEPENDENCIES:
+  - RGCore (from `https://github.com/ryangomba/RGCore.git`)
+  - RGFoundation (from `https://github.com/ryangomba/RGFoundation.git`)
+  - RGImage (from `https://github.com/ryangomba/RGImage.git`)
+  - YapDatabase
+
+SPEC REPOS:
+  trunk:
+    - CocoaLumberjack
+    - YapDatabase
+
+EXTERNAL SOURCES:
+  RGCore:
+    :git: https://github.com/ryangomba/RGCore.git
+  RGFoundation:
+    :git: https://github.com/ryangomba/RGFoundation.git
+  RGImage:
+    :git: https://github.com/ryangomba/RGImage.git
+
+CHECKOUT OPTIONS:
+  RGCore:
+    :commit: 0b6ff751862eff7ee06d98624505014f5f0458de
+    :git: https://github.com/ryangomba/RGCore.git
+  RGFoundation:
+    :commit: 755ca6b22debd81e842074c56712328898661f40
+    :git: https://github.com/ryangomba/RGFoundation.git
+  RGImage:
+    :commit: 961041f349407946259cfef95806178fe9b78197
+    :git: https://github.com/ryangomba/RGImage.git
+
+SPEC CHECKSUMS:
+  CocoaLumberjack: bd155f2dd06c0e0b03f876f7a3ee55693122ec94
+  RGCore: 4059b62e8f51b86c005bce6f53c1cae90410d466
+  RGFoundation: f05f61d29844eef7e8de2a1596b7e96ed7cc6067
+  RGImage: 05954737bb80f243bad44adc12309e67d576ef5e
+  YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
+
+PODFILE CHECKSUM: 9192bf3ed1acb3a5a7784797e808d6c4670c239a
+
+COCOAPODS: 1.11.2

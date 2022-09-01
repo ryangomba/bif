@@ -3,5 +3,3 @@
 *.xcodeproj/xcuserdata
 *.xcworkspace/xcuserdata
 *.xcuserdatad
-*.lock
-*Pods/

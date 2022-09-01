@@ -1,0 +1,1 @@
+../../../RGImage/Classes/UIImage+Resize.h
