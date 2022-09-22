@@ -1,4 +1,4 @@
-// Copyright 2014-present Ryan Gomba. All Rights Reserved.
+@import UIKit;
 
 @class BGTextView;
 @protocol BGTextViewDelegate <NSObject>

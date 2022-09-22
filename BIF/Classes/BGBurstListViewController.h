@@ -1,5 +1,3 @@
-// Copyright 2014-present Ryan Gomba. All Rights Reserved.
-
 // HACK messy
 #import "BGEditTransition.h"
 

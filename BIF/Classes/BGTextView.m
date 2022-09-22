@@ -1,5 +1,3 @@
-// Copyright 2014-present Ryan Gomba. All Rights Reserved.
-
 #import "BGTextView.h"
 
 static CGFloat const kExpectedWhitespace = 20.0;

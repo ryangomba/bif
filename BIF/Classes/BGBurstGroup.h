@@ -1,5 +1,4 @@
-// Copyright 2014-present Ryan Gomba. All Rights Reserved.
-
+@import Foundation;
 #import "BGLoopMode.h"
 #import "BGBurstPhoto.h"
 

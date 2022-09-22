@@ -117,7 +117,6 @@
 		94F2DB4A1965C19D00FBCA07 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		94F2DB4C1966F9DF00FBCA07 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		94F2DB501966FAED00FBCA07 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		94F2DB5C196B46B600FBCA07 /* BIF-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BIF-Prefix.pch"; sourceTree = "<group>"; };
 		9E6ABF70ADE6C053CDE916EF /* Pods-BIF.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BIF.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BIF/Pods-BIF.release.xcconfig"; sourceTree = "<group>"; };
 		A8F647D18DD790CCB2B1C212 /* Pods-BIF.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BIF.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BIF/Pods-BIF.release.xcconfig"; sourceTree = "<group>"; };
 		ABD7270FB7023FF152C5D340 /* Pods-BIF.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BIF.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BIF/Pods-BIF.debug.xcconfig"; sourceTree = "<group>"; };
@@ -186,7 +185,6 @@
 			children = (
 				94CA402919D3236D00F6C4A7 /* Fonts */,
 				94F2DB401964A74400FBCA07 /* BIFHelpers.h */,
-				94F2DB5C196B46B600FBCA07 /* BIF-Prefix.pch */,
 				94A107B51957D61E009E7A5F /* Images.xcassets */,
 				94A107CE1957D66F009E7A5F /* BIF-Info.plist */,
 				94A107B71957D61E009E7A5F /* main.m */,
@@ -579,9 +577,8 @@
 			baseConfigurationReference = ABD7270FB7023FF152C5D340 /* Pods-BIF.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				DEVELOPMENT_TEAM = NKSX667Z2K;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Support/BIF-Prefix.pch";
 				INFOPLIST_FILE = "Support/BIF-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -600,9 +597,8 @@
 			baseConfigurationReference = A8F647D18DD790CCB2B1C212 /* Pods-BIF.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				DEVELOPMENT_TEAM = NKSX667Z2K;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Support/BIF-Prefix.pch";
 				INFOPLIST_FILE = "Support/BIF-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;

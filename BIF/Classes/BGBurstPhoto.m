@@ -1,5 +1,3 @@
-// Copyright 2014-present Ryan Gomba. All Rights Reserved.
-
 #import "BGBurstPhoto.h"
 
 static NSString * const kLocalIdentifierKey = @"localIdentifier";

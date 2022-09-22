@@ -1,5 +1,3 @@
-// Copyright 2014-present Ryan Gomba. All Rights Reserved.
-
 #import "BGEntryTransition.h"
 
 @interface BGEntryTransition ()<UIViewControllerAnimatedTransitioning>

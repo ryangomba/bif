@@ -1,7 +1,6 @@
-// Copyright 2014-present Ryan Gomba. All Rights Reserved.
-
 #import "BGGIFMaker.h"
 
+@import UIKit;
 @import ImageIO;
 @import MobileCoreServices;
 
