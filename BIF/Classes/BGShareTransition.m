@@ -2,7 +2,7 @@
 
 #import "BGShareTransition.h"
 
-#import <RGImage/UIImage+ImageEffects.h>
+#import <RGImage/RGImage.h>
 
 @interface BGShareTransition ()<UIViewControllerAnimatedTransitioning>
 

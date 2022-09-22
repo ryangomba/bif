@@ -1,7 +1,7 @@
 #import "BGBurstPreviewView.h"
 
-#import <RGImage/UIImage+Resize.h>
-#import <RGFoundation/RGGeometry.h>
+#import <RGImage/RGImage.h>
+#import <RGFoundation/RGFoundation.h>
 
 #import "BGAnimatedImageView.h"
 #import "NSObject+KVO.h"

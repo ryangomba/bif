@@ -2,8 +2,8 @@
 
 @import Photos;
 
-#import <RGImage/UIImage+Resize.h>
-
+#import <RGImage/RGImage.h>
+#import <UIKit/UIKit.h>
 #import "BGDatabase.h"
 #import "BIFHelpers.h"
 
