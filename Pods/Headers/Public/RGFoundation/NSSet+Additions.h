@@ -1,1 +1,1 @@
-../../../RGFoundation/Classes/NSSet+Additions.h
+../../../../Vendor/RGFoundation/Classes/NSSet+Additions.h

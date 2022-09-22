@@ -1,1 +1,1 @@
-../../../RGImage/Classes/UIImage+Resize.h
+../../../../Vendor/RGImage/Classes/UIImage+Resize.h

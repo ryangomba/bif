@@ -1,1 +1,1 @@
-../../../RGFoundation/Classes/NSObject+Blocks.h
+../../../../Vendor/RGFoundation/Classes/NSObject+Blocks.h

@@ -1,1 +1,1 @@
-../../../RGImage/Classes/RGImage.h
+../../../../Vendor/RGImage/Classes/RGImage.h

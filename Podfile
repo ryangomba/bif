@@ -3,9 +3,9 @@ platform :ios, "11.0"
 
 target "BIF" do
 
-pod "RGCore", :git => 'https://github.com/ryangomba/RGCore.git'
-pod "RGFoundation", :git => 'https://github.com/ryangomba/RGFoundation.git'
-pod 'RGImage', :git => 'https://github.com/ryangomba/RGImage.git'
+pod "RGCore", :path => 'Vendor/RGCore'
+pod "RGFoundation", :path => 'Vendor/RGFoundation'
+pod 'RGImage', :path => 'Vendor/RGImage'
 
 pod "YapDatabase"
 

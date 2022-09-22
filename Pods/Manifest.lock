@@ -70,9 +70,9 @@ PODS:
     - YapDatabase/Standard/Core
 
 DEPENDENCIES:
-  - RGCore (from `https://github.com/ryangomba/RGCore.git`)
-  - RGFoundation (from `https://github.com/ryangomba/RGFoundation.git`)
-  - RGImage (from `https://github.com/ryangomba/RGImage.git`)
+  - RGCore (from `Vendor/RGCore`)
+  - RGFoundation (from `Vendor/RGFoundation`)
+  - RGImage (from `Vendor/RGImage`)
   - YapDatabase
 
 SPEC REPOS:
@@ -82,22 +82,11 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   RGCore:
-    :git: https://github.com/ryangomba/RGCore.git
+    :path: Vendor/RGCore
   RGFoundation:
-    :git: https://github.com/ryangomba/RGFoundation.git
+    :path: Vendor/RGFoundation
   RGImage:
-    :git: https://github.com/ryangomba/RGImage.git
-
-CHECKOUT OPTIONS:
-  RGCore:
-    :commit: 0b6ff751862eff7ee06d98624505014f5f0458de
-    :git: https://github.com/ryangomba/RGCore.git
-  RGFoundation:
-    :commit: 755ca6b22debd81e842074c56712328898661f40
-    :git: https://github.com/ryangomba/RGFoundation.git
-  RGImage:
-    :commit: 961041f349407946259cfef95806178fe9b78197
-    :git: https://github.com/ryangomba/RGImage.git
+    :path: Vendor/RGImage
 
 SPEC CHECKSUMS:
   CocoaLumberjack: bd155f2dd06c0e0b03f876f7a3ee55693122ec94
@@ -106,6 +95,6 @@ SPEC CHECKSUMS:
   RGImage: 05954737bb80f243bad44adc12309e67d576ef5e
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
 
-PODFILE CHECKSUM: 9192bf3ed1acb3a5a7784797e808d6c4670c239a
+PODFILE CHECKSUM: c8f87c6f1149e9ba7e446b138e016295d662b12b
 
 COCOAPODS: 1.11.2

@@ -1,1 +1,1 @@
-../../../RGFoundation/Classes/NSObject+KVO.h
+../../../../Vendor/RGFoundation/Classes/NSObject+KVO.h

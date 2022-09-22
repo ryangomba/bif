@@ -1,1 +1,1 @@
-../../../RGImage/Classes/UIImage+ImageEffects.h
+../../../../Vendor/RGImage/Classes/UIImage+ImageEffects.h
